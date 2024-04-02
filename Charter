@@ -7,6 +7,9 @@ Response time to communication expectations
 At least 24h, >24h if closer to deadline or if urgent.
 
 Definition of done: when is a task complete? (hint: "I'm done with that but I didn't check it in to github" is not done.)
+
+A task is complete when the user commits the task to github and atleast 2 other users review and apporove the changes.
+
 Scrum meeting format/frequency and distribution of documentation tasks (meeting minutes, updating task board)
 Procedure for adopting policies (e.g. code style, code check-in steps, documentation updates)
 if you adopt such a policy during the initial meeting, put it here
