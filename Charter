@@ -8,7 +8,10 @@ At least 24h, >24h if closer to deadline or if urgent.
 
 Definition of done: when is a task complete? (hint: "I'm done with that but I didn't check it in to github" is not done.)
 
-A task is complete when the user commits the task to github and atleast 2 other users review and apporove the changes.
+
+
+
+The task is done only when the person who was doing the task has checked it into github and it has been reviewed by at least 2 people.
 
 Scrum meeting format/frequency and distribution of documentation tasks (meeting minutes, updating task board)
 
@@ -35,4 +38,6 @@ Procedure for handling a member who is not meeting expectations:
 
 Signatures: 
 Haroun Mekonnen,
+Mohammad Alsheikh, 
 Nicholas Birschbach,
+
