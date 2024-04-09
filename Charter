@@ -2,7 +2,7 @@ Group Name: Digital Dream Team
   
 
 Availability for meeting expectations 
-At least twice a week, be able to meet during designated Lab time and Thursdays @2:30PM. If possible, meetings on Sundays at 5:00PM to review current progress. 
+At least twice a week, be able to meet during designated Lab time and Thursdays and Fridays @2:30PM. If possible, meetings on Sundays at 5:00PM to review current progress. 
 Attendance during meetings will be taken and documentation for meeting notes can be found on OneNote. 
 Response time to communication expectations 
 At least 24h, >24h if closer to deadline or if urgent via Teams. If you miss a meeting give notice beforehand and make sure to follow up with the team on any updates or needs for the project.    
@@ -23,8 +23,8 @@ Format - Scrum meetings will be 2-3 times a week for 30 minutes. Typical Scrum w
 Frequency - We will meet during lab time and on Thursdays. This will be a good start to be able to meet at the beginning of the week and before the weekend to ensure all questions about tasks can be answered before the weekend when people typically work on homework.  
 Documentation – At the beginning of each meeting one group member will be assigned to document meeting minutes and another member to update the task board. Normally this job would just be assigned to one person each time but for the sake of learning Scrum each group member will get practice doing each task for at least one meeting. At the end of the meeting, we will make sure everyone shared their progress and then everyone will review the documentation done in that meeting. Once the documentation change is approved by everyone, we will save our work and make sure it is accessible for everyone to look back on or view if they have to miss that meeting.  
 Distribution - Procedure for adopting policies (e.g. code style, code check-in steps, documentation updates) 
-
 if you adopt such a policy during the initial meeting, put it here 
+Follow SOLID principles, commit on a different branch, create pull request, let someone know to get it reviewed and approved. Merge request.
 
 Procedure for handling a team member who is not meeting expectations: 
 We will inform the team member that they are not meeting expectations: We will initiate a private conversation with the team member to discuss specific areas where their performance is falling short. We will provide clear examples and constructive feedback to help them understand the gaps in their work. 
