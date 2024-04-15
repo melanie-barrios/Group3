@@ -66,7 +66,7 @@ class Course:
         Preconditions: Course must exist in the database.
         Postconditions: Course is removed from the database if successful.
         Side Effects: May delete associated lab sections and TA assignments.
-        Parameter Usage: None.
+        Parameter Usage: None..
         """
 
 
