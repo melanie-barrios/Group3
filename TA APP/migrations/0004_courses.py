@@ -6,7 +6,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Courses',
+            name='Course',
             fields=[
                 ('course_id',models.CharField(primary_key=True)),
                 ('course_name',models.CharField(max_length=120)),

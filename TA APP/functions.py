@@ -1,11 +1,11 @@
 class User:
-    def get_user_info(self) -> dict:
+    def get_user_info(self, user_id) -> dict:
         """
         Retrieves information about the user.
 
         Preconditions: User must be authenticated and exist in the database.
         Postconditions: Returns a dictionary containing user information (user_id, username, email, role_id, is_active).
-        Side Effects: None.
+        Side Effects: none
         Parameter Usage: None.
         """
 
