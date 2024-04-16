@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
             name='TA',
             fields=[
                 ('user_id',models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='TA APP.Users')),
-                ('ta_id',models.ImageField(primary_key=True)),
+                ('ta_id',models.IntegerField(primary_key=True)),
             ],
         ),
 
