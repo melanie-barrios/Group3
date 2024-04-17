@@ -1,5 +1,8 @@
+import uuid
+
+
 class User:
-    def get_user_info(self, user_id) -> dict:
+    def get_user_info(self, user_id: uuid) -> dict:
         """
         Retrieves information about the user.
 
@@ -19,6 +22,16 @@ class User:
         Parameter Usage: info is a dictionary containing updated user information.
         """
 
+    def delete_user(self, user_id: uuid) -> bool:
+        """
+        Deletes the user from the database.
+
+        Preconditions: user must exist in the database.
+        Postconditions: user is removed from the database if successful.
+        Side Effects: May delete associated TA.
+        Parameter Usage: None..
+        """
+
     def authenticate(self, username: str, password: str) -> bool:
         """
         Authenticates user login credentials.
@@ -30,7 +43,7 @@ class User:
         """
 
 class Course:
-    def get_course_info(self) -> dict:
+    def get_course_info(self,course_id) -> dict:
         """
         Retrieves information about the course.
 
@@ -50,7 +63,7 @@ class Course:
         Parameter Usage: info is a dictionary containing updated course information.
         """
 
-    def delete_course(self) -> bool:
+    def delete_course(self,course_id) -> bool:
         """
         Deletes the course from the database.
 
@@ -61,7 +74,7 @@ class Course:
         """
 
 class LabSection:
-    def get_lab_section_info(self) -> dict:
+    def get_lab_section_info(self,lab_id) -> dict:
         """
         Retrieves information about the lab section.
 
@@ -81,7 +94,7 @@ class LabSection:
         Parameter Usage: info is a dictionary containing updated lab section information.
         """
 
-    def delete_lab_section(self) -> bool:
+    def delete_lab_section(self,lab_id) -> bool:
         """
         Deletes the lab section from the database.
 
@@ -96,7 +109,7 @@ class TA:
     Represents a TA in the system.
     """
 
-    def get_ta_info(self) -> dict:
+    def get_ta_info(self,user_id) -> dict:
         """
         Retrieves information about the TA .
 
@@ -116,7 +129,7 @@ class TA:
         Parameter Usage: info is a dictionary containing updated TA information.
         """
 
-    def delete_ta(self) -> bool:
+    def delete_ta(self,user_id) -> bool:
         """
         Deletes the TA from the database.
 
