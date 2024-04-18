@@ -6,7 +6,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Users',
+            name='User',
             fields=[
                 ('user_id',models.UUIDField(auto_created=True,primary_key=True,serialize=False,verbose_name='ID')),
                 ('password',models.CharField()),
