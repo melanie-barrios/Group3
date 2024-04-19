@@ -14,7 +14,6 @@ class Login:
 
 
 class User:
-
     def get_user_info(self, user_id: uuid) -> dict:
         """
         Retrieves information about the user.
@@ -52,12 +51,11 @@ class User:
         Preconditions: user must exist in the database.
         Postconditions: user is removed from the database if successful.
         Side Effects: May delete associated TA.
-        Parameter Usage: None..
+        Parameter Usage: None.
         """
 
 
 class Course:
-
     def get_course_info(self, course_id) -> dict:
         """
         Retrieves information about the course.
@@ -100,7 +98,6 @@ class Course:
 
 
 class LabSection:
-
     def get_lab_section_info(self, lab_id: int) -> dict:
         """
         Retrieves information about the lab section.
@@ -143,10 +140,6 @@ class LabSection:
 
 
 class Instructor:
-    """
-    Represents an instructor in the system.
-    """
-
     def get_instructor_info(self, instructor_id: int) -> dict:
         """
         Retrieves information about the instructor.
@@ -169,10 +162,6 @@ class Instructor:
 
 
 class TA:
-    """
-    Represents a TA in the system.
-    """
-
     def get_ta_info(self, ta_id) -> dict:
         """
         Retrieves information about the TA .
