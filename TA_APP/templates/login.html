@@ -2,9 +2,46 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="/static/loginStyle.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+    <title>TA Scheduler App</title>
+    <style>
+
+    </style>
 </head>
 <body>
+    <header>
+        <div class="login-container">
+            <div class="logo-3">
+                <a href="#">
+                    <h3>TA Scheduler</h3>
+                    <p>Universities of Wisconsin</p>
+                </a>
+            </div>
+        </div>
+    </header>
 
+    <h2>Login to TA Scheduler</h2>
+
+    <div class="container">
+            <form action="/" method="post">
+                {% csrf_token %}
+            <table>
+                <tr><td>Username:</td><td><input type="text" name="username"></td></tr>
+                <tr><td>Password:</td><td><input type="password" name="password"></td></tr>
+            </table>
+            <label>
+                <input type="checkbox" checked="checked" name="remember"> Remember me
+            </label>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+    {{ message }}
+
+    <footer>
+        New to TA Scheduler? Sign up | Privacy | Terms of Service
+    </footer>
 </body>
 </html>
