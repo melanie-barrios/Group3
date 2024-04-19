@@ -15,14 +15,6 @@ class Login:
 
 class User:
 
-    def __init__(self, user_id: uuid.UUID, password: str, name: str, phone_number: str, address: str, email: str):
-        self.user_id = user_id
-        self.password = password
-        self.name = name
-        self.phone_number = phone_number
-        self.address = address
-        self.email = email
-
     def get_user_info(self, user_id: uuid) -> dict:
         """
         Retrieves information about the user.
@@ -43,6 +35,16 @@ class User:
         Parameter Usage: info is a dictionary containing updated user information.
         """
 
+    def get_all_users(self) -> list:
+        """
+        Retrieves all users from the database.
+
+        Preconditions: None.
+        Postconditions: Returns a list containing dictionaries of user information.
+        Side Effects: None.
+        Parameter Usage: None.
+        """
+
     def delete_user(self, user_id: uuid) -> bool:
         """
         Deletes the user from the database.
@@ -55,13 +57,6 @@ class User:
 
 
 class Course:
-
-    def __init__(self, course_id: str, course_name: str, course_code: str, instructor_id: int, lab_id: int):
-        self.course_id = course_id
-        self.course_name = course_name
-        self.course_code = course_code
-        self.instructor_id = instructor_id
-        self.lab_id = lab_id
 
     def get_course_info(self, course_id) -> dict:
         """
@@ -83,7 +78,17 @@ class Course:
         Parameter Usage: info is a dictionary containing updated course information.
         """
 
-    def delete_course(self, course_id) -> bool:
+    def get_all_courses(self) -> list:
+        """
+        Retrieves all courses from the database.
+
+        Preconditions: None.
+        Postconditions: Returns a list containing dictionaries of course information.
+        Side Effects: None.
+        Parameter Usage: None.
+        """
+
+    def delete_course(self, course_id: int) -> bool:
         """
         Deletes the course from the database.
 
@@ -96,13 +101,7 @@ class Course:
 
 class LabSection:
 
-    def __init__(self, course_id: str, course_code: str, lab_id: int, ta_id: int):
-        self.course_id = course_id
-        self.course_code = course_code
-        self.lab_id = lab_id
-        self.ta_id = ta_id
-
-    def get_lab_section_info(self, lab_id) -> dict:
+    def get_lab_section_info(self, lab_id: int) -> dict:
         """
         Retrieves information about the lab section.
 
@@ -122,7 +121,17 @@ class LabSection:
         Parameter Usage: info is a dictionary containing updated lab section information.
         """
 
-    def delete_lab_section(self, lab_id) -> bool:
+    def get_all_lab_sections(self) -> list:
+        """
+        Retrieves all lab sections from the database.
+
+        Preconditions: None.
+        Postconditions: Returns a list containing dictionaries of lab section information.
+        Side Effects: None.
+        Parameter Usage: None.
+        """
+
+    def delete_lab_section(self, lab_id: int) -> bool:
         """
         Deletes the lab section from the database.
 
@@ -138,11 +147,7 @@ class Instructor:
     Represents an instructor in the system.
     """
 
-    def __init__(self, user_id: uuid.UUID, instructor_id: int):
-        self.user_id = user_id
-        self.instructor_id = instructor_id
-
-    def get_instructor_info(self) -> dict:
+    def get_instructor_info(self, instructor_id: int) -> dict:
         """
         Retrieves information about the instructor.
 
@@ -152,15 +157,21 @@ class Instructor:
         Parameter Usage: None.
         """
 
+    def get_all_instructors(self) -> list:
+        """
+        Retrieves all instructors from the database.
+
+        Preconditions: None.
+        Postconditions: Returns a list containing dictionaries of instructor information.
+        Side Effects: None.
+        Parameter Usage: None.
+        """
+
 
 class TA:
     """
     Represents a TA in the system.
     """
-
-    def __init__(self, user_id: uuid.UUID, ta_id: int):
-        self.user_id = user_id
-        self.ta_id = ta_id
 
     def get_ta_info(self, ta_id) -> dict:
         """
@@ -182,7 +193,17 @@ class TA:
         Parameter Usage: info is a dictionary containing updated TA information.
         """
 
-    def delete_ta(self, ta_id) -> bool:
+    def get_all_tas(self) -> list:
+        """
+        Retrieves all teaching assistants from the database.
+
+        Preconditions: None.
+        Postconditions: Returns a list containing dictionaries of teaching assistant information.
+        Side Effects: None.
+        Parameter Usage: None.
+        """
+
+    def delete_ta(self, ta_id: int) -> bool:
         """
         Deletes the TA from the database.
 
