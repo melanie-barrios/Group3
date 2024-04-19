@@ -1,39 +1,33 @@
+import unittest
+
 from django.test import Client
 from models import User
+
+
 class LoginTest(unittest.TestCase):
-   def setup(self):
+    def setup(self):
         User(email="admin", password="password").save()
         self.client = Client()
 
-   def test_validlogin(self):
-       response = self.client.post('/login/', {'name': 'admin', 'password': 'password'})
+    def test_validLogin(self):
+        response = self.client.post('/login/', {'name': 'admin', 'password': 'password'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, b'Successfully logged in')
 
-       self.assertEqual(response.status_code, 200)
-
-       self.assertEqual(response.content, b'Successfully logged in')
-
-
-
-    def test_invalidlogin(self):
+    def test_invalidLogin(self):
         response = self.client.post('/login/', {'name': 'invalidname', 'password': 'invalidpassword'})
-
         self.assertEqual(response.status_code, 400)
-
         self.assertEqual(response.content, b'Invalid login')
+
 
 class SupervisorCreateAccountTest(unittest.TestCase):
     def __init__(self):
         self.client = Client()
 
 
-
-
 class SupervisorDeleteAccountTest(unittest.TestCase):
     def __init__(self):
         self.client = Client()
-
-
-
 
 
 class SupervisorCreateCourseTest(unittest.TestCase):
@@ -49,10 +43,3 @@ class SupervisorDeleteCourseTest(unittest.TestCase):
 class SupervisorAssignUserToCourseTest(unittest.TestCase):
     def __init__(self):
         self.client = Client()
-
-
-
-
-
-
-
