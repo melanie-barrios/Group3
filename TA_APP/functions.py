@@ -86,7 +86,7 @@ class Course:
         Parameter Usage: None.
         """
 
-    def delete_course(self, course_id: int) -> bool:
+    def delete_course(self, course_id) -> bool:
         """
         Deletes the course from the database.
 

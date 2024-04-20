@@ -2,13 +2,31 @@ from django.test import TestCase, Client
 from .models import User, Instructor, TA, Course, LabSection
 import TA_APP.functions as functions
 
+class LoginTest(TestCase):
+
+    def setUp(self):
+        temp = User(user_id=1, name="Test", username="test_user", password="PASSWORD", email="test@uwm.edu",
+                    phone_number=1234567890, address="123 1st street")
+        temp.save()
+
+    def test_login_1(self):
+        self.assertEqual(True,functions.Login.authenticate(self,username="test_user", password="PASSWORD"),msg="User exists should return true")
+
+    def test_login_2(self):
+        self.assertEqual(False,functions.Login.authenticate(self,username="test_user",password="WORD"),msg="Wrong password should return false")
+
+    def test_login_3(self):
+        self.assertEqual(False,functions.Login.authenticate(self,username="test_user2",password="WORD"),msg="Wrong user should return false")
 
 class UserTests(TestCase):
 
     def setUp(self):
-        temp = User(user_id=1, name="Test", password="PASSWORD", email="test@uwm.edu",
+        temp = User(user_id=1, name="Test", username="test_user", password="PASSWORD", email="test@uwm.edu",
                     phone_number=1234567890, address="123 1st street")
         temp.save()
+        temp3 = User(user_id=3, name="Test3", username="test_user3", password="PASSWORD3", email="test3@uwm.edu",
+                    phone_number=1234567890, address="123 1st street")
+        temp3.save()
 
     def test_get_user_info_1(self):
         test_dic = {'user_id': 1, 'name': 'Test', 'username': 'test_user', 'password': 'PASSWORD',
@@ -17,6 +35,13 @@ class UserTests(TestCase):
 
     def test_get_user_info_2(self):
         self.assertEqual({}, functions.User.get_user_info(self,user_id=2), msg="User not found")
+
+    def test_get_all_users(self):
+        test_list = [{'user_id': 1, 'name': 'Test', 'username': 'test_user', 'password': 'PASSWORD',
+                    'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street'},
+                     {'user_id': 3, 'name': 'Test3', 'username': 'test_user3', 'password': 'PASSWORD3',
+                    'email': 'test3@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street'}]
+        self.assertEqual(test_list,functions.User.get_all_users(self), msg="List of users not found in database when they should be")
 
     def test_update_user_info_1(self):
         test_dic = {'user_id': 1, 'name': 'New-Test'}
@@ -50,10 +75,15 @@ class UserTests(TestCase):
 class CourseTests(TestCase):
 
     def setUp(self):
-        user = User(user_id=1, name="Test",password="PASSWORD", email="test@uwm.edu",
+        user = User(user_id=1, name="Test",username="test_user",password="PASSWORD", email="test@uwm.edu",
                     phone_number=1234567890, address="123 1st street")
+        user.save()
         instructor = Instructor(user_id=user,instructor_id=1)
+        instructor.save()
         temp = Course(course_id="11111", course_name="Test Course",course_code=101)
+        temp.save()
+        temp2 = Course(course_id="22222", course_name="Test Course 2",course_code=102,instructor_id=1)
+        temp2.save()
 
     def test_get_course_info_1(self):
         test_dic = {'course_id': '11111', 'course_name': 'Test Course', 'course_code':101}
@@ -63,6 +93,9 @@ class CourseTests(TestCase):
         test_dic = {}
         self.assertEqual(test_dic, functions.Course.get_course_info(self,"11112"), msg="Course does not exist result should be empty")
 
+    def test_get_all_courses(self):
+        test_list = [{'course_id': '11111', 'course_name': 'Test Course', 'course_code':101},{'course_id': '22222', 'course_name': 'Test Course 2', 'course_code':102,'instructor_id':1}]
+        self.assertEqual(test_list, functions.Course.get_all_courses(),msg="Courses not showing up properly")
     def test_update_course_info_1(self):
         test_dic = {'course_id': '11111', 'course_name': 'Test Course', 'course_code':101,'instructor_id':1}
         update_dic = {'course_id':"11111",'instructor_id': 1}
@@ -100,7 +133,7 @@ class LabSectionTests(TestCase):
 
 class TATests(TestCase):
     def setup(self):
-        temp_user = User(user_id=1, name="Test", password="PASSWORD", email="test@uwm.edu",
+        temp_user = User(user_id=1, name="Test",username="test_user", password="PASSWORD", email="test@uwm.edu",
                          phone_number=1234567890, address="123 1st street")
         temp_user.save()
         ta_1 = TA(user_id=temp_user, ta_id=1)
@@ -135,3 +168,7 @@ class TATests(TestCase):
     def test_delete_ta_1(self):
         functions.TA.delete_ta(self,ta_id=1)
         self.assertEqual({}, functions.TA.get_ta_info(self,ta_id=1),msg="Should be equal since TA exists in database and should be deleted")
+
+    def test_delete_ta_2(self):
+        self.assertEqual(False, functions.TA.delete_ta(self,ta_id=2),
+                         msg="Should return false since TA does not exist")

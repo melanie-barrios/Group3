@@ -24,6 +24,7 @@ class User(models.Model):
     """
 
     user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    username = models.CharField(max_length=25)
     password = models.CharField(max_length=25)
     name = models.CharField(max_length=75)
     phone_number = models.CharField(max_length=11)
@@ -40,7 +41,6 @@ class Course(models.Model):
     course_name = models.CharField(max_length=120)
     course_code = models.IntegerField()
     instructor_id = models.ForeignKey('Instructor', on_delete=models.CASCADE)
-    """lab_id = models.IntegerField()"""
 
 
 class LabSection(models.Model):
@@ -49,6 +49,4 @@ class LabSection(models.Model):
     """
     lab_id = models.IntegerField()
     course_id = models.ForeignKey(Course, on_delete=models.CASCADE)
-    """course_code = models.ForeignKey(Course, on_delete=models.CASCADE)
-    lab_id = models.ForeignKey(Course, on_delete=models.CASCADE,related_name='lab_id')"""
     ta_id = models.ForeignKey(TA, on_delete=models.CASCADE)
