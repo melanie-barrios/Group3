@@ -1,19 +1,33 @@
+import django
+from django.core.exceptions import ObjectDoesNotExist
 import uuid
-
+from .models import User, Instructor, TA, Course, LabSection, Supervisor
 
 class Login:
+    """
+    Authenticates user login credentials.
+
+    Preconditions: None.
+    Postconditions: Returns True if authentication is successful, False otherwise.
+    Side Effects: None.
+    Parameter Usage: username and password are strings representing user credentials.
+    """
     def authenticate(self, username: str, password: str) -> bool:
-        """
-        Authenticates user login credentials.
+        """Check username"""
+        try:
+            temp_user = User.objects.get(username=username)
+        except ObjectDoesNotExist:
+            return False
 
-        Preconditions: None.
-        Postconditions: Returns True if authentication is successful, False otherwise.
-        Side Effects: None.
-        Parameter Usage: username and password are strings representing user credentials.
-        """
+        """Check is password matches username"""
+        if temp_user.password == password:
+            return True
+        else:
+            return False
 
 
-class User:
+
+class User_func:
     def get_user_info(self, user_id: uuid) -> dict:
         """
         Retrieves information about the user.
@@ -55,7 +69,7 @@ class User:
         """
 
 
-class Course:
+class Course_func:
     def get_course_info(self, course_id) -> dict:
         """
         Retrieves information about the course.
@@ -86,7 +100,7 @@ class Course:
         Parameter Usage: None.
         """
 
-    def delete_course(self, course_id: int) -> bool:
+    def delete_course(self, course_id) -> bool:
         """
         Deletes the course from the database.
 
@@ -97,7 +111,7 @@ class Course:
         """
 
 
-class LabSection:
+class LabSection_func:
     def get_lab_section_info(self, lab_id: int) -> dict:
         """
         Retrieves information about the lab section.
@@ -139,7 +153,7 @@ class LabSection:
         """
 
 
-class Instructor:
+class Instructor_func:
     def get_instructor_info(self, instructor_id: int) -> dict:
         """
         Retrieves information about the instructor.
@@ -161,7 +175,7 @@ class Instructor:
         """
 
 
-class TA:
+class TA_func:
     def get_ta_info(self, ta_id) -> dict:
         """
         Retrieves information about the TA .
