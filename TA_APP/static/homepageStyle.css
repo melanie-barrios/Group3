@@ -1,0 +1,54 @@
+        header {
+            background-color: #34495e;
+            color: #fff;
+            padding: 20px 0;
+            font-size: 24px;
+            font-weight: bold;
+            width: 100%;
+            text-align: center;
+        }
+
+        .logo-3 {
+            font-family: 'Oswald', sans-serif;
+            margin-bottom: 20px;
+        }
+
+        .logo-3 a {
+            text-decoration: none;
+            color: #e74c3c;
+            display: inline-block;
+        }
+
+        .logo-3 h3, .logo-3 p {
+            margin: 0;
+            font-size: 32px;
+            font-weight: 300;
+            display: inline-block;
+        }
+
+        .logo-3 p {
+            font-size: 14px;
+            letter-spacing: 7px;
+            text-transform: uppercase;
+            background: #34495e;
+            color: #fff;
+            padding: 5px;
+        }
+        h1{
+            font-family: 'Oswald', sans-serif;
+            font-size: 32px;
+            font-weight: 300;
+
+        }
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #34495e;
+            color: #fff;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+			font-family: 'Oswald', sans-serif;
+            font-weight: 300;
+
+        }
