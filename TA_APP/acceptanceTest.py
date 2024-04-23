@@ -10,6 +10,7 @@ class LoginTest(unittest.TestCase):
         self.user = User.objects.create(username='newestuser', password='newestuser2')
         self.client = Client()
 
+
     def test_validLogin(self):
         response = self.client.post("/", {"username": "newestuser", "password": "newestuser2"})
         ##routes to homepage if valid
