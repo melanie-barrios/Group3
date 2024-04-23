@@ -8,7 +8,6 @@ class LoginTest(unittest.TestCase):
     def setUp(self):
         User.objects.all().delete()
         self.user = User.objects.create(username='newestuser', password='newestuser2')
-
         self.client = Client()
 
     def test_validLogin(self):
