@@ -128,8 +128,45 @@ class LabSectionTests(TestCase):
     def setup(self):
         temp_course = Course(course_id="11111", course_name="Test Course", course_code=101)
         temp_course.save()
-        temp_lab = Course(lab_id=1,course_id=temp_course)
+        temp_lab = LabSection(lab_id=1,course_id=temp_course)
         temp_lab.save()
+
+    def test_get_lab_info_1(self):
+        test_dic = {'lab_id':1,'course_id':"11111",}
+        self.assertEqual(test_dic, functions.Course_func.get_course_info(self,"11111"), msg="Course exists in the datbase should match result")
+
+    def test_get_lab_info_2(self):
+        test_dic = {}
+        self.assertEqual(test_dic, functions.Course_func.get_course_info(self,"11112"), msg="Course does not exist result should be empty")
+
+    def test_get_all_lab(self):
+        test_list = [{'course_id': '11111', 'course_name': 'Test Course', 'course_code':101},{'course_id': '22222', 'course_name': 'Test Course 2', 'course_code':102,'instructor_id':1}]
+        self.assertEqual(test_list, functions.Course_func.get_all_courses(),msg="Courses not showing up properly")
+    def test_update_lab_info_1(self):
+        test_dic = {'course_id': '11111', 'course_name': 'Test Course', 'course_code':101,'instructor_id':1}
+        update_dic = {'course_id':"11111",'instructor_id': 1}
+        functions.Course_func.update_course_info(self,update_dic)
+        self.assertEqual(test_dic, functions.Course_func.get_course_info(self,"11111"),msg="Course should be updated with instructor")
+
+    def test_update_lab_info_2(self):
+        test_dic = {'course_id': '11111', 'course_name': 'Test 2 Course'}
+        self.assertEqual(False, functions.Course_func.update_course_info(self,test_dic),msg="Should return true because course exists")
+
+    def test_update_lab_info_3(self):
+        test_dic = {'course_id': '11112', 'course_name': 'Test 2 Course'}
+        self.assertEqual(False, functions.Course_func.update_course_info(self,test_dic),msg="Should return flase because course does not exists")
+
+    def test_update_lab_info_4(self):
+        test_dic = {}
+        self.assertEqual(False, functions.Course_func.update_course_info(self,test_dic),msg="Should return flase because dictionary is empty")
+
+    def test_delete_lab_1(self):
+        functions.Course_func.delete_course(self,course_id="11111")
+        self.assertEqual({},functions.Course_func.delete_course(self,"11111"),msg="Should return nothing since course should have been deleted from database")
+
+    def test_delete_lab_2(self):
+        self.assertEqual(False,functions.Course_func.delete_course(self,"12345"),msg="Should return false since course does not exist")
+
 
 class TATests(TestCase):
     def setup(self):
@@ -172,3 +209,32 @@ class TATests(TestCase):
     def test_delete_ta_2(self):
         self.assertEqual(False, functions.TA_func.delete_ta(self,ta_id=2),
                          msg="Should return false since TA does not exist")
+
+class InstructorTests(TestCase):
+
+    def setUp(self):
+        user = User(user_id=1, name="Test",username="test_user",password="PASSWORD", email="test@uwm.edu",
+                    phone_number=1234567890, address="123 1st street")
+        user.save()
+        user2 = User(user_id=3, name="Test3",username="test_user3",password="PASSWORD3", email="test3@uwm.edu",
+                    phone_number=1234567890, address="123 1st street")
+        user2.save()
+        instructor = Instructor(user_id=user,instructor_id=1)
+        instructor.save()
+        instructor2 = Instructor(user_id=user2,instructor_id=2)
+        instructor2.save()
+
+    def test_get_instructor_info_1(self):
+        test_dic = {"user_id": 1, "instructor_id": 1}
+        self.assertEqual(test_dic, functions.Instructor_func.get_instructor_info(self, 1),
+                         msg="Should be equal since instructor is in the database")
+
+    def test_get_instructor_info_2(self):
+        test_dic = {}
+        self.assertEqual(test_dic, functions.Instructor_func.get_instructor_info(self, 3),
+                         msg="Should be equal since instructor is not in the database")
+
+    def test_get_all_instructors(self):
+        test_list = [{"user_id": 1, "instructor_id": 1},{"user_id": 1, "instructor_id": 2}]
+        self.assertEqual(test_list, functions.Instructor_func.get_all_instructors(self),
+                         msg="Should be equal since instructors are in the database")
