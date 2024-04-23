@@ -1,23 +1,45 @@
 import unittest
-
+from TA_Scheduling.wsgi import *
 from django.test import Client
-from models import User
+from TA_APP.models import User
 
 
 class LoginTest(unittest.TestCase):
-    def setup(self):
-        User(email="admin", password="password", username="TheAdmin").save()
+    def setUp(self):
+        User.objects.all().delete()
+        self.user = User.objects.create(username='newestuser', password='newestuser2')
+
         self.client = Client()
 
     def test_validLogin(self):
-        response = self.client.post(' ', {'username': 'TheAdmin', 'password': 'password'})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, b'Successfully logged in')
+
+        response = self.client.post("/", {"username": "newestuser", "password": "newestuser2"})
+
+
+        ##routes to homepage if valid
+        self.assertEqual(response.url, "/homepage/")
+
+
+
+
 
     def test_invalidLogin(self):
-        response = self.client.post(' ', {'username': 'invalidname', 'password': 'invalidpassword'})
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.content, b'Invalid login')
+
+        response = self.client.post("/", {"username": "test_user60", "password": "PASSWORD60"})
+
+        content = response.content.decode('utf-8')
+
+
+        ##if html contains message that username or password is incorrect creds are invalid
+        self.assertIn("Username or password is incorrect", content, "Login credentials are invalid")
+
+
+
+
+
+
+
+
 
 
 class SupervisorCreateAccountTest(unittest.TestCase):
