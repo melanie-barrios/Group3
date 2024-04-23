@@ -3,9 +3,10 @@ from django.views import View
 from .models import User, Instructor, TA, Course, LabSection, Supervisor
 import TA_APP.functions as functions
 
+
 class Login(View):
     def get(self, request):
-        return render(request, 'login.html',{})
+        return render(request, 'login.html', {})
 
     def post(self, request):
         """Add a test user"""
@@ -16,7 +17,7 @@ class Login(View):
         username = request.POST['username']
         password = request.POST['password']
         """check identity"""
-        verify = functions.Login.authenticate(self,str(username),str(password))
+        verify = functions.Login.authenticate(self, str(username), str(password))
 
         """If user is valid move to home page"""
         if verify:
@@ -25,7 +26,8 @@ class Login(View):
         else:
             return render(request, "login.html", {"message": "Username or password is incorrect"})
 
+
 class HomePage(View):
 
     def get(self, request):
-        return render(request, 'homepage.html',{})
+        return render(request, 'homepage.html', {})
