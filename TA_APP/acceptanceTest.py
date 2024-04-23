@@ -12,10 +12,7 @@ class LoginTest(unittest.TestCase):
         self.client = Client()
 
     def test_validLogin(self):
-
         response = self.client.post("/", {"username": "newestuser", "password": "newestuser2"})
-
-
         ##routes to homepage if valid
         self.assertEqual(response.url, "/homepage/")
 
