@@ -9,6 +9,7 @@ class LoginTest(unittest.TestCase):
         User(email="admin", password="password", username="TheAdmin").save()
         self.client = Client()
 
+
     def test_validLogin(self):
         response = self.client.post(' ', {'username': 'TheAdmin', 'password': 'password'})
         self.assertEqual(response.status_code, 200)
