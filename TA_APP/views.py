@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views import View
+from django.contrib.auth import logout
 from .models import User, Instructor, TA, Course, LabSection, Supervisor
 import TA_APP.functions as functions
 
@@ -28,4 +29,19 @@ class Login(View):
 class HomePage(View):
 
     def get(self, request):
-        return render(request, 'homepage.html',{})
+        print(request.session['username'])
+        if not request.session['username'] == "":
+            return render(request, 'homepage.html',{})
+        else:
+            return redirect('/')
+
+    def post(self,request):
+        """logout(request)"""
+
+        """try:
+            del request.session["username"]
+        except KeyError:
+            pass"""
+        """request.session.clear()"""
+        request.session["username"] = ""
+        return redirect('/')
