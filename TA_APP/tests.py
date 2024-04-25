@@ -1,5 +1,5 @@
 from django.test import TestCase, Client
-from .models import User, Instructor, TA, Course, LabSection, Supervisor
+from .models import User, Course, LabSection, CourseSection
 import TA_APP.functions as functions
 
 class LoginTest(TestCase):

@@ -1,7 +1,7 @@
 import django
 from django.core.exceptions import ObjectDoesNotExist
 import uuid
-from .models import User, Instructor, TA, Course, LabSection, Supervisor
+from .models import User, Course, LabSection, CourseSection
 
 class Login:
     """
