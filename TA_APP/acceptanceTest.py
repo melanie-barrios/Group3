@@ -6,19 +6,18 @@ from TA_APP.models import User
 
 class LoginTest(unittest.TestCase):
     def setUp(self):
-        User.objects.all().delete()
-        self.user = User.objects.create(username='newestuser', password='newestuser2')
+        self.user = User(username="newestuser", password="newestuser2")
+        self.user.save()
         self.client = Client()
 
 
     def test_validLogin(self):
+
         response = self.client.post("/", {"username": "newestuser", "password": "newestuser2"})
         ##routes to homepage if valid
         self.assertEqual(response.url, "/homepage/")
 
-
-
-
+        self.user.delete()
 
     def test_invalidLogin(self):
 
@@ -26,9 +25,10 @@ class LoginTest(unittest.TestCase):
 
         content = response.content.decode('utf-8')
 
-
         ##if html contains message that username or password is incorrect creds are invalid
         self.assertIn("Username or password is incorrect", content, "Login credentials are invalid")
+
+        self.user.delete()
 
 
 
