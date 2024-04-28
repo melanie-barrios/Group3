@@ -33,7 +33,6 @@ class Getting(ABC):
 class Login:
     """
     Authenticates user login credentials.
-
     Preconditions: None.
     Postconditions: Returns True if authentication is successful, False otherwise.
     Side Effects: None.
@@ -197,7 +196,7 @@ class CourseSection_func(Change,Getting):
         Preconditions: CourseSection must exist in the database.
         Postconditions: CourseSection is removed from the database and everywhere referenced if successful.
         Side Effects: Removed from any database tables as a foreign key.
-        In: String to locate the given CourseSection by username to delete.
+        In: String to locate the given CourseSection by section_id to delete.
         Out: Boolean to determine if operation was accomplished or not.
         """
 

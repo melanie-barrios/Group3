@@ -1,3 +1,5 @@
+from email._header_value_parser import Section
+
 from django.test import TestCase, Client
 from .models import User, Course, LabSection, CourseSection
 import TA_APP.functions as functions
@@ -140,59 +142,92 @@ class CourseTests(TestCase):
                          msg="Should return false since course does not exist")
 
 
+class CourseSectionTests(TestCase):
+    def setUp(self):
+        self.test_course = Course(course_id="11111", course_name="Test Course", course_code=351, course_term="F")
+        self.test_course.save()
+        self.test_section = CourseSection(section_id=123, section_number=101, course=self.test_course)
+        self.test_section.save()
+
+    def tearDown(self):
+        self.test_course.delete()
+        self.test_section.delete()
+
+    def test_get_courseSection_info(self):
+        test_dic = {'section_id': '123', 'section_number': '101'}
+        test_list = [test_dic]
+        self.assertEqual(test_list, functions.CourseSection_func.get(query='section_id', identity='123'))
+
+    def test_get_courseSection_info_2(self):
+        self.assertEqual(False, functions.CourseSection_func.get(query='section_id', identity='234'))
+
+    def test_create_courseSection(self):
+        info = {"section_id": 456, "section_number": 102, "course": self.test_course}
+        self.assertTrue(functions.CourseSection_func.Create(info))
+
+    def test_create_courseSection_2(self):
+        info = {"section_number": 102, "course": self.test_course}
+        self.assertEqual(False, functions.CourseSection_func.Create(info),
+                         msg="Cannot create course section without section id")
+
+    def test_edit_courseSection(self):
+        update_info = {"section_id": 123, "section_number": 102, "course": self.test_course}
+        functions.CourseSection_func.Edit(update_info)
+        self.assertEquals(update_info, functions.CourseSection_func.get(query='section_id', identity='123'))
+
+    def test_delete_courseSection(self):
+        identity = "123"
+        self.assertTrue(functions.CourseSection_func.Delete(identity))
+
+
 class LabSectionTests(TestCase):
+    def setUp(self):
+        self.test_course = Course(course_id="22222", course_name="Test Lab Course", course_term="F")
+        self.test_course.save()
+        self.test_course_section = CourseSection(section_id=456, section_number=201, course=self.test_course)
+        self.test_course_section.save()
+        self.test_lab_section = LabSection(section_id=789, section_number=301, course_section=self.test_course_section,
+                                           course=self.test_course)
+        self.test_lab_section.save()
 
-    def setup(self):
-        temp_course = Course(course_id="11111", course_name="Test Course", course_code=101)
-        temp_course.save()
-        temp_lab = LabSection(lab_id=1, course_id=temp_course)
-        temp_lab.save()
+    def tearDown(self):
+        self.test_lab_section.delete()
+        self.test_course_section.delete()
+        self.test_course.delete()
 
-    def test_get_lab_info_1(self):
-        test_dic = {'lab_id': 1, 'course_id': "11111", }
-        self.assertEqual(test_dic, functions.Course_func.get_course_info(self, "11111"),
-                         msg="Course exists in the datbase should match result")
+    def test_get_labSection_info(self):
+        test_dic = {'section_id': '789', 'section_number': '301'}
+        test_list = [test_dic]
+        self.assertEqual(test_list, functions.LabSection_func.get(query='section_id', identity='789'))
 
-    def test_get_lab_info_2(self):
-        test_dic = {}
-        self.assertEqual(test_dic, functions.Course_func.get_course_info(self, "11112"),
-                         msg="Course does not exist result should be empty")
+    def test_get_labSection_info_fail(self):
+        self.assertEqual(False, functions.LabSection_func.get(query='section_id', identity='999'))
 
-    def test_get_all_lab(self):
-        test_list = [{'course_id': '11111', 'course_name': 'Test Course', 'course_code': 101},
-                     {'course_id': '22222', 'course_name': 'Test Course 2', 'course_code': 102, 'instructor_id': 1}]
-        self.assertEqual(test_list, functions.Course_func.get_all_courses(), msg="Courses not showing up properly")
+    def test_create_labSection(self):
+        info = {"section_id": 987, "section_number": 302, "course_section": self.test_course_section,
+                "course": self.test_course}
+        self.assertTrue(functions.LabSection_func.Create(info))
 
-    def test_update_lab_info_1(self):
-        test_dic = {'course_id': '11111', 'course_name': 'Test Course', 'course_code': 101, 'instructor_id': 1}
-        update_dic = {'course_id': "11111", 'instructor_id': 1}
-        functions.Course_func.update_course_info(self, update_dic)
-        self.assertEqual(test_dic, functions.Course_func.get_course_info(self, "11111"),
-                         msg="Course should be updated with instructor")
+    def test_create_labSection_fail(self):
+        info = {"section_number": 302, "course_section": self.test_course_section,
+                "course": self.test_course}
+        self.assertEqual(False, functions.LabSection_func.Create(info),
+                         msg="Cannot create lab section without section id")
 
-    def test_update_lab_info_2(self):
-        test_dic = {'course_id': '11111', 'course_name': 'Test 2 Course'}
-        self.assertEqual(False, functions.Course_func.update_course_info(self, test_dic),
-                         msg="Should return true because course exists")
+    def test_create_labSection_fail2(self):
+        info = {"section_id": 987, "section_number": 302, "course_section": self.test_course_section}
+        self.assertEqual(False, functions.LabSection_func.Create(info),
+                         msg="Cannot create lab section without assigning course")
 
-    def test_update_lab_info_3(self):
-        test_dic = {'course_id': '11112', 'course_name': 'Test 2 Course'}
-        self.assertEqual(False, functions.Course_func.update_course_info(self, test_dic),
-                         msg="Should return flase because course does not exists")
+    def test_edit_labSection(self):
+        update_info = {"section_id": 789, "section_number": 401, "course_section": self.test_course_section,
+                       "course": self.test_course}
+        functions.LabSection_func.Edit(update_info)
+        self.assertEquals(update_info, functions.LabSection_func.get(query='section_id', identity='789'))
 
-    def test_update_lab_info_4(self):
-        test_dic = {}
-        self.assertEqual(False, functions.Course_func.update_course_info(self, test_dic),
-                         msg="Should return flase because dictionary is empty")
-
-    def test_delete_lab_1(self):
-        functions.Course_func.delete_course(self, course_id="11111")
-        self.assertEqual({}, functions.Course_func.delete_course(self, "11111"),
-                         msg="Should return nothing since course should have been deleted from database")
-
-    def test_delete_lab_2(self):
-        self.assertEqual(False, functions.Course_func.delete_course(self, "12345"),
-                         msg="Should return false since course does not exist")
+    def test_delete_labSection(self):
+        identity = "789"
+        self.assertTrue(functions.LabSection_func.Delete(identity))
 
 
 class TATests(TestCase):

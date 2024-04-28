@@ -4,6 +4,7 @@ from django.contrib.auth import logout
 from .models import User, Course, LabSection, CourseSection
 import TA_APP.functions as functions
 
+
 class Login(View):
     def get(self, request):
         """Add test supervisor"""
