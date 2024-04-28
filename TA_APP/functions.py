@@ -1,7 +1,34 @@
 import django
 from django.core.exceptions import ObjectDoesNotExist
-import uuid
-from .models import User, Instructor, TA, Course, LabSection, Supervisor
+from abc import ABC, abstractmethod
+from .models import User, Course, LabSection, CourseSection
+
+
+class Change(ABC):
+    """Create method for general creation"""
+    @abstractmethod
+    def Create(self, info: dict):
+        pass
+    """Edit method for general updating"""
+    @abstractmethod
+    def Edit(self,info: dict):
+        pass
+
+    @abstractmethod
+    def Delete(self,identity: str):
+        pass
+
+
+class Getting(ABC):
+    """General method for getting based on query"""
+    @abstractmethod
+    def get(self,query: str, identity: str):
+        pass
+    """General method for getting all instances"""
+    @abstractmethod
+    def get_all(self):
+        pass
+
 
 class Login:
     """
@@ -26,192 +53,229 @@ class Login:
             return False
 
 
+class User_func(Change, Getting):
 
-class User_func:
-    def get_user_info(self, user_id: uuid) -> dict:
+    def Create(self, info: dict) -> bool:
         """
-        Retrieves information about the user.
+        Create - Creates user based on provided data
 
-        Preconditions: User must be authenticated and exist in the database.
-        Postconditions: Returns a dictionary containing user information (user_id, username, email, role_id, is_active).
-        Side Effects: none
-        Parameter Usage: None.
+        Preconditions: Valid dictionary with correct values based on user.
+        Postconditions: User is successfully added to the database.
+        Side Effects: Adds a user to database and all locations that reference users.
+        In: info is a dictionary containing user information.
+        Out: Boolean to determine if operation was accomplished or not.
         """
 
-    def update_user_info(self, info: dict) -> bool:
+    def Edit(self, info: dict) -> bool:
         """
-        Updates user information with the provided data.
+        Edit - Updates user information with the provided data.
 
         Preconditions: User must be authenticated and exist in the database.
         Postconditions: User information is updated in the database if successful.
-        Side Effects: May modify user information in the database.
-        Parameter Usage: info is a dictionary containing updated user information.
+        Side Effects: May modify user information in the database and anywhere where user is referenced.
+        In: info is a dictionary containing user information.
+        Out: Boolean to determine if operation was accomplished or not.
         """
 
-    def get_all_users(self) -> list:
+    def Delete(self, identity: str) -> bool:
         """
-        Retrieves all users from the database.
+        Delete - Deletes the user from the database.
+
+        Preconditions: User must exist in the database.
+        Postconditions: user is removed from the database and everywhere referenced if successful.
+        Side Effects: Removed from any database tables as a foreign key.
+        In: String to locate the given user by username to delete.
+        Out: Boolean to determine if operation was accomplished or not.
+        """
+
+    def get(self, query: str, identity: str) -> list:
+        """
+        get - Retrieves information about the user(s).
+
+        Preconditions: User(s) must be authenticated and exist in the database.
+        Postconditions: Returns a list of dictionaries containing user information (user_id, username, email, role_id, is_active).
+        Side Effects: none
+        In: query string field to search based off of, identity fields value to search for
+        Out: List of dictionaries containing the given query
+        """
+
+    def get_all(self) -> list:
+        """
+        get_all - Retrieves all users from the database.
 
         Preconditions: None.
         Postconditions: Returns a list containing dictionaries of user information.
         Side Effects: None.
-        Parameter Usage: None.
-        """
-
-    def delete_user(self, user_id: uuid) -> bool:
-        """
-        Deletes the user from the database.
-
-        Preconditions: user must exist in the database.
-        Postconditions: user is removed from the database if successful.
-        Side Effects: May delete associated TA.
-        Parameter Usage: None.
+        In: None
+        Out: List of dictionaries containing all users.
         """
 
 
-class Course_func:
-    def get_course_info(self, course_id) -> dict:
+class Course_func(Change,Getting):
+    def Create(self, info: dict) -> bool:
         """
-        Retrieves information about the course.
+        Create - Creates course based on provided data
 
-        Preconditions: Course must exist in the database.
-        Postconditions: Returns a dictionary containing course information (course_id, course_name, course_code).
-        Side Effects: None.
-        Parameter Usage: None.
+        Preconditions: Valid dictionary with correct values based on course.
+        Postconditions: Course is successfully added to the database.
+        Side Effects: Adds a course to database and all locations that reference courses.
+        In: info is a dictionary containing course information.
+        Out: Boolean to determine if operation was accomplished or not.
         """
 
-    def update_course_info(self, info: dict) -> bool:
+    def Edit(self, info: dict) -> bool:
         """
-        Updates course information with the provided data.
+        Edit - Updates course information with the provided data.
 
-        Preconditions: Course must exist in the database.
+        Preconditions: Course must be authenticated and exist in the database.
         Postconditions: Course information is updated in the database if successful.
-        Side Effects: May modify course information in the database.
-        Parameter Usage: info is a dictionary containing updated course information.
+        Side Effects: May modify user information in the database and anywhere where Course is referenced.
+        In: info is a dictionary containing Course information.
+        Out: Boolean to determine if operation was accomplished or not.
         """
 
-    def get_all_courses(self) -> list:
+    def Delete(self, identity: str) -> bool:
         """
-        Retrieves all courses from the database.
-
-        Preconditions: None.
-        Postconditions: Returns a list containing dictionaries of course information.
-        Side Effects: None.
-        Parameter Usage: None.
-        """
-
-    def delete_course(self, course_id) -> bool:
-        """
-        Deletes the course from the database.
+        Delete - Deletes the Course from the database.
 
         Preconditions: Course must exist in the database.
-        Postconditions: Course is removed from the database if successful.
-        Side Effects: May delete associated lab sections and TA assignments.
-        Parameter Usage: None..
+        Postconditions: Course is removed from the database and everywhere referenced if successful.
+        Side Effects: Removed from any database tables as a foreign key.
+        In: String to locate the given Course by username to delete.
+        Out: Boolean to determine if operation was accomplished or not.
         """
 
-
-class LabSection_func:
-    def get_lab_section_info(self, lab_id: int) -> dict:
+    def get(self, query: str, identity: str) -> list:
         """
-        Retrieves information about the lab section.
+        get - Retrieves information about the Course(s).
 
-        Preconditions: Lab section must exist in the database.
-        Postconditions: Returns a dictionary containing lab section information (labsection_id, course_id, section_number).
-        Side Effects: None.
-        Parameter Usage: None.
-        """
-
-    def update_lab_section_info(self, info: dict) -> bool:
-        """
-        Updates lab section information with the provided data.
-
-        Preconditions: Lab section must exist in the database.
-        Postconditions: Lab section information is updated in the database if successful.
-        Side Effects: May modify lab section information in the database.
-        Parameter Usage: info is a dictionary containing updated lab section information.
+        Preconditions: Course(s) must be authenticated and exist in the database.
+        Postconditions: Returns a list of dictionaries containing Course information.
+        Side Effects: none
+        In: query string field to search based off of, identity fields value to search for
+        Out: List of dictionaries containing the given query
         """
 
-    def get_all_lab_sections(self) -> list:
+    def get_all(self) -> list:
         """
-        Retrieves all lab sections from the database.
+        get_all - Retrieves all Courses from the database.
 
         Preconditions: None.
-        Postconditions: Returns a list containing dictionaries of lab section information.
+        Postconditions: Returns a list containing dictionaries of Course information.
         Side Effects: None.
-        Parameter Usage: None.
+        In: None
+        Out: List of dictionaries containing all Courses.
         """
 
-    def delete_lab_section(self, lab_id: int) -> bool:
+class CourseSection_func(Change,Getting):
+    def Create(self, info: dict) -> bool:
         """
-        Deletes the lab section from the database.
+        Create - Creates CourseSection based on provided data
 
-        Preconditions: Lab section must exist in the database.
-        Postconditions: Lab section is removed from the database if successful.
-        Side Effects: May delete associated TA assignments.
-        Parameter Usage: None.
-        """
-
-
-class Instructor_func:
-    def get_instructor_info(self, instructor_id: int) -> dict:
-        """
-        Retrieves information about the instructor.
-
-        Preconditions: Instructor must exist in the database.
-        Postconditions: Returns a dictionary containing instructor information (user_id, instructor_id).
-        Side Effects: None.
-        Parameter Usage: None.
+        Preconditions: Valid dictionary with correct values based on CourseSection.
+        Postconditions: CourseSection is successfully added to the database.
+        Side Effects: Adds a CourseSection to database and all locations that reference CourseSections.
+        In: info is a dictionary containing CourseSection information.
+        Out: Boolean to determine if operation was accomplished or not.
         """
 
-    def get_all_instructors(self) -> list:
+    def Edit(self, info: dict) -> bool:
         """
-        Retrieves all instructors from the database.
+        Edit - Updates CourseSection information with the provided data.
+
+        Preconditions: CourseSection must be authenticated and exist in the database.
+        Postconditions: CourseSection information is updated in the database if successful.
+        Side Effects: May modify user information in the database and anywhere where CourseSection is referenced.
+        In: info is a dictionary containing CourseSection information.
+        Out: Boolean to determine if operation was accomplished or not.
+        """
+
+    def Delete(self, identity: str) -> bool:
+        """
+        Delete - Deletes the CourseSection from the database.
+
+        Preconditions: CourseSection must exist in the database.
+        Postconditions: CourseSection is removed from the database and everywhere referenced if successful.
+        Side Effects: Removed from any database tables as a foreign key.
+        In: String to locate the given CourseSection by username to delete.
+        Out: Boolean to determine if operation was accomplished or not.
+        """
+
+    def get(self, query: str, identity: str) -> list:
+        """
+        get - Retrieves information about the CourseSection(s).
+
+        Preconditions: CourseSection(s) must be authenticated and exist in the database.
+        Postconditions: Returns a list of dictionaries containing CourseSection information.
+        Side Effects: none
+        In: query string field to search based off of, identity fields value to search for
+        Out: List of dictionaries containing the given query
+        """
+
+    def get_all(self) -> list:
+        """
+        get_all - Retrieves all CourseSections from the database.
 
         Preconditions: None.
-        Postconditions: Returns a list containing dictionaries of instructor information.
+        Postconditions: Returns a list containing dictionaries of CourseSection information.
         Side Effects: None.
-        Parameter Usage: None.
+        In: None
+        Out: List of dictionaries containing all CourseSections.
         """
 
 
-class TA_func:
-    def get_ta_info(self, ta_id) -> dict:
+class LabSection_func(Change,Getting):
+    def Create(self, info: dict) -> bool:
         """
-        Retrieves information about the TA .
+        Create - Creates LabSection based on provided data
 
-        Preconditions: TA  must exist in the database.
-        Postconditions: Returns a dictionary containing TA  information (ta_id, ta_id, labsection_id).
-        Side Effects: None.
-        Parameter Usage: None.
-        """
-
-    def update_ta_info(self, info: dict) -> bool:
-        """
-        Updates TA  information with the provided data.
-
-        Preconditions: TA must exist in the database.
-        Postconditions: TA information is updated in the database if successful.
-        Side Effects: May modify TA information in the database.
-        Parameter Usage: info is a dictionary containing updated TA information.
+        Preconditions: Valid dictionary with correct values based on LabSection.
+        Postconditions: LabSection is successfully added to the database.
+        Side Effects: Adds a LabSection to database and all locations that reference LabSections.
+        In: info is a dictionary containing user information.
+        Out: Boolean to determine if operation was accomplished or not.
         """
 
-    def get_all_tas(self) -> list:
+    def Edit(self, info: dict) -> bool:
         """
-        Retrieves all teaching assistants from the database.
+        Edit - Updates LabSection information with the provided data.
+
+        Preconditions: LabSection must be authenticated and exist in the database.
+        Postconditions: LabSection information is updated in the database if successful.
+        Side Effects: May modify user information in the database and anywhere where LabSection is referenced.
+        In: info is a dictionary containing LabSection information.
+        Out: Boolean to determine if operation was accomplished or not.
+        """
+
+    def Delete(self, identity: str) -> bool:
+        """
+        Delete - Deletes the LabSection from the database.
+
+        Preconditions: LabSection must exist in the database.
+        Postconditions: LabSection is removed from the database and everywhere referenced if successful.
+        Side Effects: Removed from any database tables as a foreign key.
+        In: String to locate the given LabSection by username to delete.
+        Out: Boolean to determine if operation was accomplished or not.
+        """
+
+    def get(self, query: str, identity: str) -> list:
+        """
+        get - Retrieves information about the LabSection(s).
+
+        Preconditions: LabSection(s) must be authenticated and exist in the database.
+        Postconditions: Returns a list of dictionaries containing LabSection information.
+        Side Effects: none
+        In: query string field to search based off of, identity fields value to search for
+        Out: List of dictionaries containing the given query
+        """
+
+    def get_all(self) -> list:
+        """
+        get_all - Retrieves all LabSections from the database.
 
         Preconditions: None.
-        Postconditions: Returns a list containing dictionaries of teaching assistant information.
+        Postconditions: Returns a list containing dictionaries of LabSection information.
         Side Effects: None.
-        Parameter Usage: None.
-        """
-
-    def delete_ta(self, ta_id: int) -> bool:
-        """
-        Deletes the TA from the database.
-
-        Preconditions: TA must exist in the database.
-        Postconditions: TA is removed from the database if successful.
-        Side Effects: None.
-        Parameter Usage: None.
+        In: None
+        Out: List of dictionaries containing all LabSections.
         """
