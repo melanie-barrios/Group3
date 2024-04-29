@@ -22,7 +22,7 @@ class Change(ABC):
 class Getting(ABC):
     """General method for getting based on query"""
     @abstractmethod
-    def get(self, query: str, identity: str):
+    def get(self,query: str, identity: str):
         pass
     """General method for getting all instances"""
     @abstractmethod

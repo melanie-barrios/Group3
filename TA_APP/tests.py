@@ -1,16 +1,16 @@
-from email._header_value_parser import Section
-
 from django.test import TestCase, Client
 from .models import User, Course, LabSection, CourseSection
 import TA_APP.functions as functions
 
-
 class LoginTest(TestCase):
 
     def setUp(self):
-        temp = User(user_id=1, name="Test", username="test_user", password="PASSWORD", email="test@uwm.edu",
-                    phone_number=1234567890, address="123 1st street")
-        temp.save()
+        self.temp = User(name="Test", username="test_user", password="PASSWORD", email="test@uwm.edu",
+                         phone_number=1234567890, address="123 1st street", type="I")
+        self.temp.save()
+
+    def tearDown(self):
+        self.temp.delete()
 
     def test_login_1(self):
         self.assertEqual(True, functions.Login.authenticate(self, username="test_user", password="PASSWORD"),
@@ -28,32 +28,110 @@ class LoginTest(TestCase):
 class UserTests(TestCase):
 
     def setUp(self):
-        temp = User(user_id=1, name="Test", username="test_user", password="PASSWORD", email="test@uwm.edu",
-                    phone_number=1234567890, address="123 1st street")
-        temp.save()
-        temp3 = User(user_id=3, name="Test3", username="test_user3", password="PASSWORD3", email="test3@uwm.edu",
-                     phone_number=1234567890, address="123 1st street")
-        temp3.save()
+        self.temp = User(name="Test", username="test_user", password="PASSWORD", email="test@uwm.edu",
+                         phone_number=1234567890, address="123 1st street", type="TA")
+        self.temp.save()
+        self.temp3 = User(name="Test3", username="test_user3", password="PASSWORD3", email="test3@uwm.edu",
+                          phone_number=1234567890, address="123 1st street", type="I")
+        self.temp3.save()
+
+    def tearDown(self):
+        self.temp.delete()
+        self.temp3.delete()
 
     def test_get_user_info_1(self):
-        test_dic = {'user_id': 1, 'name': 'Test', 'username': 'test_user', 'password': 'PASSWORD',
-                    'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street'}
-        self.assertEqual(test_dic, functions.User_func.get_user_info(self, user_id=1), msg="User not found")
+        test_dic = {'name': 'Test', 'username': 'test_user', 'password': 'PASSWORD',
+                    'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', "type": "TA"}
+        test_list = [test_dic]
+        self.assertEqual(test_list, functions.User_func.get(query='username', identity='test_user'),
+                         msg="User not found")
 
     def test_get_user_info_2(self):
-        self.assertEqual({}, functions.User_func.get_user_info(self, user_id=2), msg="User not found")
+        test_dic = {'name': 'Test', 'username': 'test_user', 'password': 'PASSWORD',
+                    'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', "type": "TA"}
+        test_list = [test_dic]
+        self.assertEqual(test_list, functions.User_func.get(query='name', identity='Test'), msg="User not found")
+
+    def test_get_user_info_3(self):
+        test_dic = {'name': 'Test', 'username': 'test_user', 'password': 'PASSWORD',
+                    'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', "type": "TA"}
+        test_list = [test_dic]
+        self.assertEqual(test_list, functions.User_func.get(query='password', identity='PASSWORD'),
+                         msg="User not found")
+
+    def test_get_user_info_4(self):
+        test_dic = {'name': 'Test', 'username': 'test_user', 'password': 'PASSWORD',
+                    'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', "type": "TA"}
+        test_list = [test_dic]
+        self.assertEqual(test_list, functions.User_func.get(query='email', identity='test@uwm.edu'),
+                         msg="User not found")
+
+    def test_get_user_info_5(self):
+        test_list = [{'name': 'Test', 'username': 'test_user', 'password': 'PASSWORD',
+                      'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', 'type': "TA"},
+                     {'name': 'Test3', 'username': 'test_user3', 'password': 'PASSWORD3',
+                      'email': 'test3@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', 'type': "I"}]
+        self.assertEqual(test_list, functions.User_func.get(query='phone_number', identity=1234567890),
+                         msg="User not found")
+
+    def test_get_user_info_6(self):
+        test_list = [{'name': 'Test', 'username': 'test_user', 'password': 'PASSWORD',
+                      'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', 'type': "TA"},
+                     {'name': 'Test3', 'username': 'test_user3', 'password': 'PASSWORD3',
+                      'email': 'test3@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', 'type': "I"}]
+        self.assertEqual(test_list, functions.User_func.get(query='address', identity='123 1st Street'),
+                         msg="User not found")
+
+    def test_get_user_info_7(self):
+        test_dic = {'name': 'Test', 'username': 'test_user', 'password': 'PASSWORD',
+                    'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', "type": "TA"}
+        test_list = [test_dic]
+        self.assertEqual(test_list, functions.User_func.get(query="type", identity="TA"), msg="User not found")
+
+    def test_get_user_info_8(self):
+        self.assertEqual({}, functions.User_func.get(query="username", identity="test_user2"), msg="User not found")
 
     def test_get_all_users(self):
-        test_list = [{'user_id': 1, 'name': 'Test', 'username': 'test_user', 'password': 'PASSWORD',
-                      'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street'},
-                     {'user_id': 3, 'name': 'Test3', 'username': 'test_user3', 'password': 'PASSWORD3',
-                      'email': 'test3@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street'}]
-        self.assertEqual(test_list, functions.User_func.get_all_users(self),
+        test_list = [{'name': 'Test', 'username': 'test_user', 'password': 'PASSWORD',
+                      'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', 'type': "TA"},
+                     {'name': 'Test3', 'username': 'test_user3', 'password': 'PASSWORD3',
+                      'email': 'test3@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', 'type': "I"}]
+        self.assertEqual(test_list, functions.User_func.get_all(),
                          msg="List of users not found in database when they should be")
 
+    def test_create_user_1(self):
+        test_dic = {'name': 'Test4', 'username': 'test_user4', 'password': 'PASSWORD4',
+                    'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', "type": "TA"}
+        functions.User_func.Create(info=test_dic)
+        self.assertEqual(test_dic, functions.User_func.get(query='username',identity='test_user4'), msg="User not found")
+        temp_user = User.objects.get(username="test_user4")
+        temp_user.delete()
+
+    def test_create_user_2(self):
+        test_dic = {'name': 'Test4', 'username': 'test_user4', 'password': 'PASSWORD4',
+                    'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', "type": "TA"}
+        self.assertEqual(True, functions.User_func.Create(info=test_dic), msg="Operation should have been successful")
+        temp_user = User.objects.get(username="test_user4")
+        temp_user.delete()
+
+    def test_create_user_3(self):
+        test_dic = {'name': 'Test4', 'username': 'test_user4', 'password': 'PASSWORD4',
+                    'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', "type": "TA", 'skills': 'HTML'}
+        self.assertEqual(True, functions.User_func.Create(info=test_dic), msg="Operation should have been successful")
+        temp_user = User.objects.get(username="test_user4")
+        temp_user.delete()
+
+    def test_create_user_4(self):
+        test_dic = {'name': 'Test4', 'username': 'test_user4'}
+        self.assertEqual(False, functions.User_func.Create(info=test_dic), msg="Incorrect dictionary operation is should be unsuccessful")
+
+    def test_create_user_5(self):
+        test_dic = {}
+        self.assertEqual(False, functions.User_func.Create(info=test_dic),
+                         msg="Empty dictionary operation is unsuccessful")
     def test_update_user_info_1(self):
-        test_dic = {'user_id': 1, 'name': 'New-Test'}
-        new_dic = {'user_id': 1, 'name': 'New-Test', 'username': 'test_user', 'password': 'PASSWORD',
+        test_dic = {'name': 'New-Test'}
+        new_dic = {'name': 'New-Test', 'username': 'test_user', 'password': 'PASSWORD',
                    'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street'}
         functions.User_func.update_user_info(self, test_dic)
         self.assertEqual(new_dic, functions.User_func.get_user_info(self, user_id=1),
@@ -142,44 +220,6 @@ class CourseTests(TestCase):
                          msg="Should return false since course does not exist")
 
 
-class CourseSectionTests(TestCase):
-    def setUp(self):
-        self.test_course = Course(course_id="11111", course_name="Test Course", course_code=351, course_term="F")
-        self.test_course.save()
-        self.test_section = CourseSection(section_id=123, section_number=101, course=self.test_course)
-        self.test_section.save()
-
-    def tearDown(self):
-        self.test_course.delete()
-        self.test_section.delete()
-
-    def test_get_courseSection_info(self):
-        test_dic = {'section_id': '123', 'section_number': '101'}
-        test_list = [test_dic]
-        self.assertEqual(test_list, functions.CourseSection_func.get(query='section_id', identity='123'))
-
-    def test_get_courseSection_info_2(self):
-        self.assertEqual(False, functions.CourseSection_func.get(query='section_id', identity='234'))
-
-    def test_create_courseSection(self):
-        info = {"section_id": 456, "section_number": 102, "course": self.test_course}
-        self.assertTrue(functions.CourseSection_func.Create(info))
-
-    def test_create_courseSection_2(self):
-        info = {"section_number": 102, "course": self.test_course}
-        self.assertEqual(False, functions.CourseSection_func.Create(info),
-                         msg="Cannot create course section without section id")
-
-    def test_edit_courseSection(self):
-        update_info = {"section_id": 123, "section_number": 102, "course": self.test_course}
-        functions.CourseSection_func.Edit(update_info)
-        self.assertEquals(update_info, functions.CourseSection_func.get(query='section_id', identity='123'))
-
-    def test_delete_courseSection(self):
-        identity = "123"
-        self.assertTrue(functions.CourseSection_func.Delete(identity))
-
-
 class LabSectionTests(TestCase):
     def setUp(self):
         self.test_course = Course(course_id="22222", course_name="Test Lab Course", course_term="F")
@@ -237,6 +277,7 @@ class TATests(TestCase):
         temp_user.save()
         ta_1 = TA(user_id=temp_user, ta_id=1)
         ta_1.save()
+
 
     def test_get_ta_info_1(self):
         test_dic = {"user_id": 1, "ta_id": 1}
