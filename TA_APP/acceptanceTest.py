@@ -90,9 +90,22 @@ class SupervisorCreateCourseTest(unittest.TestCase):
 
 
 class SupervisorDeleteCourseTest(unittest.TestCase):
-    def __init__(self):
+    def setUp(self):
+        self.Course = Course(course_name="Chemistry 101")
+        self.Course.save()
         self.client = Client()
 
+    def validCourseDeletion(self):
+        response = self.client.post('/homepage/',{"course_name": "Chemistry 101", "status": "delete_course"})
+
+        with self.assertRaises(ObjectDoesNotExist):
+            Course.objects.get(course_name="newestuser")
+
+
+    def invalidCourseDeletion(self):
+        response = self.client.post('/homepage/', {"course_name": "SuperFunClass 101", "status": "delete_course"})
+
+        self.assertEqual(response.content, "User does not exist to be deleted")
 
 class SupervisorAssignUserToCourseTest(unittest.TestCase):
     def __init__(self):

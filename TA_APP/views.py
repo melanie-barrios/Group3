@@ -47,3 +47,11 @@ class HomePage(View):
         """request.session.clear()"""
         request.session["username"] = ""
         return redirect('/')
+
+class AccountManagement(View):
+    def get(self, request):
+        return render(request, 'accountmanagement.html')
+
+class CourseManagement(View):
+    def get(self, request):
+        return render(request, 'coursemanagement.html')
