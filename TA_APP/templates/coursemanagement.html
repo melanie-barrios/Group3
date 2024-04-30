@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/static/accountmanagementStyle.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+    <title>TA Scheduler Homepage</title>
+</head>
+<body>
+
+<header>
+    <div class="logout-container">
+        <form action="" method="post">
+            {% csrf_token %}
+            <input type="submit" name="logout-container" value="Log out" />
+        </form>
+    </div>
+    <div class="logo-3">
+        <a href="#">
+            <h3>TA Scheduler</h3>
+            <p>Universities of Wisconsin</p>
+        </a>
+    </div>
+</header>
+
+<div class="sidebar">
+    <div class="sidebar-header"></div>
+    <ul class="menu-bar">
+        <ul class="menu-bar">
+            <li><a href="{% url 'accountmanagement' %}"><span class="material-symbols-outlined">manage_accounts</span>Account Management</a></li>
+            <li><a href="#"><span class="material-symbols-outlined">folder_managed</span>Course Management</a></li>
+            <li><a href="#"><span class="material-symbols-outlined">person_search</span>View Users</a></li>
+            <li><a href="#"><span class="material-symbols-outlined">feature_search</span>View Courses</a></li>
+            <li><a href="#"><span class="material-symbols-outlined">notifications</span>Send Notifications</a></li>
+            <li><a href="#"><span class="material-symbols-outlined">edit_note</span> Edit Contact Information</a></li>
+        </ul>
+    </ul>
+</div>
+
+<div class="form-container">
+        <h2>Create Course</h2>
+
+    <table class="form-table">
+        <tr>
+            <td><label>Course ID:</label></td>
+            <td><input type="text" name="courseid"></td>
+        </tr>
+        <tr>
+            <td><label>Name:</label></td>
+            <td><input type="text" name="name"></td>
+        </tr>
+        <tr>
+            <td><label>Term:</label></td>
+            <td><input type="text" name="Term"></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="centered">
+                <button type="submit">Create Course</button>
+                {% csrf_token %}
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="form-container2">
+    <form action="#" method="post">
+        <table class="form-table">
+            <h2>Create Course Section</h2>
+            <tr>
+                <td><label>Section ID:</label></td>
+                <td><input type="text" name="sectionid"></td>
+            </tr>
+            <tr>
+                <td><label>Section Number:</label></td>
+                <td><input type="number" name="sectionnumber"></td>
+            </tr>
+            <tr>
+                <td><label>Course:</label></td>
+                <td><input type="text" name="course"></td>
+            </tr>
+            <tr>
+                <td><label>Time:</label></td>
+                <td><input type="text" name="time"></td>
+            </tr>
+            <tr>
+                <td><label>Location:</label></td>
+                <td><input type="text" name="location"></td>
+            </tr>
+            <tr>
+                <td><label>Credits:</label></td>
+                <td><input type="number" name="credits"></td>
+            </tr>
+            <tr>
+                <td><label>Instructor:</label></td>
+                <td><input type="text" name="instructor"></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="centered">
+                    <button type="submit">Submit</button>
+                          {% csrf_token %}
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<div class="form-container2">
+    <form action="#" method="post">
+        <table class="form-table">
+            <h2>Create Course Section</h2>
+            <tr>
+                <td><label>Section ID:</label></td>
+                <td><input type="text" name="sectionid"></td>
+            </tr>
+            <tr>
+                <td><label>Section Number:</label></td>
+                <td><input type="number" name="sectionnumber"></td>
+            </tr>
+            <tr>
+                <td><label>Course:</label></td>
+                <td><input type="text" name="course"></td>
+            </tr>
+            <tr>
+                <td><label>Course Section:</label></td>
+                <td><input type="text" name="coursesection"></td>
+            </tr>
+            <tr>
+                <td><label>Location:</label></td>
+                <td><input type="text" name="location"></td>
+            </tr>
+            <tr>
+                <td><label>TA:</label></td>
+                <td><input type="text" name="ta"></td>
+            </tr>
+            <tr>
+            <td><label>Type:</label></td>
+            <td>
+                <input type="checkbox" name="role" value="Discussion">Discussion
+                <input type="checkbox" name="role" value="Lab">Lab
+
+        </tr>
+            <tr>
+                <td colspan="2" class="centered">
+                    <button type="submit">Submit</button>
+                          {% csrf_token %}
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<footer>
+    &copy; 2024 Digital Dream Team, CS361. All rights reserved.
+</footer>
+
+</body>
+</html>
