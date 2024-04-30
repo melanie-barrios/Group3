@@ -129,34 +129,35 @@ class UserTests(TestCase):
         test_dic = {}
         self.assertEqual(False, functions.User_func.Create(info=test_dic),
                          msg="Empty dictionary operation is unsuccessful")
+
     def test_update_user_info_1(self):
         test_dic = {'name': 'New-Test'}
         new_dic = {'name': 'New-Test', 'username': 'test_user', 'password': 'PASSWORD',
                    'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street'}
-        functions.User_func.update_user_info(self, test_dic)
-        self.assertEqual(new_dic, functions.User_func.get_user_info(self, user_id=1),
+        functions.User_func.Edit(test_dic)
+        self.assertEqual(new_dic, functions.User_func.get(1),
                          msg="User information not updated")
 
     def test_update_user_info_2(self):
         test_dic = {'user_id': 1, 'name': 'New-Test'}
-        self.assertEqual(True, functions.User_func.update_user_info(self, info=test_dic),
+        self.assertEqual(True, functions.User_func.Edit(test_dic),
                          msg="Should return true becuase user exist")
 
     def test_update_user_info_3(self):
         test_dic = {}
-        self.assertEqual(False, functions.User_func.update_user_info(self, info=test_dic),
+        self.assertEqual(False, functions.User_func.Edit(test_dic),
                          msg="Should return false becuase input dictionary does not exist")
 
     def test_update_user_info_4(self):
         test_dic = {'user_id': 2, 'name': 'New-test'}
-        self.assertEqual(False, functions.User_func.update_user_info(self, info=test_dic),
+        self.assertEqual(False, functions.User_func.Edit(test_dic),
                          msg="Should return false becuase user does not exist")
 
     def test_delete_user_1(self):
-        self.assertEqual(True, functions.User_func.delete_user(self, user_id=1), "User should succefully delete")
+        self.assertEqual(True, functions.User_func.Delete(1), "User should succefully delete")
 
     def test_delete_user_2(self):
-        self.assertEqual(False, functions.User_func.delete_user(self, user_id=2),
+        self.assertEqual(False, functions.User_func.Delete(2),
                          "User should not exist in the database")
 
 
@@ -175,48 +176,48 @@ class CourseTests(TestCase):
 
     def test_get_course_info_1(self):
         test_dic = {'course_id': '11111', 'course_name': 'Test Course', 'course_code': 101}
-        self.assertEqual(test_dic, functions.Course_func.get_course_info(self, "11111"),
+        self.assertEqual(test_dic, functions.Course_func.get(self, "11111"),
                          msg="Course exists in the datbase should match result")
 
     def test_get_course_info_2(self):
         test_dic = {}
-        self.assertEqual(test_dic, functions.Course_func.get_course_info(self, "11112"),
+        self.assertEqual(test_dic, functions.Course_func.get(self, "11112"),
                          msg="Course does not exist result should be empty")
 
     def test_get_all_courses(self):
         test_list = [{'course_id': '11111', 'course_name': 'Test Course', 'course_code': 101},
                      {'course_id': '22222', 'course_name': 'Test Course 2', 'course_code': 102, 'instructor_id': 1}]
-        self.assertEqual(test_list, functions.Course_func.get_all_courses(), msg="Courses not showing up properly")
+        self.assertEqual(test_list, functions.Course_func.get_all(), msg="Courses not showing up properly")
 
     def test_update_course_info_1(self):
         test_dic = {'course_id': '11111', 'course_name': 'Test Course', 'course_code': 101, 'instructor_id': 1}
         update_dic = {'course_id': "11111", 'instructor_id': 1}
-        functions.Course_func.update_course_info(self, update_dic)
-        self.assertEqual(test_dic, functions.Course_func.get_course_info(self, "11111"),
+        functions.Course_func.Edit(update_dic)
+        self.assertEqual(test_dic, functions.Course_func.get(self, "11111"),
                          msg="Course should be updated with instructor")
 
     def test_update_course_info_2(self):
         test_dic = {'course_id': '11111', 'course_name': 'Test 2 Course'}
-        self.assertEqual(False, functions.Course_func.update_course_info(self, test_dic),
+        self.assertEqual(False, functions.Course_func.Edit(test_dic),
                          msg="Should return true because course exists")
 
     def test_update_course_info_3(self):
         test_dic = {'course_id': '11112', 'course_name': 'Test 2 Course'}
-        self.assertEqual(False, functions.Course_func.update_course_info(self, test_dic),
+        self.assertEqual(False, functions.Course_func.Edit(test_dic),
                          msg="Should return flase because course does not exists")
 
     def test_update_course_info_4(self):
         test_dic = {}
-        self.assertEqual(False, functions.Course_func.update_course_info(self, test_dic),
+        self.assertEqual(False, functions.Course_func.Edit(test_dic),
                          msg="Should return flase because dictionary is empty")
 
     def test_delete_course_1(self):
-        functions.Course_func.delete_course(self, course_id="11111")
-        self.assertEqual({}, functions.Course_func.delete_course(self, "11111"),
+        functions.Course_func.Delete("11111")
+        self.assertEqual({}, functions.Course_func.Delete("11111"),
                          msg="Should return nothing since course should have been deleted from database")
 
     def test_delete_course_2(self):
-        self.assertEqual(False, functions.Course_func.delete_course(self, "12345"),
+        self.assertEqual(False, functions.Course_func.Delete("12345"),
                          msg="Should return false since course does not exist")
 
 
