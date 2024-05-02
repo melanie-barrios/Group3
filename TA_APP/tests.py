@@ -30,10 +30,10 @@ class UserTests(TestCase):
 
     def setUp(self):
         self.temp = User(name="Test", username="test_user", password="PASSWORD", email="test@uwm.edu",
-                         phone_number=1234567890, address="123 1st street", type="TA")
+                         phone_number=1234567890, address="123 1st Street", type="TA")
         self.temp.save()
         self.temp3 = User(name="Test3", username="test_user3", password="PASSWORD3", email="test3@uwm.edu",
-                          phone_number=1234567890, address="123 1st street", type="I")
+                          phone_number=1234567890, address="123 1st Street", type="I")
         self.temp3.save()
 
     def tearDown(self):
@@ -95,9 +95,9 @@ class UserTests(TestCase):
 
     def test_get_all_users(self):
         test_list = [{'name': 'Test', 'username': 'test_user', 'password': 'PASSWORD',
-                      'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', 'type': "TA"},
+                      'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', 'type': "TA", 'skills': ''},
                      {'name': 'Test3', 'username': 'test_user3', 'password': 'PASSWORD3',
-                      'email': 'test3@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', 'type': "I"}]
+                      'email': 'test3@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', 'type': "I", 'skills': ''}]
         self.assertEqual(test_list, functions.User_func.get_all(self),
                          msg="List of users not found in database when they should be")
 
@@ -252,7 +252,7 @@ class CourseTests(TestCase):
         test_list = [test_dic]
         functions.Course_func.Create(self, info=test_dic)
         self.assertEqual(test_list, functions.User_func.get(self, query='course_id', identity='CS201'),
-                         msg="User not found")
+                         msg="Course not found")
         temp_user = Course.objects.get(course_id="CS201")
         temp_user.delete()
 
@@ -368,80 +368,4 @@ class LabSectionTests(TestCase):
                          msg="Should return false since course does not exist")
 
 
-class TATests(TestCase):
-    def setup(self):
-        temp_user = User(user_id=1, name="Test", username="test_user", password="PASSWORD", email="test@uwm.edu",
-                         phone_number=1234567890, address="123 1st street")
-        temp_user.save()
-        ta_1 = TA(user_id=temp_user, ta_id=1)
-        ta_1.save()
 
-    def test_get_ta_info_1(self):
-        test_dic = {"user_id": 1, "ta_id": 1}
-        self.assertEqual(test_dic, functions.TA_func.get_ta_info(self, 1),
-                         msg="Should be equal since TA is in the database")
-
-    def test_get_ta_info_2(self):
-        test_dic = {}
-        self.assertEqual(test_dic, functions.TA_func.get_ta_info(self, 2),
-                         msg="Should be equal since TA is not in the database")
-
-    def test_update_ta_info_1(self):
-        new_dic = {"user_id": 2, "ta_id": 1}
-        functions.TA_func.update_ta_info(self, new_dic)
-        self.assertEqual(new_dic, functions.TA_func.get_ta_info(self, 2),
-                         msg="Should be equal because of updating user")
-
-    def test_update_ta_info_2(self):
-        new_dic = {"user_id": 2, "ta_id": 1}
-        self.assertEqual(True, functions.TA_func.update_ta_info(self, new_dic),
-                         msg="Should be equal because user exists in database")
-
-    def test_update_ta_info_3(self):
-        new_dic = {"user_id": 2, "ta_id": 2}
-        self.assertEqual(False, functions.TA_func.update_ta_info(self, new_dic),
-                         msg="Should be equal because user does not exists in database")
-
-    def test_update_ta_info_4(self):
-        new_dic = {}
-        self.assertEqual(False, functions.TA_func.update_ta_info(self, new_dic),
-                         msg="Should be equal because dictionary is empty")
-
-    def test_delete_ta_1(self):
-        functions.TA_func.delete_ta(self, ta_id=1)
-        self.assertEqual({}, functions.TA_func.get_ta_info(self, ta_id=1),
-                         msg="Should be equal since TA exists in database and should be deleted")
-
-    def test_delete_ta_2(self):
-        self.assertEqual(False, functions.TA_func.delete_ta(self, ta_id=2),
-                         msg="Should return false since TA does not exist")
-
-
-class InstructorTests(TestCase):
-
-    def setUp(self):
-        user = User(user_id=1, name="Test", username="test_user", password="PASSWORD", email="test@uwm.edu",
-                    phone_number=1234567890, address="123 1st street")
-        user.save()
-        user2 = User(user_id=3, name="Test3", username="test_user3", password="PASSWORD3", email="test3@uwm.edu",
-                     phone_number=1234567890, address="123 1st street")
-        user2.save()
-        instructor = Instructor(user_id=user, instructor_id=1)
-        instructor.save()
-        instructor2 = Instructor(user_id=user2, instructor_id=2)
-        instructor2.save()
-
-    def test_get_instructor_info_1(self):
-        test_dic = {"user_id": 1, "instructor_id": 1}
-        self.assertEqual(test_dic, functions.Instructor_func.get_instructor_info(self, 1),
-                         msg="Should be equal since instructor is in the database")
-
-    def test_get_instructor_info_2(self):
-        test_dic = {}
-        self.assertEqual(test_dic, functions.Instructor_func.get_instructor_info(self, 3),
-                         msg="Should be equal since instructor is not in the database")
-
-    def test_get_all_instructors(self):
-        test_list = [{"user_id": 1, "instructor_id": 1}, {"user_id": 1, "instructor_id": 2}]
-        self.assertEqual(test_list, functions.Instructor_func.get_all_instructors(self),
-                         msg="Should be equal since instructors are in the database")

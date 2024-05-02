@@ -6,25 +6,31 @@ from .models import User, Course, LabSection, CourseSection
 
 class Change(ABC):
     """Create method for general creation"""
+
     @abstractmethod
     def Create(self, info: dict):
         pass
+
     """Edit method for general updating"""
+
     @abstractmethod
-    def Edit(self,info: dict):
+    def Edit(self, info: dict):
         pass
 
     @abstractmethod
-    def Delete(self,identity: str):
+    def Delete(self, identity: str):
         pass
 
 
 class Getting(ABC):
     """General method for getting based on query"""
+
     @abstractmethod
-    def get(self,query: str, identity: str):
+    def get(self, query: str, identity: str):
         pass
+
     """General method for getting all instances"""
+
     @abstractmethod
     def get_all(self):
         pass
@@ -39,6 +45,7 @@ class Login:
     Side Effects: None.
     Parameter Usage: username and password are strings representing user credentials.
     """
+
     def authenticate(self, username: str, password: str) -> bool:
         """Check username"""
         try:
@@ -54,17 +61,38 @@ class Login:
 
 
 class User_func(Change, Getting):
+    """
+    Create - Creates user based on provided data
+
+    Preconditions: Valid dictionary with correct values based on user.
+    Postconditions: User is successfully added to the database.
+    Side Effects: Adds a user to database and all locations that reference users.
+    In: info is a dictionary containing user information.
+    Out: Boolean to determine if operation was accomplished or not.
+    """
 
     def Create(self, info: dict) -> bool:
-        """
-        Create - Creates user based on provided data
+        """Check for empty dictionaries before querying info"""
+        if not bool(info):
+            return False
 
-        Preconditions: Valid dictionary with correct values based on user.
-        Postconditions: User is successfully added to the database.
-        Side Effects: Adds a user to database and all locations that reference users.
-        In: info is a dictionary containing user information.
-        Out: Boolean to determine if operation was accomplished or not.
-        """
+        """Check for empty required values before creation"""
+        if not ('username' in info and 'password' in info and 'name' in info
+                and 'email' in info and 'phone_number' in info and 'address' in info and 'type' in info):
+            return False
+
+        """Take entries from input dictionary and create a new user"""
+        if 'skills' in info:
+            """Skills is optional field for creation so check if present"""
+            user = User(username=info['username'], password=info['password'], name=info['name'],
+                        phone_number=info['phone_number'], email=info['email'], address=info['address'],
+                        type=info['type'], skills=info['skills'])
+        else:
+            user = User(username=info['username'], password=info['password'], name=info['name'],
+                        phone_number=info['phone_number'], email=info['email'], address=info['address'],
+                        type=info['type'])
+        user.save()
+        return True
 
     def Edit(self, info: dict) -> bool:
         """
@@ -77,16 +105,25 @@ class User_func(Change, Getting):
         Out: Boolean to determine if operation was accomplished or not.
         """
 
-    def Delete(self, identity: str) -> bool:
-        """
-        Delete - Deletes the user from the database.
+    """
+    Delete - Deletes the user from the database.
 
-        Preconditions: User must exist in the database.
-        Postconditions: user is removed from the database and everywhere referenced if successful.
-        Side Effects: Removed from any database tables as a foreign key.
-        In: String to locate the given user by username to delete.
-        Out: Boolean to determine if operation was accomplished or not.
-        """
+    Preconditions: User must exist in the database.
+    Postconditions: user is removed from the database and everywhere referenced if successful.
+    Side Effects: Removed from any database tables as a foreign key.
+    In: String to locate the given user by username to delete.
+    Out: Boolean to determine if operation was accomplished or not.
+    """
+    def Delete(self, identity: str) -> bool:
+        """Try and find the user"""
+        try:
+            temp_user = User.objects.get(username=identity)
+        except ObjectDoesNotExist:
+            return False
+
+        """delete the user"""
+        temp_user.delete()
+        return True
 
     def get(self, query: str, identity: str) -> list:
         """
@@ -99,29 +136,56 @@ class User_func(Change, Getting):
         Out: List of dictionaries containing the given query
         """
 
+    """
+    get_all - Retrieves all users from the database.
+
+    Preconditions: None.
+    Postconditions: Returns a list containing dictionaries of user information.
+    Side Effects: None.
+    In: None
+    Out: List of dictionaries containing all users.
+    """
     def get_all(self) -> list:
-        """
-        get_all - Retrieves all users from the database.
+        """Get all users in table"""
+        user_list = User.objects.all()
 
-        Preconditions: None.
-        Postconditions: Returns a list containing dictionaries of user information.
-        Side Effects: None.
-        In: None
-        Out: List of dictionaries containing all users.
-        """
+        """Initialize user list"""
+        return_list = []
+        """Add entries to list"""
+        for user in user_list:
+            """create user dictionary"""
+            temp_dic = {'name': user.name, 'username': user.username,
+                        'password': user.password, 'email': user.email,
+                        'phone_number': int(user.phone_number), 'address': user.address, 'type': user.type, 'skills': user.skills}
+            """add to list"""
+            return_list.append(temp_dic)
+        """return the list of users"""
+        return return_list
 
 
-class Course_func(Change,Getting):
+class Course_func(Change, Getting):
+    """
+    Create - Creates course based on provided data
+
+    Preconditions: Valid dictionary with correct values based on course.
+    Postconditions: Course is successfully added to the database.
+    Side Effects: Adds a course to database and all locations that reference courses.
+    In: info is a dictionary containing course information.
+    Out: Boolean to determine if operation was accomplished or not.
+    """
     def Create(self, info: dict) -> bool:
-        """
-        Create - Creates course based on provided data
+        """Check for empty dictionaries before querying info"""
+        if not bool(info):
+            return False
 
-        Preconditions: Valid dictionary with correct values based on course.
-        Postconditions: Course is successfully added to the database.
-        Side Effects: Adds a course to database and all locations that reference courses.
-        In: info is a dictionary containing course information.
-        Out: Boolean to determine if operation was accomplished or not.
-        """
+        """Check that required fields are present"""
+        if not ('course_id' in info and 'course_name' in info and 'course_term' in info):
+            return False
+
+        """Add course to database"""
+        course = Course(course_id=info['course_id'], course_name=info['course_name'],course_term=info['course_term'])
+        course.save()
+        return True
 
     def Edit(self, info: dict) -> bool:
         """
@@ -134,16 +198,25 @@ class Course_func(Change,Getting):
         Out: Boolean to determine if operation was accomplished or not.
         """
 
-    def Delete(self, identity: str) -> bool:
-        """
-        Delete - Deletes the Course from the database.
+    """
+    Delete - Deletes the Course from the database.
 
-        Preconditions: Course must exist in the database.
-        Postconditions: Course is removed from the database and everywhere referenced if successful.
-        Side Effects: Removed from any database tables as a foreign key.
-        In: String to locate the given Course by username to delete.
-        Out: Boolean to determine if operation was accomplished or not.
-        """
+    Preconditions: Course must exist in the database.
+    Postconditions: Course is removed from the database and everywhere referenced if successful.
+    Side Effects: Removed from any database tables as a foreign key.
+    In: String to locate the given Course by username to delete.
+    Out: Boolean to determine if operation was accomplished or not.
+    """
+    def Delete(self, identity: str) -> bool:
+        """Try and find the course"""
+        try:
+            temp_course = Course.objects.get(course_id=identity)
+        except ObjectDoesNotExist:
+            return False
+
+        """delete the course"""
+        temp_course.delete()
+        return True
 
     def get(self, query: str, identity: str) -> list:
         """
@@ -156,18 +229,35 @@ class Course_func(Change,Getting):
         Out: List of dictionaries containing the given query
         """
 
+    """
+    get_all - Retrieves all Courses from the database.
+
+    Preconditions: None.
+    Postconditions: Returns a list containing dictionaries of Course information.
+    Side Effects: None.
+    In: None
+    Out: List of dictionaries containing all Courses.
+    """
     def get_all(self) -> list:
-        """
-        get_all - Retrieves all Courses from the database.
+        """Get all courses in table"""
+        course_list = Course.objects.all()
 
-        Preconditions: None.
-        Postconditions: Returns a list containing dictionaries of Course information.
-        Side Effects: None.
-        In: None
-        Out: List of dictionaries containing all Courses.
-        """
+        """Initialize user list"""
+        return_list = []
+        """Add entries to list"""
+        for course in course_list:
+            """create user dictionary"""
+            course_sections = course.coursesection_set.all()
+            lab_sections = course.labsection_set.all()
+            for section in course_sections:
+                """Add entry to dictionary"""
+            """add to list"""
+            return_list.append(temp_dic)
+        """return the list of users"""
+        return return_list
 
-class CourseSection_func(Change,Getting):
+
+class CourseSection_func(Change, Getting):
     def Create(self, info: dict) -> bool:
         """
         Create - Creates CourseSection based on provided data
@@ -224,7 +314,7 @@ class CourseSection_func(Change,Getting):
         """
 
 
-class LabSection_func(Change,Getting):
+class LabSection_func(Change, Getting):
     def Create(self, info: dict) -> bool:
         """
         Create - Creates LabSection based on provided data
