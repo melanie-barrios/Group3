@@ -180,7 +180,7 @@ class CourseSection_func(Change, Getting):
     """
     def Create(self, info: dict) -> bool:
         # Check if input is empty
-        if not bool(info):
+        if not info:
             return False
 
         # Check if all required fields are present
@@ -336,7 +336,7 @@ class LabSection_func(Change, Getting):
     """
     def Create(self, info: dict) -> bool:
         # Check if input is empty
-        if not bool(info):
+        if not info:
             return False
 
         # Check if all required fields are present

@@ -372,6 +372,11 @@ class CourseSectionTests(TestCase):
         self.assertEqual(False, functions.CourseSection_func.Create(self, info),
                          msg="Cannot create course section that is already there")
 
+    def test_create_Course_Section_fail4(self):
+        info = {}
+        self.assertEqual(False, functions.CourseSection_func.Create(self, info),
+                         msg="Cannot create course section with an empty dictionary")
+
     def test_edit_Course_Section(self):
         update_info = {"section_id": 456, "Location": "Lubar Hall"}
         updated_info = {"section_id": 456, "section_number": 201, "course": self.temp_course.course_id,
@@ -481,6 +486,11 @@ class LabSectionTests(TestCase):
                 "course": self.temp_course, "Time": "MW 9:30AM", "Location": "EMS", "Type": "L", "ta": self.temp3}
         self.assertEqual(False, functions.LabSection_func.Create(self, info),
                          msg="Cannot create lab section that is already there")
+
+    def test_create_labSection_fail4(self):
+        info = {}
+        self.assertEqual(False, functions.LabSection_func.Create(self, info),
+                         msg="Cannot create lab section with an empty dictionary")
 
     def test_edit_labSection(self):
         update_info = {"section_id": 222, "section_number": 401}
