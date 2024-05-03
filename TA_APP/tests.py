@@ -260,7 +260,7 @@ class CourseTests(TestCase):
         test_dic = {'course_id': 'CS201', "course_name": "Test Course 201", "course_term": "Fall"}
         test_list = [test_dic]
         functions.Course_func.Create(self, info=test_dic)
-        self.assertEqual(test_list, functions.User_func.get(self, query='course_id', identity='CS201'),
+        self.assertEqual(test_list, functions.Course_func.get(self, query='course_id', identity='CS201'),
                          msg="Course not found")
         temp_user = Course.objects.get(course_id="CS201")
         temp_user.delete()
