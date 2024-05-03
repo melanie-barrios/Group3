@@ -231,6 +231,7 @@ class CourseTests(TestCase):
         self.assertEqual(test_list, functions.Course_func.get(self, query="course_id", identity="CS101"),
                          msg="Course exists in the database should match result")
 
+
     def test_get_course_info_2(self):
         test_dic = {'course_id': 'CS101', "course_name": "Test Course", "course_term": "Fall"}
         test_list = [test_dic]
