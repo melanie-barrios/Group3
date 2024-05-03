@@ -70,6 +70,7 @@ class User_func(Change, Getting):
     In: info is a dictionary containing user information.
     Out: Boolean to determine if operation was accomplished or not.
     """
+
     def Create(self, info: dict) -> bool:
         """Check for empty dictionaries before querying info"""
         if not bool(info):
@@ -106,6 +107,7 @@ class User_func(Change, Getting):
     In: info is a dictionary containing user information.
     Out: Boolean to determine if operation was accomplished or not.
     """
+
     def Edit(self, info: dict) -> bool:
         """Check is username is present"""
         if 'username' not in info:
@@ -158,6 +160,7 @@ class User_func(Change, Getting):
     In: String to locate the given user by username to delete.
     Out: Boolean to determine if operation was accomplished or not.
     """
+
     def Delete(self, identity: str) -> bool:
         """Try and find the user"""
         try:
@@ -178,6 +181,7 @@ class User_func(Change, Getting):
     In: query string field to search based off of, identity fields value to search for
     Out: List of dictionaries containing the given query
     """
+
     def get(self, query: str, identity: str) -> list:
         """Create empty lists"""
         return_list = []
@@ -207,8 +211,6 @@ class User_func(Change, Getting):
                 """find based on type"""
                 user_list = User.objects.filter(type=identity).values()
 
-        print(user_list)
-
         """Go through userlist and create format"""
         for user in user_list:
             temp_dic = {'name': user['name'], 'username': user['username'],
@@ -229,6 +231,7 @@ class User_func(Change, Getting):
     In: None
     Out: List of dictionaries containing all users.
     """
+
     def get_all(self) -> list:
         """Get all users in table"""
         user_list = User.objects.all()
@@ -258,6 +261,7 @@ class Course_func(Change, Getting):
     In: info is a dictionary containing course information.
     Out: Boolean to determine if operation was accomplished or not.
     """
+
     def Create(self, info: dict) -> bool:
         """Check for empty dictionaries before querying info"""
         if not bool(info):
@@ -276,16 +280,39 @@ class Course_func(Change, Getting):
         course.save()
         return True
 
-    def Edit(self, info: dict) -> bool:
-        """
-        Edit - Updates course information with the provided data.
+    """
+    Edit - Updates course information with the provided data.
 
-        Preconditions: Course must be authenticated and exist in the database.
-        Postconditions: Course information is updated in the database if successful.
-        Side Effects: May modify user information in the database and anywhere where Course is referenced.
-        In: info is a dictionary containing Course information.
-        Out: Boolean to determine if operation was accomplished or not.
-        """
+    Preconditions: Course must be authenticated and exist in the database.
+    Postconditions: Course information is updated in the database if successful.
+    Side Effects: May modify user information in the database and anywhere where Course is referenced.
+    In: info is a dictionary containing Course information.
+    Out: Boolean to determine if operation was accomplished or not.
+    """
+
+    def Edit(self, info: dict) -> bool:
+        """Check is course_id is present"""
+        if 'course_id' not in info:
+            return False
+
+        """Check course_id is in database"""
+        try:
+            temp_course = Course.objects.get(course_id=info['course_id'])
+        except ObjectDoesNotExist:
+            return False
+
+        """Set new course name for the user"""
+        if 'course_name' in info:
+            temp_course.course_name = info['course_name']
+            temp_course.save()
+
+        """Set new course term for the user"""
+        if 'course_term' in info:
+            temp_course.course_term = info['course_term']
+            temp_course.save()
+
+        temp_course.save()
+        return True
 
     """
     Delete - Deletes the Course from the database.
