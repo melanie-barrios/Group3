@@ -344,15 +344,16 @@ class Course_func(Change, Getting):
         Out: List of dictionaries containing the given query
         """
 
-    """
-    get_all - Retrieves all Courses from the database.
+    def get_all(self) -> list:
+        """
+        get_all - Retrieves all Courses from the database.
 
-    Preconditions: None.
-    Postconditions: Returns a list containing dictionaries of Course information.
-    Side Effects: None.
-    In: None
-    Out: List of dictionaries containing all Courses.
-    """
+        Preconditions: None.
+        Postconditions: Returns a list containing dictionaries of Course information.
+        Side Effects: None.
+        In: None
+        Out: List of dictionaries containing all Courses.
+        """
 
 
 class CourseSection_func(Change, Getting):
@@ -476,13 +477,13 @@ class CourseSection_func(Change, Getting):
             return []
 
     """
-    get_all - Retrieves all CourseSections from the database.
-
-    Preconditions: None.
-    Postconditions: Returns a list containing dictionaries of CourseSection information.
-    Side Effects: None.
-    In: None
-    Out: List of dictionaries containing all CourseSections.
+        get_all - Retrieves all CourseSections from the database.
+    
+        Preconditions: None.
+        Postconditions: Returns a list containing dictionaries of CourseSection information.
+        Side Effects: None.
+        In: None
+        Out: List of dictionaries containing all CourseSections.
     """
     def get_all(self) -> list:
         # Retrieve all course sections from the database
