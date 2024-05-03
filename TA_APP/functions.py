@@ -80,6 +80,10 @@ class User_func(Change, Getting):
                 and 'email' in info and 'phone_number' in info and 'address' in info and 'type' in info):
             return False
 
+        """Check for duplicates"""
+        if User.objects.filter(username=info['username']).exists():
+            return False
+
         """Take entries from input dictionary and create a new user"""
         if 'skills' in info:
             """Skills is optional field for creation so check if present"""
@@ -103,7 +107,47 @@ class User_func(Change, Getting):
     Out: Boolean to determine if operation was accomplished or not.
     """
     def Edit(self, info: dict) -> bool:
-        """"""
+        """Check is username is present"""
+        if 'username' not in info:
+            return False
+
+        """Check username is in database"""
+        try:
+            temp_user = User.objects.get(username=info['username'])
+        except ObjectDoesNotExist:
+            return False
+
+        """Set new password for the user"""
+        if 'password' in info:
+            temp_user.password = info['password']
+            temp_user.save()
+
+        """Set new name for the user"""
+        if 'name' in info:
+            temp_user.name = info['name']
+
+        """Set new email for the user"""
+        if 'email' in info:
+            temp_user.email = info['email']
+
+        """Set new phone number for the user"""
+        if 'phone_number' in info:
+            temp_user.phone_number = info['phone_number']
+
+        """Set new address for the user"""
+        if 'address' in info:
+            temp_user.address = info['address']
+
+        """Set new type for the user"""
+        if 'type' in info:
+            temp_user.type = info['type']
+
+        """Set new skills for the user"""
+        if 'skills' in info:
+            temp_user.skills = info['skills']
+
+        temp_user.save()
+        return True
 
     """
     Delete - Deletes the user from the database.
@@ -221,6 +265,10 @@ class Course_func(Change, Getting):
 
         """Check that required fields are present"""
         if not ('course_id' in info and 'course_name' in info and 'course_term' in info):
+            return False
+
+        """Check for duplicates"""
+        if Course.objects.filter(course_id=info['course_id']).exists():
             return False
 
         """Add course to database"""
