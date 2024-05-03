@@ -70,7 +70,6 @@ class User_func(Change, Getting):
     In: info is a dictionary containing user information.
     Out: Boolean to determine if operation was accomplished or not.
     """
-
     def Create(self, info: dict) -> bool:
         """Check for empty dictionaries before querying info"""
         if not bool(info):
@@ -94,16 +93,17 @@ class User_func(Change, Getting):
         user.save()
         return True
 
-    def Edit(self, info: dict) -> bool:
-        """
-        Edit - Updates user information with the provided data.
+    """
+    Edit - Updates user information with the provided data.
 
-        Preconditions: User must be authenticated and exist in the database.
-        Postconditions: User information is updated in the database if successful.
-        Side Effects: May modify user information in the database and anywhere where user is referenced.
-        In: info is a dictionary containing user information.
-        Out: Boolean to determine if operation was accomplished or not.
-        """
+    Preconditions: User must be authenticated and exist in the database.
+    Postconditions: User information is updated in the database if successful.
+    Side Effects: May modify user information in the database and anywhere where user is referenced.
+    In: info is a dictionary containing user information.
+    Out: Boolean to determine if operation was accomplished or not.
+    """
+    def Edit(self, info: dict) -> bool:
+        """"""
 
     """
     Delete - Deletes the user from the database.
@@ -125,16 +125,56 @@ class User_func(Change, Getting):
         temp_user.delete()
         return True
 
-    def get(self, query: str, identity: str) -> list:
-        """
-        get - Retrieves information about the user(s).
+    """
+    get - Retrieves information about the user(s).
 
-        Preconditions: User(s) must be authenticated and exist in the database.
-        Postconditions: Returns a list of dictionaries containing user information (user_id, username, email, role_id, is_active).
-        Side Effects: none
-        In: query string field to search based off of, identity fields value to search for
-        Out: List of dictionaries containing the given query
-        """
+    Preconditions: User(s) must be authenticated and exist in the database.
+    Postconditions: Returns a list of dictionaries containing user information (user_id, username, email, role_id, is_active).
+    Side Effects: none
+    In: query string field to search based off of, identity fields value to search for
+    Out: List of dictionaries containing the given query
+    """
+    def get(self, query: str, identity: str) -> list:
+        """Create empty lists"""
+        return_list = []
+        user_list = []
+
+        """Get items based on the given query"""
+        match query:
+            case "username":
+                """find based on username"""
+                user_list = User.objects.filter(username=identity).values()
+            case "password":
+                """find based on password"""
+                user_list = User.objects.filter(password=identity).values()
+            case "name":
+                """find based on name"""
+                user_list = User.objects.filter(name=identity).values()
+            case "email":
+                """find based on email"""
+                user_list = User.objects.filter(email=identity).values()
+            case "address":
+                """find based on address"""
+                user_list = User.objects.filter(address=identity).values()
+            case "phone_number":
+                """find based on phone number"""
+                user_list = User.objects.filter(phone_number=identity).values()
+            case "type":
+                """find based on type"""
+                user_list = User.objects.filter(type=identity).values()
+
+        print(user_list)
+
+        """Go through userlist and create format"""
+        for user in user_list:
+            temp_dic = {'name': user['name'], 'username': user['username'],
+                        'password': user['password'], 'email': user['email'],
+                        'phone_number': int(user['phone_number']), 'address': user['address'], 'type': user['type'],
+                        'skills': user['skills']}
+            """add to list"""
+            return_list.append(temp_dic)
+        """"""
+        return return_list
 
     """
     get_all - Retrieves all users from the database.
@@ -156,7 +196,8 @@ class User_func(Change, Getting):
             """create user dictionary"""
             temp_dic = {'name': user.name, 'username': user.username,
                         'password': user.password, 'email': user.email,
-                        'phone_number': int(user.phone_number), 'address': user.address, 'type': user.type, 'skills': user.skills}
+                        'phone_number': int(user.phone_number), 'address': user.address, 'type': user.type,
+                        'skills': user.skills}
             """add to list"""
             return_list.append(temp_dic)
         """return the list of users"""
@@ -183,7 +224,7 @@ class Course_func(Change, Getting):
             return False
 
         """Add course to database"""
-        course = Course(course_id=info['course_id'], course_name=info['course_name'],course_term=info['course_term'])
+        course = Course(course_id=info['course_id'], course_name=info['course_name'], course_term=info['course_term'])
         course.save()
         return True
 
@@ -207,6 +248,7 @@ class Course_func(Change, Getting):
     In: String to locate the given Course by username to delete.
     Out: Boolean to determine if operation was accomplished or not.
     """
+
     def Delete(self, identity: str) -> bool:
         """Try and find the course"""
         try:
@@ -238,6 +280,7 @@ class Course_func(Change, Getting):
     In: None
     Out: List of dictionaries containing all Courses.
     """
+
     def get_all(self) -> list:
         """Get all courses in table"""
         course_list = Course.objects.all()
