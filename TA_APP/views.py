@@ -52,6 +52,36 @@ class AccountManagement(View):
     def get(self, request):
         return render(request, 'accountmanagement.html')
 
+    def post(self, request):
+
+        if request.POST.get('deleteaccount') == "true":
+            try:
+
+                identity = request.POST['delusername']
+                functions.User_func.Delete(self, identity)
+                return render(request,'accountmanagement.html', {'message': 'Account Deleted Successfully'})
+            except Exception as e:
+                print(e)
+                return render(request,'accountmanagement.html', {'message': 'Account Deletion Failed', 'error': str(e)})
+        elif request.POST.get('createaccount') == "true":
+            try:
+                status = functions.User_func.Create(self, {"username": request.POST.get('createusername'), "password": request.POST.get('createpassword'), "email": request.POST.get('email'), "name": request.POST.get('name'), "phone_number": request.POST.get('phone'), "address":request.POST.get('address'), "type":request.POST.get('role')})
+                if status is False:
+                    raise Exception("Account not created")
+                return render(request, 'accountmanagement.html', {'message': 'Account Created Successfully'})
+            except Exception as e:
+                print(e)
+                return render(request, 'accountmanagement.html', {'message': 'Account Creation Failed', 'error': str(e)})
+
+        else:
+            return render(request, 'accountmanagement.html', {'message': 'No Account Function Selected'})
+
+
+
 class CourseManagement(View):
     def get(self, request):
         return render(request, 'coursemanagement.html')
+
+    def post(self, request):
+        print("HELLO")
+        pass
