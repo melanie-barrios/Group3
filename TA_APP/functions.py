@@ -425,17 +425,21 @@ class CourseSection_func(Change, Getting):
         # Check if all required fields are present
         required_fields = ['section_id', 'course', 'section_number', 'Time', 'Location', 'credits', 'instructor']
         if not all(field in info for field in required_fields):
+
             return False
 
         # Check if course section with the given section ID already exists
+
         if CourseSection.objects.filter(section_id=info['section_id']).exists():
             return False
 
         # Create and save the new course section
         course_section = CourseSection(section_id=info['section_id'], section_number=info['section_number'],
-                                       course=info['course'], Time=info['Time'], Location=info['Location'],
-                                       credits=info['credits'], instructor=info['instructor'])
+                                       course=Course.objects.get(course_name=info['course']), Time=info['Time'], Location=info['Location'],
+                                       credits=info['credits'], instructor=User.objects.get(name=info['instructor']))
+        print(course_section)
         course_section.save()
+
         return True
 
     """
