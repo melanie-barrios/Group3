@@ -83,5 +83,23 @@ class CourseManagement(View):
         return render(request, 'coursemanagement.html')
 
     def post(self, request):
-        print("HELLO")
-        pass
+
+        if request.POST.get('createcourse') == "true":
+            try:
+
+                status = functions.Course_func.Create(self, {"course_id": request.POST.get("courseid"), "course_name": request.POST.get('name'), "course_term": request.POST.get('term')})
+                if status is False:
+                    raise Exception("Course not created")
+                return render(request, 'coursemanagement.html', {'message': 'Course Created Successfully'})
+            except Exception as e:
+                return render(request, 'coursemanagement.html',{'message': 'Course Creation Failed', 'error': str(e)})
+        elif request.POST.get('createcoursesection') == "true":
+            try:
+                status = functions.CourseSection_func.Create(self, {"section_id": request.POST.get('sectionid'), "course": request.POST.get('course'), "section_number": request.POST.get('sectionnumber'), "Time": request.POST.get('time'), "Location": request.POST.get('location'), "credits": request.POST.get('credits'), "instructor": request.POST.get('instructor')})
+                if status is False:
+                    raise Exception("Course Section not created")
+                return render(request, 'coursemanagement.html', {'message': 'Course Section Created Successfully'})
+            except Exception as e:
+                return render(request, 'coursemanagement.html', {'message': 'Course Section Creation Failed', 'error': str(e)})
+        else:
+            return render(request, 'coursemanagement.html', {'message': 'No Account Function Selected'})
