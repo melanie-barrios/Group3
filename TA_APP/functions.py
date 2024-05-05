@@ -218,7 +218,7 @@ class User_func(Change, Getting):
                         'skills': user['skills']}
             """add to list"""
             return_list.append(temp_dic)
-        """"""
+
         return return_list
 
     """
@@ -260,6 +260,7 @@ class Course_func(Change, Getting):
     In: info is a dictionary containing course information.
     Out: Boolean to determine if operation was accomplished or not.
     """
+
     def Create(self, info: dict) -> bool:
         """Check for empty dictionaries before querying info"""
         if not bool(info):
@@ -333,16 +334,50 @@ class Course_func(Change, Getting):
         temp_course.delete()
         return True
 
-    def get(self, query: str, identity: str) -> list:
-        """
-        get - Retrieves information about the Course(s).
+    """
+    get - Retrieves information about the Course(s).
 
-        Preconditions: Course(s) must be authenticated and exist in the database.
-        Postconditions: Returns a list of dictionaries containing Course information.
-        Side Effects: none
-        In: query string field to search based off of, identity fields value to search for
-        Out: List of dictionaries containing the given query
-        """
+    Preconditions: Course(s) must be authenticated and exist in the database.
+    Postconditions: Returns a list of dictionaries containing Course information.
+    Side Effects: none
+    In: query string field to search based off of, identity fields value to search for
+    Out: List of dictionaries containing the given query
+    """
+    def get(self, query: str, identity: str) -> list:
+        """Create empty lists"""
+        return_list = []
+        course_list = []
+
+        """Term converter"""
+        term = {"F": "Fall", "W": "Winter", "Sp": "Spring", "Su": "Summer"}
+
+        """Get items based on the given query"""
+        match query:
+            case "course_id":
+                """find based on course_id"""
+                course_list = Course.objects.filter(course_id=identity).values()
+            case "course_name":
+                """find based on course_name"""
+                course_list = Course.objects.filter(course_name=identity).values()
+            case "course_term":
+                """find based on course_term"""
+                """Convert the key"""
+                key = [k for k, v in term.items() if v == identity]
+                course_list = Course.objects.filter(course_term=key[0]).values()
+
+        """Go through course list and create format"""
+        for course in course_list:
+            """Statement to fix issue that Django sometimes return the key or the value"""
+            if term.get(course["course_term"]) is not None:
+                temp_dic = {'course_id': course['course_id'], 'course_name': course['course_name'],
+                            'course_term': term[course['course_term']]}
+                """add to list"""
+            else:
+                temp_dic = {'course_id': course['course_id'], 'course_name': course['course_name'],
+                            'course_term': course['course_term']}
+            return_list.append(temp_dic)
+
+        return return_list
 
     """
     get_all - Retrieves all Courses from the database.
@@ -353,6 +388,22 @@ class Course_func(Change, Getting):
     In: None
     Out: List of dictionaries containing all Courses.
     """
+    def get_all(self) -> list:
+        """Get all courses in table"""
+        course_list = Course.objects.all()
+
+        """Initialize course list"""
+        return_list = []
+        """Add entries to list"""
+        for course in course_list:
+            """create course dictionary"""
+            temp_dic = {'course_id': course.course_id, 'course_name': course.course_name,
+                        'course_term': course.get_course_term_display()}
+            """add to list"""
+            return_list.append(temp_dic)
+        """return the list of courses"""
+        print(return_list)
+        return return_list
 
 
 class CourseSection_func(Change, Getting):
@@ -365,6 +416,7 @@ class CourseSection_func(Change, Getting):
         In: info is a dictionary containing CourseSection information.
         Out: Boolean to determine if operation was accomplished or not.
     """
+
     def Create(self, info: dict) -> bool:
         # Check if input is empty
         if not info:
@@ -373,17 +425,21 @@ class CourseSection_func(Change, Getting):
         # Check if all required fields are present
         required_fields = ['section_id', 'course', 'section_number', 'Time', 'Location', 'credits', 'instructor']
         if not all(field in info for field in required_fields):
+
             return False
 
         # Check if course section with the given section ID already exists
+
         if CourseSection.objects.filter(section_id=info['section_id']).exists():
             return False
 
         # Create and save the new course section
         course_section = CourseSection(section_id=info['section_id'], section_number=info['section_number'],
-                                       course=info['course'], Time=info['Time'], Location=info['Location'],
-                                       credits=info['credits'], instructor=info['instructor'])
+                                       course=Course.objects.get(course_name=info['course']), Time=info['Time'], Location=info['Location'],
+                                       credits=info['credits'], instructor=User.objects.get(name=info['instructor']))
+        print(course_section)
         course_section.save()
+
         return True
 
     """
@@ -395,6 +451,7 @@ class CourseSection_func(Change, Getting):
         In: info is a dictionary containing CourseSection information.
         Out: Boolean to determine if operation was accomplished or not.
     """
+
     def Edit(self, info: dict) -> bool:
         try:
             # Attempt to retrieve the course section from the database
@@ -425,6 +482,7 @@ class CourseSection_func(Change, Getting):
         In: String to locate the given CourseSection by section_id to delete.
         Out: Boolean to determine if operation was accomplished or not.
     """
+
     def Delete(self, identity: str) -> bool:
         try:
             # Attempt to retrieve the course section from the database
@@ -448,6 +506,7 @@ class CourseSection_func(Change, Getting):
         In: query string field to search based off of, identity fields value to search for
         Out: List of dictionaries containing the given query
     """
+
     def get(self, query: str, identity: str) -> list:
         # Check if the query is for section_id
         if query == 'section_id':
@@ -484,6 +543,7 @@ class CourseSection_func(Change, Getting):
     In: None
     Out: List of dictionaries containing all CourseSections.
     """
+
     def get_all(self) -> list:
         # Retrieve all course sections from the database
         course_sections = CourseSection.objects.all()
@@ -521,6 +581,7 @@ class LabSection_func(Change, Getting):
         In: info is a dictionary containing user information.
         Out: Boolean to determine if operation was accomplished or not.
     """
+
     def Create(self, info: dict) -> bool:
         # Check if input is empty
         if not info:
@@ -551,6 +612,7 @@ class LabSection_func(Change, Getting):
         In: info is a dictionary containing LabSection information.
         Out: Boolean to determine if operation was accomplished or not.
     """
+
     def Edit(self, info: dict) -> bool:
         try:
             # Attempt to retrieve the lab section from the database using its section_id
@@ -585,6 +647,7 @@ class LabSection_func(Change, Getting):
         In: String to locate the given LabSection by username to delete.
         Out: Boolean to determine if operation was accomplished or not.
     """
+
     def Delete(self, identity: str) -> bool:
         try:
             # Attempt to retrieve the lab section from the database using its section_id
@@ -608,6 +671,7 @@ class LabSection_func(Change, Getting):
         In: query string field to search based off of, identity fields value to search for
         Out: List of dictionaries containing the given query
     """
+
     def get(self, query: str, identity: str) -> list:
         # Check if the query is for section_id
         if query == 'section_id':
@@ -645,6 +709,7 @@ class LabSection_func(Change, Getting):
         In: None
         Out: List of dictionaries containing all LabSections.
     """
+
     def get_all(self) -> list:
         # Retrieve all lab sections from the database
         lab_sections = LabSection.objects.all()
