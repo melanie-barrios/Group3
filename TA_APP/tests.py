@@ -226,28 +226,21 @@ class CourseTests(TestCase):
         self.section2.delete()
 
     def test_get_course_info_1(self):
-        test_dic = {'course_id': 'CS101', "course_name": "Test Course", "course_term": "Fall",
-                    "Course Section 1": {"section_id": "11111", "section_number": 801, "Time": "MW 9:30AM",
-                                         "Location": "EMS", "credits": 3, "instructor": "Test3"}}
+        test_dic = {'course_id': 'CS101', "course_name": "Test Course", "course_term": "Fall"}
         test_list = [test_dic]
         self.assertEqual(test_list, functions.Course_func.get(self, query="course_id", identity="CS101"),
                          msg="Course exists in the database should match result")
 
+
     def test_get_course_info_2(self):
-        test_dic = {'course_id': 'CS101', "course_name": "Test Course", "course_term": "Fall",
-                    "Course Section 1": {"section_id": "11111", "section_number": 801, "Time": "MW 9:30AM",
-                                         "Location": "EMS", "credits": 3, "instructor": "Test3"}}
+        test_dic = {'course_id': 'CS101', "course_name": "Test Course", "course_term": "Fall"}
         test_list = [test_dic]
         self.assertEqual(test_list, functions.Course_func.get(self, query="course_name", identity="Test Course"),
                          msg="Course exists in the database should match result")
 
     def test_get_course_info_3(self):
-        test_dic = {'course_id': 'CS101', "course_name": "Test Course", "course_term": "Fall",
-                    "Course Section 1": {"section_id": "11111", "section_number": 801, "Time": "MW 9:30AM",
-                                         "Location": "EMS", "credits": 3, "instructor": "Test3"}}
-        test_dic2 = {'course_id': 'CS102', "course_name": "Test Course 2", "course_term": "Fall",
-                     "Course Section 1": {"section_id": "11112", "section_number": 801, "Time": "MW 9:30AM",
-                                          "Location": "EMS", "credits": 3, "instructor": "Test3"}}
+        test_dic = {'course_id': 'CS101', "course_name": "Test Course", "course_term": "Fall"}
+        test_dic2 = {'course_id': 'CS102', "course_name": "Test Course 2", "course_term": "Fall"}
         test_list = [test_dic, test_dic2]
         self.assertEqual(test_list, functions.Course_func.get(self, query="course_term", identity="Fall"),
                          msg="Course exists in the database should match result")
@@ -258,12 +251,8 @@ class CourseTests(TestCase):
                          msg="Course does not exist result should be empty")
 
     def test_get_all_courses(self):
-        test_dic = {'course_id': 'CS101', "course_name": "Test Course", "course_term": "Fall",
-                    "Course Section 1": {"section_id": "11111", "section_number": 801, "Time": "MW 9:30AM",
-                                         "Location": "EMS", "credits": 3, "instructor": "Test3"}}
-        test_dic2 = {'course_id': 'CS102', "course_name": "Test Course 2", "course_term": "Fall",
-                     "Course Section 1": {"section_id": "11112", "section_number": 801, "Time": "MW 9:30AM",
-                                          "Location": "EMS", "credits": 3, "instructor": "Test3"}}
+        test_dic = {'course_id': 'CS101', "course_name": "Test Course", "course_term": "Fall"}
+        test_dic2 = {'course_id': 'CS102', "course_name": "Test Course 2", "course_term": "Fall"}
         test_list = [test_dic, test_dic2]
         self.assertEqual(test_list, functions.Course_func.get_all(self), msg="Courses not showing up properly")
 
@@ -271,7 +260,7 @@ class CourseTests(TestCase):
         test_dic = {'course_id': 'CS201', "course_name": "Test Course 201", "course_term": "Fall"}
         test_list = [test_dic]
         functions.Course_func.Create(self, info=test_dic)
-        self.assertEqual(test_list, functions.User_func.get(self, query='course_id', identity='CS201'),
+        self.assertEqual(test_list, functions.Course_func.get(self, query='course_id', identity='CS201'),
                          msg="Course not found")
         temp_user = Course.objects.get(course_id="CS201")
         temp_user.delete()
@@ -300,9 +289,7 @@ class CourseTests(TestCase):
 
     def test_edit_course_info_1(self):
         test_dic = {'course_id': 'CS101', "course_term": "Spring"}
-        updated_dic = {'course_id': 'CS101', "course_name": "Test Course", "course_term": "Spring",
-                       "Course Section 1": {"section_id": "11111", "section_number": 801, "Time": "MW 9:30AM",
-                                            "Location": "EMS", "credits": 3, "instructor": "Test3"}}
+        updated_dic = {'course_id': 'CS101', "course_name": "Test Course", "course_term": "Spring"}
         updated_list = [updated_dic]
         functions.Course_func.Edit(self, info=test_dic)
         self.assertEqual(updated_list, functions.Course_func.get(self, query="course_id", identity="CS101"),
@@ -310,9 +297,7 @@ class CourseTests(TestCase):
 
     def test_edit_course_info_2(self):
         test_dic = {'course_id': 'CS101', "course_name": "Test course 200", "course_term": "Spring"}
-        updated_dic = {'course_id': 'CS101', "course_name": "Test course 200", "course_term": "Spring",
-                       "Course Section 1": {"section_id": "11111", "section_number": 801, "Time": "MW 9:30AM",
-                                            "Location": "EMS", "credits": 3, "instructor": "Test3"}}
+        updated_dic = {'course_id': 'CS101', "course_name": "Test course 200", "course_term": "Spring"}
         updated_list = [updated_dic]
         functions.Course_func.Edit(self, info=test_dic)
         self.assertEqual(updated_list, functions.Course_func.get(self, query="course_id", identity="CS101"),
