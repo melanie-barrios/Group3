@@ -50,8 +50,48 @@ PBI: As a supervisor I would like to create accounts for staff so that I can ass
 """
 
 class SupervisorCreateAccountTest(unittest.TestCase):
-    def __init__(self):
+    def setUp(self):
         self.client = Client()
+
+    def test_validAccountCreation(self):
+        # Test creating a valid account and expect a redirection
+        response = self.client.post('/admin/create_account/', {
+            "username": "newTA",
+            "password": "securePassword123",
+            "role": "TA",
+            "email": "newTA@university.edu"
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/admin/account_list/')
+        User.objects.get(username="newTA").delete()
+
+    def test_invalidAccountCreation(self):
+        # Test account creation with missing username
+        response = self.client.post('/admin/create_account/', {
+            "username": "",
+            "password": "securePassword123",
+            "role": "TA"
+        })
+        content = response.content.decode('utf-8')
+        self.assertIn("Required fields are missing", content, "Failed to detect missing username")
+
+    def test_duplicateAccountCreation(self):
+
+        User.objects.create(username="duplicateUser", password="password123", email="duplicate@university.edu")
+        response = self.client.post('/admin/create_account/', {
+            "username": "duplicateUser",
+            "password": "newPassword123",
+            "role": "TA",
+            "email": "duplicate@university.edu"
+        })
+        content = response.content.decode('utf-8')
+        self.assertIn("An account with this username already exists", content, "Failed to detect duplicate account")
+        User.objects.filter(username="duplicateUser").delete()
+
+    def tearDown(self):
+
+        User.objects.filter(username="newTA").delete()
+        User.objects.filter(username="duplicateUser").delete()
 
 
 
