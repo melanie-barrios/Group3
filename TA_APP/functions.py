@@ -42,7 +42,7 @@ class Login:
     Preconditions: None.
     Postconditions: Returns True if authentication is successful, False otherwise.
     Side Effects: None.
-    Parameter Usage: username and password are strings representing user credentials.
+    In: username and password are strings representing user credentials.
     """
 
     def authenticate(self, username: str, password: str) -> bool:
@@ -66,8 +66,8 @@ class User_func(Change, Getting):
     Preconditions: Valid dictionary with correct values based on user.
     Postconditions: User is successfully added to the database.
     Side Effects: Adds a user to database and all locations that reference users.
-    In: info is a dictionary containing user information.
-    Out: Boolean to determine if operation was accomplished or not.
+    In: info - is a dictionary containing user information.
+    Out: Boolean - to determine if operation was accomplished or not.
     """
 
     def Create(self, info: dict) -> bool:
@@ -103,8 +103,8 @@ class User_func(Change, Getting):
     Preconditions: User must be authenticated and exist in the database.
     Postconditions: User information is updated in the database if successful.
     Side Effects: May modify user information in the database and anywhere where user is referenced.
-    In: info is a dictionary containing user information.
-    Out: Boolean to determine if operation was accomplished or not.
+    In: info - is a dictionary containing user information.
+    Out: Boolean - to determine if operation was accomplished or not.
     """
 
     def Edit(self, info: dict) -> bool:
@@ -154,9 +154,9 @@ class User_func(Change, Getting):
     Delete - Deletes the user from the database.
 
     Preconditions: User must exist in the database.
-    Postconditions: user is removed from the database and everywhere referenced if successful.
+    Postconditions: user is removed from the database and everywhere referenced if successful (username,password,etc..).
     Side Effects: Removed from any database tables as a foreign key.
-    In: String to locate the given user by username to delete.
+    In: identity - String to locate the given user by username to delete.
     Out: Boolean to determine if operation was accomplished or not.
     """
 
@@ -175,10 +175,10 @@ class User_func(Change, Getting):
     get - Retrieves information about the user(s).
 
     Preconditions: User(s) must be authenticated and exist in the database.
-    Postconditions: Returns a list of dictionaries containing user information (user_id, username, email, role_id, is_active).
+    Postconditions: Returns a list of dictionaries containing user information (username,password,etc..).
     Side Effects: none
-    In: query string field to search based off of, identity fields value to search for
-    Out: List of dictionaries containing the given query
+    In: query - string field to search based off of, identity - string fields value to search for
+    Out: List - of dictionaries containing the given query
     """
 
     def get(self, query: str, identity: str) -> list:
@@ -224,7 +224,7 @@ class User_func(Change, Getting):
     """
     get_all - Retrieves all users from the database.
 
-    Preconditions: None.
+    Preconditions: None. Will return empty if there is nothing in database.
     Postconditions: Returns a list containing dictionaries of user information.
     Side Effects: None.
     In: None
@@ -319,7 +319,7 @@ class Course_func(Change, Getting):
     Preconditions: Course must exist in the database.
     Postconditions: Course is removed from the database and everywhere referenced if successful.
     Side Effects: Removed from any database tables as a foreign key.
-    In: String to locate the given Course by username to delete.
+    In: String to locate the given Course by course_id to delete.
     Out: Boolean to determine if operation was accomplished or not.
     """
 
@@ -338,7 +338,7 @@ class Course_func(Change, Getting):
     get - Retrieves information about the Course(s).
 
     Preconditions: Course(s) must be authenticated and exist in the database.
-    Postconditions: Returns a list of dictionaries containing Course information.
+    Postconditions: Returns a list of dictionaries containing Course information. (Course_id, Course_name, etc..)
     Side Effects: none
     In: query string field to search based off of, identity fields value to search for
     Out: List of dictionaries containing the given query
@@ -383,7 +383,7 @@ class Course_func(Change, Getting):
     get_all - Retrieves all Courses from the database.
 
     Preconditions: None.
-    Postconditions: Returns a list containing dictionaries of Course information.
+    Postconditions: Returns a list containing dictionaries of Course information. (Course_id, Course_name, etc..)
     Side Effects: None.
     In: None
     Out: List of dictionaries containing all Courses.
@@ -408,15 +408,14 @@ class Course_func(Change, Getting):
 
 class CourseSection_func(Change, Getting):
     """
-        Create - Creates CourseSection based on provided data
+    Create - Creates CourseSection based on provided data
 
-        Preconditions: Valid dictionary with correct values based on CourseSection.
-        Postconditions: CourseSection is successfully added to the database.
-        Side Effects: Adds a CourseSection to database and all locations that reference CourseSections.
-        In: info is a dictionary containing CourseSection information.
-        Out: Boolean to determine if operation was accomplished or not.
+    Preconditions: Valid dictionary with correct values based on CourseSection.
+    Postconditions: CourseSection is successfully added to the database.
+    Side Effects: Adds a CourseSection to database and all locations that reference CourseSections.
+    In: info is a dictionary containing CourseSection information.
+    Out: Boolean to determine if operation was accomplished or not.
     """
-
     def Create(self, info: dict) -> bool:
         # Check if input is empty
         if not info:
@@ -443,13 +442,13 @@ class CourseSection_func(Change, Getting):
         return True
 
     """
-        Edit - Updates CourseSection information with the provided data.
+    Edit - Updates CourseSection information with the provided data.
 
-        Preconditions: CourseSection must be authenticated and exist in the database.
-        Postconditions: CourseSection information is updated in the database if successful.
-        Side Effects: May modify user information in the database and anywhere where CourseSection is referenced.
-        In: info is a dictionary containing CourseSection information.
-        Out: Boolean to determine if operation was accomplished or not.
+    Preconditions: CourseSection must be authenticated and exist in the database.
+    Postconditions: CourseSection information is updated in the database if successful.
+    Side Effects: May modify user information in the database and anywhere where CourseSection is referenced.
+    In: info is a dictionary containing CourseSection information.
+    Out: Boolean to determine if operation was accomplished or not.
     """
 
     def Edit(self, info: dict) -> bool:
@@ -474,13 +473,13 @@ class CourseSection_func(Change, Getting):
             return False
 
     """
-        Delete - Deletes the CourseSection from the database.
+    Delete - Deletes the CourseSection from the database.
 
-        Preconditions: CourseSection must exist in the database.
-        Postconditions: CourseSection is removed from the database and everywhere referenced if successful.
-        Side Effects: Removed from any database tables as a foreign key.
-        In: String to locate the given CourseSection by section_id to delete.
-        Out: Boolean to determine if operation was accomplished or not.
+    Preconditions: CourseSection must exist in the database.
+    Postconditions: CourseSection is removed from the database and everywhere referenced if successful.
+    Side Effects: Removed from any database tables as a foreign key.
+    In: String to locate the given CourseSection by section_id to delete.
+    Out: Boolean to determine if operation was accomplished or not.
     """
 
     def Delete(self, identity: str) -> bool:
@@ -498,13 +497,13 @@ class CourseSection_func(Change, Getting):
             return False
 
     """
-        get - Retrieves information about the CourseSection(s).
+    get - Retrieves information about the CourseSection(s).
 
-        Preconditions: CourseSection(s) must be authenticated and exist in the database.
-        Postconditions: Returns a list of dictionaries containing CourseSection information.
-        Side Effects: none
-        In: query string field to search based off of, identity fields value to search for
-        Out: List of dictionaries containing the given query
+    Preconditions: CourseSection(s) must be authenticated and exist in the database.
+    Postconditions: Returns a list of dictionaries containing CourseSection information. (Section_id, location, etc..)
+    Side Effects: none
+    In: query string field to search based off of, identity fields value to search for
+    Out: List of dictionaries containing the given query
     """
 
     def get(self, query: str, identity: str) -> list:
@@ -538,7 +537,7 @@ class CourseSection_func(Change, Getting):
     get_all - Retrieves all CourseSections from the database.
 
     Preconditions: None.
-    Postconditions: Returns a list containing dictionaries of CourseSection information.
+    Postconditions: Returns a list containing dictionaries of CourseSection information. (Section_id, location, etc..)
     Side Effects: None.
     In: None
     Out: List of dictionaries containing all CourseSections.
@@ -573,13 +572,13 @@ class CourseSection_func(Change, Getting):
 
 class LabSection_func(Change, Getting):
     """
-        Create - Creates LabSection based on provided data
+    Create - Creates LabSection based on provided data
 
-        Preconditions: Valid dictionary with correct values based on LabSection.
-        Postconditions: LabSection is successfully added to the database.
-        Side Effects: Adds a LabSection to database and all locations that reference LabSections.
-        In: info is a dictionary containing user information.
-        Out: Boolean to determine if operation was accomplished or not.
+    Preconditions: Valid dictionary with correct values based on LabSection.
+    Postconditions: LabSection is successfully added to the database.
+    Side Effects: Adds a LabSection to database and all locations that reference LabSections.
+    In: info is a dictionary containing user information.
+    Out: Boolean to determine if operation was accomplished or not.
     """
 
     def Create(self, info: dict) -> bool:
@@ -604,13 +603,13 @@ class LabSection_func(Change, Getting):
         return True
 
     """
-        Edit - Updates LabSection information with the provided data.
+    Edit - Updates LabSection information with the provided data.
 
-        Preconditions: LabSection must be authenticated and exist in the database.
-        Postconditions: LabSection information is updated in the database if successful.
-        Side Effects: May modify user information in the database and anywhere where LabSection is referenced.
-        In: info is a dictionary containing LabSection information.
-        Out: Boolean to determine if operation was accomplished or not.
+    Preconditions: LabSection must be authenticated and exist in the database.
+    Postconditions: LabSection information is updated in the database if successful.
+    Side Effects: May modify user information in the database and anywhere where LabSection is referenced.
+    In: info is a dictionary containing LabSection information.
+    Out: Boolean to determine if operation was accomplished or not.
     """
 
     def Edit(self, info: dict) -> bool:
@@ -639,13 +638,13 @@ class LabSection_func(Change, Getting):
             return False
 
     """
-        Delete - Deletes the LabSection from the database.
+    Delete - Deletes the LabSection from the database.
 
-        Preconditions: LabSection must exist in the database.
-        Postconditions: LabSection is removed from the database and everywhere referenced if successful.
-        Side Effects: Removed from any database tables as a foreign key.
-        In: String to locate the given LabSection by username to delete.
-        Out: Boolean to determine if operation was accomplished or not.
+    Preconditions: LabSection must exist in the database.
+    Postconditions: LabSection is removed from the database and everywhere referenced if successful.
+    Side Effects: Removed from any database tables as a foreign key.
+    In: String to locate the given LabSection by section_id to delete.
+    Out: Boolean to determine if operation was accomplished or not.
     """
 
     def Delete(self, identity: str) -> bool:
@@ -663,13 +662,13 @@ class LabSection_func(Change, Getting):
             return False
 
     """
-        get - Retrieves information about the LabSection(s).
+    get - Retrieves information about the LabSection(s).
     
-        Preconditions: LabSection(s) must be authenticated and exist in the database.
-        Postconditions: Returns a list of dictionaries containing LabSection information.
-        Side Effects: none
-        In: query string field to search based off of, identity fields value to search for
-        Out: List of dictionaries containing the given query
+    Preconditions: LabSection(s) must be authenticated and exist in the database.
+    Postconditions: Returns a list of dictionaries containing LabSection information. (Section_id, location, etc..)
+    Side Effects: none
+    In: query string field to search based off of, identity fields value to search for
+    Out: List of dictionaries containing the given query
     """
 
     def get(self, query: str, identity: str) -> list:
@@ -701,13 +700,13 @@ class LabSection_func(Change, Getting):
             return []
 
     """
-        get_all - Retrieves all LabSections from the database.
+    get_all - Retrieves all LabSections from the database.
 
-        Preconditions: None.
-        Postconditions: Returns a list containing dictionaries of LabSection information.
-        Side Effects: None.
-        In: None
-        Out: List of dictionaries containing all LabSections.
+    Preconditions: None.
+    Postconditions: Returns a list containing dictionaries of LabSection information. (Section_id, location, etc..)
+    Side Effects: None.
+    In: None
+    Out: List of dictionaries containing all LabSections.
     """
 
     def get_all(self) -> list:
