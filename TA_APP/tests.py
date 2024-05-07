@@ -375,9 +375,9 @@ class CourseSectionTests(TestCase):
         self.assertEqual(expected_list, functions.CourseSection_func.get_all(self))
 
     def test_create_Course_Section(self):
-        info = {"section_id": 345, "section_number": 300, "course": self.temp_course, "Time": "MW 5:30PM",
-                "Location": "EMS", "credits": 3, "instructor": self.temp}
-        self.assertTrue(self, functions.CourseSection_func.Create(self, info))
+        info = {"section_id": 345, "section_number": 300, "course": self.temp_course.course_id, "Time": "MW 5:30PM",
+                "Location": "EMS", "credits": 3, "instructor": self.temp.name}
+        self.assertTrue(functions.CourseSection_func.Create(self, info))
 
     def test_create_Course_Section_fail(self):
         info = {"section_number": 201, "course": self.temp_course, "Time": "MW 9:30AM",
