@@ -7,9 +7,9 @@ import TA_APP.functions as functions
 class Login(View):
     def get(self, request):
         """Add test supervisor"""
-        """test = User(name="Test", username="test_user5", password="PASSWORD5", email="test@uwm.edu",
-                    phone_number=1234567890, address="123 1st street",type="S")
-        test.save()"""
+        # test = User(name="Test", username="test_user5", password="PASSWORD5", email="test@uwm.edu",
+        #             phone_number=1234567890, address="123 1st street",type="S")
+        # test.save()
         return render(request, 'login.html',{})
 
     def post(self, request):
@@ -51,6 +51,15 @@ class AccountManagement(View):
     def get(self, request):
         return render(request, 'accountmanagement.html')
 
+
 class CourseManagement(View):
     def get(self, request):
         return render(request, 'coursemanagement.html')
+
+class ViewCourses(View):
+    def get(self, request):
+        return render(request, 'viewcourses.html')
+
+class ViewUsers(View):
+    def get(self, request):
+        return render(request, 'viewusers.html')

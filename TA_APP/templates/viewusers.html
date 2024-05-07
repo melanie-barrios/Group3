@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="/static/accountmanagementStyle.css">
+    <link rel="stylesheet" type="text/css" href="/static/viewusersStyle.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
@@ -41,68 +41,29 @@
 </div>
 
 <div class="form-container">
-        <h2>Create Account</h2>
-
+    <h1>Users</h1>
     <table class="form-table">
-        <tr>
-            <td><label>Username:</label></td>
-            <td><input type="text" name="username"></td>
-        </tr>
-        <tr>
-            <td><label>Password:</label></td>
-            <td><input type="text" name="password"></td>
-        </tr>
-        <tr>
-            <td><label>Name:</label></td>
-            <td><input type="text" name="name"></td>
-        </tr>
-        <tr>
-            <td><label>Email:</label></td>
-            <td><input type="email" name="email"></td>
-        </tr>
-        <tr>
-            <td><label>Phone:</label></td>
-            <td><input type="tel" name="phone"></td>
-        </tr>
-        <tr>
-            <td><label>Address:</label></td>
-            <td><input type="text" name="address"></td>
-        </tr>
-        <tr>
-            <td><label>Role:</label></td>
-            <td>
-                <input type="checkbox" name="role" value="Supervisor">Supervisor
-                <input type="checkbox" name="role" value="Instructor">Instructor
-                <input type="checkbox" name="role" value="TA">TA
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2" class="centered">
-                <button type="Create Account">Submit</button>
-                {% csrf_token %}
-            </td>
-        </tr>
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role ID</th>
+                <th>Is Active</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.user_id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.role_id }}</td>
+                <td>{{ user.is_active }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
-</div>
-
-<div class="form-container2">
-    <form action="#" method="post">
-        <table class="form-table">
-            <h2>Delete Account</h2>
-            <tr>
-                <td><label>Username:</label></td>
-                <td><label>
-                    <input type="text" name="username">
-                </label></td>
-            </tr>
-            <tr>
-                <td colspan="2" class="centered">
-                    <button type="Delete Account">Submit</button>
-                          {% csrf_token %}
-                </td>
-            </tr>
-        </table>
-    </form>
 </div>
 
 <footer>
