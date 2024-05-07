@@ -52,6 +52,7 @@ class AccountManagement(View):
         return render(request, 'accountmanagement.html')
 
 
+
 class CourseManagement(View):
     def get(self, request):
         return render(request, 'coursemanagement.html')
