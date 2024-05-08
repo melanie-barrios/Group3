@@ -77,7 +77,7 @@ class User_func(Change, Getting):
 
         """Check for empty required values before creation"""
         if not ('username' in info and 'password' in info and 'name' in info
-                and 'email' in info and 'phone_number' in info and 'address' in info and 'type' in info):
+                and 'email' in info and 'phone_number' in info and 'address' in info and 'type' in info and 'skills' in info):
             return False
 
         """Check for duplicates"""
@@ -90,6 +90,7 @@ class User_func(Change, Getting):
             user = User(username=info['username'], password=info['password'], name=info['name'],
                         phone_number=info['phone_number'], email=info['email'], address=info['address'],
                         type=info['type'], skills=info['skills'])
+
         else:
             user = User(username=info['username'], password=info['password'], name=info['name'],
                         phone_number=info['phone_number'], email=info['email'], address=info['address'],
@@ -424,17 +425,21 @@ class CourseSection_func(Change, Getting):
         # Check if all required fields are present
         required_fields = ['section_id', 'course', 'section_number', 'Time', 'Location', 'credits', 'instructor']
         if not all(field in info for field in required_fields):
+
             return False
 
         # Check if course section with the given section ID already exists
+
         if CourseSection.objects.filter(section_id=info['section_id']).exists():
             return False
 
         # Create and save the new course section
         course_section = CourseSection(section_id=info['section_id'], section_number=info['section_number'],
-                                       course=info['course'], Time=info['Time'], Location=info['Location'],
-                                       credits=info['credits'], instructor=info['instructor'])
+                                       course=Course.objects.get(course_name=info['course']), Time=info['Time'], Location=info['Location'],
+                                       credits=info['credits'], instructor=User.objects.get(name=info['instructor']))
+        print(course_section)
         course_section.save()
+
         return True
 
     """

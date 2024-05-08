@@ -13,7 +13,7 @@
 
 <header>
     <div class="logout-container">
-        <form action="" method="post">
+        <form action="/" method="post">
             {% csrf_token %}
             <input type="submit" name="logout-container" value="Log out" />
         </form>
@@ -42,7 +42,7 @@
 
 <div class="form-container">
         <h2>Create Course</h2>
-
+<form action="/course-management/" method="post">
     <table class="form-table">
         <tr>
             <td><label>Course ID:</label></td>
@@ -54,19 +54,20 @@
         </tr>
         <tr>
             <td><label>Term:</label></td>
-            <td><input type="text" name="Term"></td>
+            <td><input type="text" name="term"></td>
         </tr>
         <tr>
             <td colspan="2" class="centered">
-                <button type="submit">Create Course</button>
+                <button type="submit" name="createcourse" value="true">Create Course</button>
                 {% csrf_token %}
             </td>
         </tr>
     </table>
+    </form>
 </div>
 
 <div class="form-container2">
-    <form action="#" method="post">
+    <form action="/course-management/" method="post">
         <table class="form-table">
             <h2>Create Course Section</h2>
             <tr>
@@ -99,7 +100,7 @@
             </tr>
             <tr>
                 <td colspan="2" class="centered">
-                    <button type="submit">Submit</button>
+                    <button type="submit" name="createcoursesection" value="true">Submit</button>
                           {% csrf_token %}
                 </td>
             </tr>
