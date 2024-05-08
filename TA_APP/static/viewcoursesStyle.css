@@ -93,6 +93,7 @@
             font-weight: 300;
         }
 
+
         .form-container {
             margin: 20px auto;
             border-collapse: collapse;
@@ -103,6 +104,8 @@
             font-family: 'Oswald', sans-serif;
             text-align: center;
             padding: 20px;
+
+
         }
 
         .form-table td {
@@ -366,12 +369,10 @@
             align-items: center;
         }
 
-
         .sidebar ul li a .material-symbols-outlined {
             font-size: 24px;
             margin-right: 10px;
         }
-
 
         footer {
             text-align: center;

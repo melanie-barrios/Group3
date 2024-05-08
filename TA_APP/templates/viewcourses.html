@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="/static/viewusersStyle.css">
+    <link rel="stylesheet" type="text/css" href="/static/viewcoursesStyle.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
@@ -40,92 +40,92 @@
     </ul>
 </div>
 
-<div class="form-container">
-    <h1>Courses</h1>
-    <table class="form-table">
-        <thead>
-            <tr>
-                <th>Course ID</th>
-                <th>Course Name</th>
-                <th>Term</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for course in courses %}
-            <tr>
-                <td>{{ course.course_id }}</td>
-                <td>{{ course.course_name }}</td>
-                <td>{{ course.course_term }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+
+<div class="content">
+    <div class="form-container">
+        <h1>Courses</h1>
+        <table class="form-table">
+            <thead>
+                <tr>
+                    <th>Course ID</th>
+                    <th>Course Name</th>
+                    <th>Term</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for course in courses %}
+                <tr>
+                    <td>{{ course.course_id }}</td>
+                    <td>{{ course.course_name }}</td>
+                    <td>{{ course.course_term }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="form-container">
+        <h1>Course Sections</h1>
+        <table class="form-table">
+            <thead>
+                <tr>
+                    <th>Section ID</th>
+                    <th>Section Number</th>
+                    <th>Time</th>
+                    <th>Location</th>
+                    <th>Credit</th>
+                    <th>Course</th>
+                    <th>Instructor</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for section in course_sections %}
+                <tr>
+                    <td>{{ section.section_id }}</td>
+                    <td>{{ section.section_number }}</td>
+                    <td>{{ section.Time }}</td>
+                    <td>{{ section.Location }}</td>
+                    <td>{{ section.credits }}</td>
+                    <td>{{ section.course }}</td>
+                    <td>{{ section.instructor }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="form-container">
+        <h1>Lab Sections</h1>
+        <table class="form-table">
+            <thead>
+                <tr>
+                    <th>Section ID</th>
+                    <th>Section Number</th>
+                    <th>Time</th>
+                    <th>Location</th>
+                    <th>Course</th>
+                    <th>Type</th>
+                    <th>Course Section</th>
+                    <th>TA</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lab_section in lab_sections %}
+                <tr>
+                    <td>{{ lab_section.section_id }}</td>
+                    <td>{{ lab_section.section_number }}</td>
+                    <td>{{ lab_section.Time }}</td>
+                    <td>{{ lab_section.Location }}</td>
+                    <td>{{ lab_section.course }}</td>
+                    <td>{{ lab_section.Type }}</td>
+                    <td>{{ lab_section.course_section }}</td>
+                    <td>{{ lab_section.ta }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
-
-
-<div class="form-container">
-    <h1>Course Sections</h1>
-    <table class="form-table">
-        <thead>
-            <tr>
-                <th>Section ID</th>
-                <th>Section Number</th>
-                <th>Time</th>
-                <th>Location</th>
-                <th>Credit</th>
-                <th>Course</th>
-                <th>Instructor</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for course in courses %}
-            <tr>
-                <td>{{ course.section_id }}</td>
-                <td>{{ course.section_number }}</td>
-                <td>{{ course.Time }}</td>
-                <td>{{ course.Location }}</td>
-                <td>{{ course.Course }}</td>
-                <td>{{ course.Instructors }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-
-
-<div class="form-container">
-    <h1>Lab Sections</h1>
-    <table class="form-table">
-        <thead>
-            <tr>
-                <th>Section ID</th>
-                <th>Section Number</th>
-                <th>Time</th>
-                <th>Location</th>
-                <th>Course</th>
-                <th>Type</th>
-                <th>Course Section</th>
-                <th>TA</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for course in courses %}
-            <tr>
-                <td>{{ course.section_id }}</td>
-                <td>{{ course.section_number }}</td>
-                <td>{{ course.Time }}</td>
-                <td>{{ course.Location }}</td>
-                <td>{{ course.Course }}</td>
-                <td>{{ course.course_section }}</td>
-                <td>{{ course.ta }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-
-</body>
-</html>
 
 <footer>
     &copy; 2024 Digital Dream Team, CS361. All rights reserved.

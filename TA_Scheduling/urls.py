@@ -18,7 +18,6 @@ from django.contrib import admin
 from django.urls import path
 from TA_APP.views import Login, HomePage, AccountManagement, CourseManagement, ViewUsers, ViewUsers, ViewCourses
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',Login.as_view()),

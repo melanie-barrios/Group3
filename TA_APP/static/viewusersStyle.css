@@ -35,7 +35,7 @@
             display: inline-block;
             padding: 10px 20px;
             border-radius: 20px;
-            background-color: #e74c3c; /* Ensure this color is correct and not being overridden */
+            background-color: #e74c3c; 
             font-size: 20px;
             font-family: 'Oswald', sans-serif;
         }
@@ -46,7 +46,7 @@
             left: 0;
             height: 100%;
             width: 250px;
-            padding: 0; /* Remove padding or adjust as needed */
+            padding: 0; 
             background: var(--sidebar-color);
             transition: var(--tran-05);
             z-index: 100;
@@ -65,7 +65,7 @@
         }
 
         .sidebar ul li {
-            padding: 5px 30px; /* Reduced vertical padding from 10px to 5px */
+            padding: 5px 30px; 
         }
 
         .sidebar ul li a {
@@ -141,7 +141,7 @@
             box-sizing: border-box;
             flex-direction: column;
             align-items: center;
-            justify-content: center; /* Center vertically */
+            justify-content: center; 
             background-color: #e4e9f7;
         }
 
@@ -153,10 +153,10 @@
             font-weight: bold;
             width: 100%;
             text-align: center;
-            position: fixed; /* Fixed position to stick to the top */
+            position: fixed; 
             top: 0; /* Place it at the top */
             z-index: 999; /* Ensure it's above other content */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12); /* Adjust box shadow */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12); 
         }
         header .logout-container input[type="submit"] {
             position: absolute;
@@ -169,7 +169,7 @@
             display: inline-block;
             padding: 10px 20px;
             border-radius: 20px;
-            background-color: #e74c3c; /* Ensure this color is correct and not being overridden */
+            background-color: #e74c3c; 
             font-size: 20px;
             font-family: 'Oswald', sans-serif;
         }
@@ -358,7 +358,7 @@
         }
 
         .sidebar ul li {
-            padding: 5px 30px; /* Reduced vertical padding from 10px to 5px */
+            padding: 5px 30px; 
         }
 
         .sidebar ul li a {

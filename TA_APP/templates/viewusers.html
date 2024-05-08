@@ -11,8 +11,6 @@
 </head>
 <body>
 
-
-
 <header>
     <div class="logout-container">
         <form action="" method="post">
@@ -42,30 +40,32 @@
     </ul>
 </div>
 
-<div class="form-container">
-    <h1>Users</h1>
-    <table class="form-table">
-        <thead>
-            <tr>
-                <th>User ID</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Role ID</th>
-                <th>Is Active</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
-            <tr>
-                <td>{{ user.user_id }}</td>
-                <td>{{ user.username }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.role_id }}</td>
-                <td>{{ user.is_active }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="content">
+    <div class="form-container">
+        <h1>Users</h1>
+        <table class="form-table">
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role ID</th>
+                    <th>Is Active</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.user_id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.role_id }}</td>
+                    <td>{{ user.is_active }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <footer>
