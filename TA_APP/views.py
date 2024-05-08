@@ -104,3 +104,11 @@ class CourseManagement(View):
                 return render(request, 'coursemanagement.html', {'message': 'Course Section Creation Failed', 'error': str(e)})
         else:
             return render(request, 'coursemanagement.html', {'message': 'No Account Function Selected'})
+
+class ViewCourses(View):
+    def get(self, request):
+        return render(request, 'viewcourses.html')
+
+class ViewUsers(View):
+    def get(self, request):
+        return render(request, 'viewusers.html')
