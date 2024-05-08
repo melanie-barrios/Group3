@@ -54,24 +54,25 @@ class AccountManagement(View):
 
     def post(self, request):
 
-        if request.POST.get('deleteaccount') == "true":
+        if request.POST.get('status') == "delete":
             try:
 
-                identity = request.POST['delusername']
+                identity = request.POST['username']
                 functions.User_func.Delete(self, identity)
                 return render(request,'accountmanagement.html', {'message': 'Account Deleted Successfully'})
             except Exception as e:
-                print(e)
+
                 return render(request,'accountmanagement.html', {'message': 'Account Deletion Failed', 'error': str(e)})
-        elif request.POST.get('createaccount') == "true":
+        elif request.POST.get('status') == "create":
             try:
-                status = functions.User_func.Create(self, {"username": request.POST.get('createusername'), "password": request.POST.get('createpassword'), "email": request.POST.get('email'), "name": request.POST.get('name'), "phone_number": request.POST.get('phone'), "address":request.POST.get('address'), "type":request.POST.get('role')})
+
+                status = functions.User_func.Create(self, {"username": request.POST.get('username'), "password": request.POST.get('password'), "email": request.POST.get('email'), "name": request.POST.get('name'), "phone_number": request.POST.get('phone_number'), "address":request.POST.get('address'), "type":request.POST.get('type'), "skills": request.POST.get('skills')})
                 if status is False:
                     raise Exception("Account not created")
                 return render(request, 'accountmanagement.html', {'message': 'Account Created Successfully'})
             except Exception as e:
-                print(e)
-                return render(request, 'accountmanagement.html', {'message': 'Account Creation Failed', 'error': str(e)})
+
+                return render(request, 'accountmanagement.html', {'message': "Duplicate username or missing form field"})
 
         else:
             return render(request, 'accountmanagement.html', {'message': 'No Account Function Selected'})

@@ -50,30 +50,36 @@ class SupervisorCreateAccountTest(TestCase):
         session.save()
 
     def tearDown(self):
-        self.temp.delete()
-        User.objects.get(username="test_user4").delete()
+        ##self.temp.delete()
+        ##User.objects.get(username="test_user4").delete()
 
     def test_ValidCreateAccount1(self):
-        resp = self.client.post('account-management/',
+        resp = self.client.post('/account-management/',
                                 {'name': 'Test4', 'username': 'test_user4', 'password': 'PASSWORD4',
                                  'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street',
                                  "type": "TA", 'skills': '', 'status': 'create'}, follow=True)
-        self.assertEqual(resp.context['message'], "Account created successfully",
+
+        self.assertEqual(resp.context['message'], "Account Created Successfully",
                          msg="Message for successful account creation failed")
 
     def test_ValidCreateAccount2(self):
-        resp = self.client.post('account-management/',
+        resp = self.client.post('/account-management/',
                                 {'name': 'Test4', 'username': 'test_user4', 'password': 'PASSWORD4',
                                  'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street',
                                  "type": "TA", 'skills': '', 'status': 'create'}, follow=True)
+
+
         self.assertEqual("test_user4", User.objects.get(username="test_user4").username,
                          msg="Account should be present in the database.")
 
     def test_InvalidCreateAccount1(self):
-        resp = self.client.post('account-management/',
+        resp = self.client.post('/account-management/',
                                 {'name': 'Test4', 'username': 'test_user', 'password': 'PASSWORD4',
                                  'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street',
                                  "type": "TA", 'skills': '', 'status': 'create'}, follow=True)
+
+        print(resp.context['message'])
+
         self.assertEqual(resp.context['message'], "Duplicate username or missing form field",
                          msg="Message for duplicate account creation failed")
 
@@ -173,7 +179,7 @@ class SupervisorDeleteCourseTest(TestCase):
             self.test_courseSection.delete()
 
         def test_ValidCreateCourseSection1(self):
-            resp = self.client.post('course-management/',
+            resp = self.client.post('/course-management/',
                                     {"section_id": 456, "section_number": 201, "course": "CS101",
                                      "Time": "MW 9:30AM", "Location": "EMS", "credits": 3,
                                      "status": "create_courseSection"}, follow=True)
@@ -181,7 +187,7 @@ class SupervisorDeleteCourseTest(TestCase):
                              msg="Message for successful course section creation failed")
 
         def test_ValidCreateCourseSection2(self):
-            resp = self.client.post('course-management/',
+            resp = self.client.post('/course-management/',
                                     {"section_id": 456, "section_number": 201, "course": "CS101",
                                      "Time": "MW 9:30AM", "Location": "EMS", "credits": 3,
                                      "status": "create_courseSection"}, follow=True)
