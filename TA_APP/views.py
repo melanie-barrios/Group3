@@ -112,3 +112,18 @@ class ViewCourses(View):
 class ViewUsers(View):
     def get(self, request):
         return render(request, 'viewusers.html')
+
+
+class EditContact(View):
+
+    def get(self, request):
+        pass
+
+
+    def post(self, request):
+        pass
+
+class EditCourses(View):
+
+    def post(self, request):
+        pass
