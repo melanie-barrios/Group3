@@ -77,7 +77,7 @@ class User_func(Change, Getting):
 
         """Check for empty required values before creation"""
         if not ('username' in info and 'password' in info and 'name' in info
-                and 'email' in info and 'phone_number' in info and 'address' in info and 'type' in info and 'skills' in info):
+                and 'email' in info and 'phone_number' in info and 'address' in info and 'type' in info):
             return False
 
         """Check for duplicates"""
