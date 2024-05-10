@@ -77,7 +77,7 @@ class User_func(Change, Getting):
 
         """Check for empty required values before creation"""
         if not ('username' in info and 'password' in info and 'name' in info
-                and 'email' in info and 'phone_number' in info and 'address' in info and 'type' in info and 'skills' in info):
+                and 'email' in info and 'phone_number' in info and 'address' in info and 'type' in info):
             return False
 
         """Check for duplicates"""
@@ -435,7 +435,7 @@ class CourseSection_func(Change, Getting):
 
         # Create and save the new course section
         course_section = CourseSection(section_id=info['section_id'], section_number=info['section_number'],
-                                       course=Course.objects.get(course_name=info['course']), Time=info['Time'], Location=info['Location'],
+                                       course=Course.objects.get(course_id=info['course']), Time=info['Time'], Location=info['Location'],
                                        credits=info['credits'], instructor=User.objects.get(name=info['instructor']))
         print(course_section)
         course_section.save()
