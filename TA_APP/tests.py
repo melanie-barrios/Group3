@@ -542,8 +542,8 @@ class LabSectionTests(TestCase):
         self.assertEqual(expected_result, functions.LabSection_func.get_all(self))
 
     def test_create_labSection(self):
-        info = {"section_id": 987, "section_number": 302, "course_section": self.test_courseSection,
-                "course": self.temp_course, "Time": "MW 9:30AM", "Location": "EMS", "Type": "L", "ta": self.temp3}
+        info = {"section_id": 987, "section_number": 302, "course_section": self.test_courseSection.section_id,
+                "course": self.temp_course.course_id, "Time": "MW 9:30AM", "Location": "EMS", "Type": "L", "ta": self.temp3.name}
         self.assertTrue(functions.LabSection_func.Create(self, info))
 
     def test_create_labSection_fail(self):

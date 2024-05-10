@@ -86,8 +86,8 @@
                     <td>{{ section.Time }}</td>
                     <td>{{ section.Location }}</td>
                     <td>{{ section.credits }}</td>
-                    <td>{{ section.course }}</td>
-                    <td>{{ section.instructor }}</td>
+                    <td>{{ section.course.course_id }}</td>
+                    <td>{{ section.instructor.name }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -116,10 +116,10 @@
                     <td>{{ lab_section.section_number }}</td>
                     <td>{{ lab_section.Time }}</td>
                     <td>{{ lab_section.Location }}</td>
-                    <td>{{ lab_section.course }}</td>
+                    <td>{{ lab_section.course.course_id }}</td>
                     <td>{{ lab_section.Type }}</td>
-                    <td>{{ lab_section.course_section }}</td>
-                    <td>{{ lab_section.ta }}</td>
+                    <td>{{ lab_section.course_section.section_id }}</td>
+                    <td>{{ lab_section.ta.name }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

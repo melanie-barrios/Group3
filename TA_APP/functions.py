@@ -425,7 +425,6 @@ class CourseSection_func(Change, Getting):
         # Check if all required fields are present
         required_fields = ['section_id', 'course', 'section_number', 'Time', 'Location', 'credits', 'instructor']
         if not all(field in info for field in required_fields):
-
             return False
 
         # Check if course section with the given section ID already exists
@@ -435,8 +434,9 @@ class CourseSection_func(Change, Getting):
 
         # Create and save the new course section
         course_section = CourseSection(section_id=info['section_id'], section_number=info['section_number'],
-                                       course=Course.objects.get(course_id=info['course']), Time=info['Time'], Location=info['Location'],
-                                       credits=info['credits'], instructor=User.objects.get(name=info['instructor']))
+                                       course=Course.objects.get(course_id=info['course']), Time=info['Time'],
+                                       Location=info['Location'], credits=info['credits'],
+                                       instructor=User.objects.get(name=info['instructor']))
         print(course_section)
         course_section.save()
 
@@ -590,16 +590,19 @@ class LabSection_func(Change, Getting):
         # Check if all required fields are present
         required_fields = ['section_id', 'course', 'section_number', 'Time', 'Location', 'Type', 'ta', 'course_section']
         if not all(field in info for field in required_fields):
+            print("first if")
             return False
 
         # Check if lab section with the given section ID already exists
         if LabSection.objects.filter(section_id=info['section_id']).exists():
+            print("second if")
             return False
 
         # Create and save the new lab section
         lab_section = LabSection(section_id=info['section_id'], section_number=info['section_number'],
-                                 course_section=info['course_section'], course=info['course'], Time=info['Time'],
-                                 Location=info['Location'], Type=info['Type'], ta=info['ta'])
+                                 course_section=CourseSection.objects.get(section_id=info['course_section']),
+                                 course=Course.objects.get(course_id=info["course"]), Time=info['Time'],
+                                 Location=info['Location'], Type=info['Type'], ta=User.objects.get(name=info["ta"]))
         lab_section.save()
         return True
 
