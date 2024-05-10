@@ -20,9 +20,15 @@ class Login(View):
         verify = functions.Login.authenticate(self,str(username),str(password))
 
         """If user is valid move to home page"""
-        if verify:
+        if verify == 'S':  # Supervisor (or Administrator)
             request.session['username'] = username
-            return redirect('/homepage/')
+            return render(request, 'homepage.html', {})
+        elif verify == 'I':  # Instructor
+            request.session['username'] = username
+            return redirect('instructor_dashboard')
+        elif verify == 'TA':  # TA
+            request.session['username'] = username
+            return redirect('ta_dashboard')
         else:
             return render(request, "login.html", {"message": "Username or password is incorrect"})
 
@@ -32,21 +38,6 @@ class HomePage(View):
         if not request.session.get('username'):
             return redirect('/')
 
-        try:
-            user = User.objects.get(username=request.session.get('username'))
-        except User.DoesNotExist:
-            return redirect('/')
-
-        # Redirect based on the user's role
-        if user.type == 'S':  # Supervisor (or Administrator)
-            return render(request, 'homepage.html', {})
-        elif user.type == 'I':  # Instructor
-            return redirect('instructor_dashboard')
-        elif user.type == 'T':  # TA
-            return redirect('ta_dashboard')
-        else:
-            return redirect('/')
-
     def post(self, request):
         logout(request)
         return redirect('/')
@@ -54,9 +45,10 @@ class HomePage(View):
 
 class AccountManagement(View):
     def get(self, request):
-        if request.session.get('username'):
+        if request.session.get('username') and User.objects.get(username=request.session.get('username')).type == 'S':
             return render(request, 'accountmanagement.html')
         else:
+            logout(request)
             return redirect('/')
 
     def post(self, request):
@@ -98,9 +90,10 @@ class AccountManagement(View):
 
 class CourseManagement(View):
     def get(self, request):
-        if request.session.get('username'):
+        if request.session.get('username') and User.objects.get(username=request.session.get('username')).type == 'S':
             return render(request, 'coursemanagement.html')
         else:
+            logout(request)
             return redirect('/')
 
     def post(self, request):

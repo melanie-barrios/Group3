@@ -45,18 +45,25 @@ class Login:
     In: username and password are strings representing user credentials.
     """
 
-    def authenticate(self, username: str, password: str) -> bool:
+    def authenticate(self, username: str, password: str) -> str:
         """Check username"""
         try:
             temp_user = User.objects.get(username=username)
         except ObjectDoesNotExist:
-            return False
+            return "No such user"
 
         """Check is password matches username"""
         if temp_user.password == password:
-            return True
+            if temp_user.type == "I":
+                return "I"
+            elif temp_user.type == "S":
+                return "S"
+            elif temp_user.type == "TA":
+                return "TA"
+            else:
+                return "Invalid user type"
         else:
-            return False
+            return "Invalid password"
 
 
 class User_func(Change, Getting):

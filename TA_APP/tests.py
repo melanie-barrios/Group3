@@ -39,12 +39,12 @@ class LoginTest(TestCase):
 
     """Test an invalid password"""
     def test_login_4(self):
-        self.assertEqual("False", functions.Login.authenticate(self, username="test_user", password="WORD"),
+        self.assertEqual("Invalid password", functions.Login.authenticate(self, username="test_user", password="WORD"),
                          msg="Wrong password should return false")
 
     """Test an invalid username"""
     def test_login_5(self):
-        self.assertEqual("False", functions.Login.authenticate(self, username="test_user5", password="WORD"),
+        self.assertEqual("No such user", functions.Login.authenticate(self, username="test_user5", password="WORD"),
                          msg="Wrong user should return false")
 
 
