@@ -90,6 +90,7 @@ class User_func(Change, Getting):
             user = User(username=info['username'], password=info['password'], name=info['name'],
                         phone_number=info['phone_number'], email=info['email'], address=info['address'],
                         type=info['type'], skills=info['skills'])
+
         else:
             user = User(username=info['username'], password=info['password'], name=info['name'],
                         phone_number=info['phone_number'], email=info['email'], address=info['address'],
