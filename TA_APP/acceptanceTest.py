@@ -50,43 +50,39 @@ class SupervisorCreateAccountTest(TestCase):
         session.save()
 
     def tearDown(self):
-        ##self.temp.delete()
-        ##User.objects.get(username="test_user4").delete()
+        self.temp.delete()
+        user = User.objects.get(username="test_user4")
+        if not (user is None):
+            user.delete()
 
     def test_ValidCreateAccount1(self):
         resp = self.client.post('/account-management/',
                                 {'name': 'Test4', 'username': 'test_user4', 'password': 'PASSWORD4',
-                                 'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street',
+                                 'email': 'test@uwm.edu', 'phone_number': "1234567890", 'address': '123 1st Street',
                                  "type": "TA", 'skills': '', 'status': 'create'}, follow=True)
-
-        self.assertEqual(resp.context['message'], "Account Created Successfully",
+        self.assertEqual(resp.context['message'], "Account created successfully",
                          msg="Message for successful account creation failed")
 
     def test_ValidCreateAccount2(self):
         resp = self.client.post('/account-management/',
                                 {'name': 'Test4', 'username': 'test_user4', 'password': 'PASSWORD4',
-                                 'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street',
+                                 'email': 'test@uwm.edu', 'phone_number': "1234567890", 'address': '123 1st Street',
                                  "type": "TA", 'skills': '', 'status': 'create'}, follow=True)
-
-
         self.assertEqual("test_user4", User.objects.get(username="test_user4").username,
                          msg="Account should be present in the database.")
 
     def test_InvalidCreateAccount1(self):
         resp = self.client.post('/account-management/',
                                 {'name': 'Test4', 'username': 'test_user', 'password': 'PASSWORD4',
-                                 'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street',
+                                 'email': 'test@uwm.edu', 'phone_number': "1234567890", 'address': '123 1st Street',
                                  "type": "TA", 'skills': '', 'status': 'create'}, follow=True)
-
-        print(resp.context['message'])
-
         self.assertEqual(resp.context['message'], "Duplicate username or missing form field",
                          msg="Message for duplicate account creation failed")
 
     def test_InvalidCreateAccount2(self):
-        resp = self.client.post('account-management/',
+        resp = self.client.post('/account-management/',
                                 {'name': 'Test4', 'username': '', 'password': 'PASSWORD4',
-                                 'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street',
+                                 'email': 'test@uwm.edu', 'phone_number': "1234567890", 'address': '123 1st Street',
                                  "type": "TA", 'skills': '', 'status': 'create'}, follow=True)
         self.assertEqual(resp.context['message'], "Duplicate username or missing form field",
                          msg="Message for missing field account creation failed")
@@ -158,201 +154,205 @@ class SupervisorDeleteCourseTest(TestCase):
 
         self.assertEqual(response.content, "User does not exist to be deleted")
 
-    class SupervisorCreateCourseSectionTest(TestCase):
-        def setUp(self):
-            self.temp = User(name="Test", username="test_user", password="PASSWORD", email="test@uwm.edu",
-                             phone_number=1234567890, address="123 1st street", type="S")
-            self.temp.save()
-            self.temp_course = Course(course_id="CS101", course_name="Test Course", course_term="F")
-            self.temp_course.save()
-            self.test_courseSection = CourseSection(section_id=4560, section_number=202, course=self.temp_course,
-                                                    Time="MW 9:30AM", Location="EMS", credits=3, instructor=self.temp)
-            self.test_courseSection.save()
-            self.client = Client()
-            session = self.client.session
-            session['username'] = 'test_user'
-            session.save()
 
-        def tearDown(self):
-            self.temp.delete()
-            self.temp_course.delete()
-            self.test_courseSection.delete()
+class SupervisorCreateCourseSectionTest(TestCase):
+    def setUp(self):
+        self.temp = User(name="Test", username="test_user", password="PASSWORD", email="test@uwm.edu",
+                         phone_number=1234567890, address="123 1st street", type="S")
+        self.temp.save()
+        self.temp_course = Course(course_id="CS101", course_name="Test Course", course_term="F")
+        self.temp_course.save()
+        self.test_courseSection = CourseSection(section_id=4560, section_number=202, course=self.temp_course,
+                                                Time="MW 9:30AM", Location="EMS", credits=3, instructor=self.temp)
+        self.test_courseSection.save()
+        self.client = Client()
+        session = self.client.session
+        session['username'] = 'test_user'
+        session.save()
 
-        def test_ValidCreateCourseSection1(self):
-            resp = self.client.post('/course-management/',
-                                    {"section_id": 456, "section_number": 201, "course": "CS101",
-                                     "Time": "MW 9:30AM", "Location": "EMS", "credits": 3,
-                                     "status": "create_courseSection"}, follow=True)
-            self.assertEqual(resp.context['message'], "Course Section created successfully",
-                             msg="Message for successful course section creation failed")
+    def tearDown(self):
+        self.temp.delete()
+        self.temp_course.delete()
+        self.test_courseSection.delete()
 
-        def test_ValidCreateCourseSection2(self):
-            resp = self.client.post('/course-management/',
-                                    {"section_id": 456, "section_number": 201, "course": "CS101",
-                                     "Time": "MW 9:30AM", "Location": "EMS", "credits": 3,
-                                     "status": "create_courseSection"}, follow=True)
-            self.assertEqual(201, CourseSection.objects.get(section_number=201).section_number,
-                             msg="Message for successful course section creation failed")
+    def test_ValidCreateCourseSection1(self):
+        resp = self.client.post('/course-management/',
+                                {"section_id": "456", "section_number": "201", "course": "CS101",
+                                 "Time": "MW 9:30AM", "Location": "EMS", "credits": "3",
+                                 "status": "create_courseSection"}, follow=True)
+        self.assertEqual(resp.context['message'], "Course Section created successfully",
+                         msg="Message for successful course section creation failed")
 
-        def test_InvalidCreateCourseSection1(self):
-            resp = self.client.post('course-management/',
-                                    {"section_id": 456, "section_number": '', "course": "CS101",
-                                     "Time": "MW 9:30AM", "Location": "EMS", "credits": 3,
-                                     "status": "create_courseSection"}, follow=True)
-            self.assertEqual(resp.context['message'], "Course section missing a field or is a duplicate",
-                             msg="Message for unsuccessful course section creation failed")
+    def test_ValidCreateCourseSection2(self):
+        resp = self.client.post('/course-management/',
+                                {"section_id": "456", "section_number": "201", "course": "CS101",
+                                 "Time": "MW 9:30AM", "Location": "EMS", "credits": "3",
+                                 "status": "create_courseSection"}, follow=True)
+        self.assertEqual(201, CourseSection.objects.get(section_number=201).section_number,
+                         msg="Message for successful course section creation failed")
 
-        def test_InvalidCreateCourseSection2(self):
-            resp = self.client.post('course-management/',
-                                    {"section_id": 456, "section_number": 202, "course": "CS101",
-                                     "Time": "MW 9:30AM", "Location": "EMS", "credits": 3,
-                                     "status": "create_courseSection"}, follow=True)
-            self.assertEqual(resp.context['message'], "Course section missing a field or is a duplicate",
-                             msg="Message for unsuccessful course section creation failed")
+    def test_InvalidCreateCourseSection1(self):
+        resp = self.client.post('/course-management/',
+                                {"section_id": "456", "section_number": '', "course": "CS101",
+                                 "Time": "MW 9:30AM", "Location": "EMS", "credits": "3",
+                                 "status": "create_courseSection"}, follow=True)
+        self.assertEqual(resp.context['message'], "Course section missing a field or is a duplicate",
+                         msg="Message for unsuccessful course section creation failed")
 
-    class SupervisorDeleteCourseSectionTest(TestCase):
-        def setUp(self):
-            self.temp = User(name="Test", username="test_user", password="PASSWORD", email="test@uwm.edu",
-                             phone_number=1234567890, address="123 1st street", type="S")
-            self.temp.save()
-            self.temp_course = Course(course_id="CS101", course_name="Test Course", course_term="F")
-            self.temp_course.save()
-            self.test_courseSection = CourseSection(section_id=4560, section_number=202, course=self.temp_course,
-                                                    Time="MW 9:30AM", Location="EMS", credits=3, instructor=self.temp)
-            self.test_courseSection.save()
-            self.client = Client()
-            session = self.client.session
-            session['username'] = 'test_user'
-            session.save()
+    def test_InvalidCreateCourseSection2(self):
+        resp = self.client.post('/course-management/',
+                                {"section_id": "456", "section_number": "202", "course": "CS101",
+                                 "Time": "MW 9:30AM", "Location": "EMS", "credits": "3",
+                                 "status": "create_courseSection"}, follow=True)
+        self.assertEqual(resp.context['message'], "Course section missing a field or is a duplicate",
+                         msg="Message for unsuccessful course section creation failed")
 
-        def tearDown(self):
-            self.temp.delete()
-            self.temp_course.delete()
-            self.test_courseSection.delete()
 
-        def test_ValidDeleteCourseSection1(self):
-            resp = self.client.post('course-management/',
-                                    {"section_id": 4560, "status": "delete_courseSection"}, follow=True)
-            self.assertEqual(resp.context['message'], "Course Section Deletion successful",
-                             msg="Message for successful course section creation failed")
+class SupervisorDeleteCourseSectionTest(TestCase):
+    def setUp(self):
+        self.temp = User(name="Test", username="test_user", password="PASSWORD", email="test@uwm.edu",
+                         phone_number=1234567890, address="123 1st street", type="S")
+        self.temp.save()
+        self.temp_course = Course(course_id="CS101", course_name="Test Course", course_term="F")
+        self.temp_course.save()
+        self.test_courseSection = CourseSection(section_id=4560, section_number=202, course=self.temp_course,
+                                                Time="MW 9:30AM", Location="EMS", credits=3, instructor=self.temp)
+        self.test_courseSection.save()
+        self.client = Client()
+        session = self.client.session
+        session['username'] = 'test_user'
+        session.save()
 
-        def test_ValidDeleteCourseSection2(self):
-            resp = self.client.post('course-management/',
-                                    {"section_id": 4560, "status": "delete_courseSection"}, follow=True)
-            self.assertEqual([], functions.CourseSection_func.get(self, "section_id", "4560"),
-                             msg="Message for successful course section creation failed")
+    def tearDown(self):
+        self.temp.delete()
+        self.temp_course.delete()
+        self.test_courseSection.delete()
 
-        def test_InvalidDeleteCourseSection1(self):
-            resp = self.client.post('course-management/',
-                                    {"section_id": 45600, "status": "delete_courseSection"}, follow=True)
-            self.assertEqual(resp.context['message'], "Course section does not exist",
-                             msg="Message for successful course section creation failed")
+    def test_ValidDeleteCourseSection1(self):
+        resp = self.client.post('/course-management/',
+                                {"section_id": "4560", "status": "delete_courseSection"}, follow=True)
+        self.assertEqual(resp.context['message'], "Course Section Deletion successful",
+                         msg="Message for successful course section creation failed")
 
-    class SupervisorCreateLabSectionTest(TestCase):
-        def setUp(self):
-            self.temp3 = User(name="Test3", username="test_user3", password="PASSWORD3", email="test3@uwm.edu",
-                              phone_number=1234567894, address="222 1st street", type="TA")
-            self.temp_course = Course(course_id="CS303", course_name="Test Course", course_term="F")
-            self.test_courseSection = CourseSection(section_id=123, section_number=303, course=self.temp_course,
-                                                    Time="MW 9:30AM", Location="EMS", credits=3, instructor=self.temp2)
-            self.test_lab_section = LabSection(section_id=222, section_number=302,
-                                               course_section=self.test_courseSection,
-                                               course=self.temp_course, Time="MW 9:30AM", Location="EMS",
-                                               Type="L", ta=self.temp3)
-            self.temp3.save()
-            self.temp_course.save()
-            self.test_courseSection.save()
-            self.test_lab_section.save()
-            self.client = Client()
-            session = self.client.session
-            session['username'] = 'test_user'
-            session.save()
+    def test_ValidDeleteCourseSection2(self):
+        resp = self.client.post('/course-management/',
+                                {"section_id": "4560", "status": "delete_courseSection"}, follow=True)
+        self.assertEqual([], functions.CourseSection_func.get(self, "section_id", "4560"),
+                         msg="Message for successful course section creation failed")
 
-        def tearDown(self):
-            self.temp3.delete()
-            self.temp_course.delete()
-            self.test_courseSection.delete()
-            self.test_lab_section.delete()
+    def test_InvalidDeleteCourseSection1(self):
+        resp = self.client.post('/course-management/',
+                                {"section_id": "45600", "status": "delete_courseSection"}, follow=True)
+        self.assertEqual(resp.context['message'], "Course section does not exist",
+                         msg="Message for successful course section creation failed")
 
-        def test_ValidCreateCourseSection1(self):
-            resp = self.client.post('course-management/',
-                                    {"section_id": 222, "section_number": 301,
-                                     "course_section": 303,
-                                     "course": "CS303", "Time": "MW 9:30AM", "Location": "EMS",
-                                     "Type": "L", "status": "create_LabSection"}, follow=True)
-            self.assertEqual(resp.context['message'], "Lab Section created successfully",
-                             msg="Message for successful course section creation failed")
 
-        def test_ValidCreateCourseSection2(self):
-            resp = self.client.post('course-management/',
-                                    {"section_id": 222, "section_number": 301,
-                                     "course_section": 303,
-                                     "course": "CS303", "Time": "MW 9:30AM", "Location": "EMS",
-                                     "Type": "L", "status": "create_LabSection"}, follow=True)
-            self.assertEqual(301, LabSection.objects.get(section_number=301).section_number,
-                             msg="Message for successful course section creation failed")
+class SupervisorCreateLabSectionTest(TestCase):
+    def setUp(self):
+        self.temp3 = User(name="Test3", username="test_user3", password="PASSWORD3", email="test3@uwm.edu",
+                          phone_number=1234567894, address="222 1st street", type="TA")
+        self.temp_course = Course(course_id="CS303", course_name="Test Course", course_term="F")
+        self.test_courseSection = CourseSection(section_id=123, section_number=303, course=self.temp_course,
+                                                Time="MW 9:30AM", Location="EMS", credits=3, instructor=self.temp3)
+        self.test_lab_section = LabSection(section_id=222, section_number=302,
+                                           course_section=self.test_courseSection,
+                                           course=self.temp_course, Time="MW 9:30AM", Location="EMS",
+                                           Type="L", ta=self.temp3)
+        self.temp3.save()
+        self.temp_course.save()
+        self.test_courseSection.save()
+        self.test_lab_section.save()
+        self.client = Client()
+        session = self.client.session
+        session['username'] = 'test_user'
+        session.save()
 
-        def test_InvalidCreateCourseSection1(self):
-            resp = self.client.post('course-management/',
-                                    {"section_id": 222, "section_number": 301,
-                                     "course_section": '',
-                                     "course": "CS303", "Time": "MW 9:30AM", "Location": "EMS",
-                                     "Type": "L", "status": "create_LabSection"}, follow=True)
-            self.assertEqual(resp.context['message'], "Lab section missing a field or is a duplicate",
-                             msg="Message for unsuccessful course section creation failed")
+    def tearDown(self):
+        self.temp3.delete()
+        self.temp_course.delete()
+        self.test_courseSection.delete()
+        self.test_lab_section.delete()
 
-        def test_InvalidCreateCourseSection2(self):
-            resp = self.client.post('course-management/',
-                                    {"section_id": 222, "section_number": 302,
-                                     "course_section": 303,
-                                     "course": "CS303", "Time": "MW 9:30AM", "Location": "EMS",
-                                     "Type": "L", "status": "create_LabSection"}, follow=True)
-            self.assertEqual(resp.context['message'], "Course section missing a field or is a duplicate",
-                             msg="Message for unsuccessful course section creation failed")
+    def test_ValidCreateCourseSection1(self):
+        resp = self.client.post('/course-management/',
+                                {"section_id": "222", "section_number": "301",
+                                 "course_section": "303",
+                                 "course": "CS303", "Time": "MW 9:30AM", "Location": "EMS",
+                                 "Type": "L", "status": "create_LabSection"}, follow=True)
+        self.assertEqual(resp.context['message'], "Lab Section created successfully",
+                         msg="Message for successful course section creation failed")
 
-    class SupervisorDeleteLabSectionTest(TestCase):
-        def setUp(self):
-            self.temp3 = User(name="Test3", username="test_user3", password="PASSWORD3", email="test3@uwm.edu",
-                              phone_number=1234567894, address="222 1st street", type="TA")
-            self.temp_course = Course(course_id="CS303", course_name="Test Course", course_term="F")
-            self.test_courseSection = CourseSection(section_id=123, section_number=303, course=self.temp_course,
-                                                    Time="MW 9:30AM", Location="EMS", credits=3, instructor=self.temp2)
-            self.test_lab_section = LabSection(section_id=222, section_number=302,
-                                               course_section=self.test_courseSection,
-                                               course=self.temp_course, Time="MW 9:30AM", Location="EMS",
-                                               Type="L", ta=self.temp3)
-            self.temp3.save()
-            self.temp_course.save()
-            self.test_courseSection.save()
-            self.test_lab_section.save()
-            self.client = Client()
-            session = self.client.session
-            session['username'] = 'test_user'
-            session.save()
+    def test_ValidCreateCourseSection2(self):
+        resp = self.client.post('/course-management/',
+                                {"section_id": "222", "section_number": "301",
+                                 "course_section": "303",
+                                 "course": "CS303", "Time": "MW 9:30AM", "Location": "EMS",
+                                 "Type": "L", "status": "create_LabSection"}, follow=True)
+        self.assertEqual(301, LabSection.objects.get(section_number=301).section_number,
+                         msg="Message for successful course section creation failed")
 
-        def tearDown(self):
-            self.temp3.delete()
-            self.temp_course.delete()
-            self.test_courseSection.delete()
-            self.test_lab_section.delete()
+    def test_InvalidCreateCourseSection1(self):
+        resp = self.client.post('/course-management/',
+                                {"section_id": "222", "section_number": "301",
+                                 "course_section": '',
+                                 "course": "CS303", "Time": "MW 9:30AM", "Location": "EMS",
+                                 "Type": "L", "status": "create_LabSection"}, follow=True)
+        self.assertEqual(resp.context['message'], "Lab section missing a field or is a duplicate",
+                         msg="Message for unsuccessful course section creation failed")
 
-        def test_ValidDeleteLabSection1(self):
-            resp = self.client.post('course-management/',
-                                    {"section_id": 222, "status": "delete_labSection"}, follow=True)
-            self.assertEqual(resp.context['message'], "Lab Section Deletion successful",
-                             msg="Message for successful course section creation failed")
+    def test_InvalidCreateCourseSection2(self):
+        resp = self.client.post('/course-management/',
+                                {"section_id": "222", "section_number": "302",
+                                 "course_section": "303",
+                                 "course": "CS303", "Time": "MW 9:30AM", "Location": "EMS",
+                                 "Type": "L", "status": "create_LabSection"}, follow=True)
+        self.assertEqual(resp.context['message'], "Course section missing a field or is a duplicate",
+                         msg="Message for unsuccessful course section creation failed")
 
-        def test_ValidDeleteLabSection2(self):
-            resp = self.client.post('course-management/',
-                                    {"section_id": 222, "status": "delete_labSection"}, follow=True)
-            self.assertEqual([], functions.LabSection_func.get(self, "section_id", "222"),
-                             msg="Message for successful course section creation failed")
 
-        def test_InvalidDeleteLabSection1(self):
-            resp = self.client.post('course-management/',
-                                    {"section_id": 45600, "status": "delete_labSection"}, follow=True)
-            self.assertEqual(resp.context['message'], "Course section does not exist",
-                             msg="Message for successful course section creation failed")
+class SupervisorDeleteLabSectionTest(TestCase):
+    def setUp(self):
+        self.temp3 = User(name="Test3", username="test_user3", password="PASSWORD3", email="test3@uwm.edu",
+                          phone_number=1234567894, address="222 1st street", type="TA")
+        self.temp_course = Course(course_id="CS303", course_name="Test Course", course_term="F")
+        self.test_courseSection = CourseSection(section_id=123, section_number=303, course=self.temp_course,
+                                                Time="MW 9:30AM", Location="EMS", credits=3, instructor=self.temp3)
+        self.test_lab_section = LabSection(section_id=222, section_number=302,
+                                           course_section=self.test_courseSection,
+                                           course=self.temp_course, Time="MW 9:30AM", Location="EMS",
+                                           Type="L", ta=self.temp3)
+        self.temp3.save()
+        self.temp_course.save()
+        self.test_courseSection.save()
+        self.test_lab_section.save()
+        self.client = Client()
+        session = self.client.session
+        session['username'] = 'test_user'
+        session.save()
+
+    def tearDown(self):
+        self.temp3.delete()
+        self.temp_course.delete()
+        self.test_courseSection.delete()
+        self.test_lab_section.delete()
+
+    def test_ValidDeleteLabSection1(self):
+        resp = self.client.post('/course-management/',
+                                {"section_id": "222", "status": "delete_labSection"}, follow=True)
+        self.assertEqual(resp.context['message'], "Lab Section Deletion successful",
+                         msg="Message for successful course section creation failed")
+
+    def test_ValidDeleteLabSection2(self):
+        resp = self.client.post('/course-management/',
+                                {"section_id": "222", "status": "delete_labSection"}, follow=True)
+        self.assertEqual([], functions.LabSection_func.get(self, "section_id", "222"),
+                         msg="Message for successful course section creation failed")
+
+    def test_InvalidDeleteLabSection1(self):
+        resp = self.client.post('/course-management/',
+                                {"section_id": "45600", "status": "delete_labSection"}, follow=True)
+        self.assertEqual(resp.context['message'], "Course section does not exist",
+                         msg="Message for successful course section creation failed")
 
 
 class SupervisorEditCourseTest(TestCase):
@@ -377,11 +377,227 @@ class SupervisorEditCourseTest(TestCase):
         self.assertEqual(response.content, "Course does not exist to be edited")
 
 
+class ViewCourses(TestCase):
+    """Setup for ViewCourses acceptance test"""
+
+    def setUp(self):
+        self.temp3 = User(name="Test3", username="test_user3", password="PASSWORD3", email="test3@uwm.edu",
+                          phone_number=1234567894, address="222 1st street", type="TA")
+        self.temp_course = Course(course_id="CS303", course_name="Test Course", course_term="F")
+        self.test_courseSection = CourseSection(section_id=123, section_number=303, course=self.temp_course,
+                                                Time="MW 9:30AM", Location="EMS", credits=3, instructor=self.temp3)
+        self.test_lab_section = LabSection(section_id=222, section_number=302,
+                                           course_section=self.test_courseSection,
+                                           course=self.temp_course, Time="MW 9:30AM", Location="EMS",
+                                           Type="L", ta=self.temp3)
+        self.temp3.save()
+        self.temp_course.save()
+        self.test_courseSection.save()
+        self.test_lab_section.save()
+        session = self.client.session
+        session['username'] = 'test_user'
+        session.save()
+
+    """Teardown for ViewCourses acceptance test"""
+
+    def tearDown(self):
+        self.temp3.delete()
+        self.temp_course.delete()
+        self.test_courseSection.delete()
+        self.test_lab_section.delete()
+
+    """Testing seeing all the courses on the page"""
+
+    def test_viewcourses(self):
+        response = self.client.get('/view-courses/')
+
+        # Check that we get a response
+        self.assertEqual(response.status_code, 200)
+
+        response_list = [response.content['Courses'], response.content['CourseSections'],
+                         response.content['LabSections']]
+        test_list = [functions.Course_func.get_all(self), functions.CourseSection_func.get_all(self),
+                     functions.LabSection_func.get_all(self)]
+
+        # check the context for the lists for courses
+        self.assertEqual(test_list, response_list,
+                         msg="View Courses should have all the information when get request is given")
+
+
+class ViewUsers(TestCase):
+    """setup for viewusers tests"""
+
+    def setUp(self):
+        self.temp = User(name="Test", username="test_user", password="PASSWORD", email="test@uwm.edu",
+                         phone_number=1234567890, address="123 1st street", type="I")
+        self.temp.save()
+        self.temp2 = User(name="Test2", username="test_user2", password="PASSWORD2", email="test@uwm.edu",
+                          phone_number=1234567890, address="123 1st Street", type="TA")
+        self.temp2.save()
+        self.temp3 = User(name="Test3", username="test_user3", password="PASSWORD3", email="test3@uwm.edu",
+                          phone_number=1234567890, address="123 1st Street", type="S")
+        self.temp3.save()
+        self.client = Client()
+
+    """Teardown for view users info tests"""
+
+    def tearDown(self):
+        self.temp.delete()
+        self.temp2.delete()
+        self.temp3.delete()
+
+    """Test viewing all the users on the page"""
+
+    def test_viewusers(self):
+        """Set session"""
+        session = self.client.session
+        session['username'] = 'test_user3'
+        session.save()
+
+        response = self.client.get('/view-users/')
+
+        # Check that we get a response
+        self.assertEqual(response.status_code, 200)
+
+        # check the context for the lists for courses
+        self.assertEqual(functions.User_func.get_all(), response.content['Users'],
+                         msg="View Courses should have all the information when get request is given")
+
+
+class EditContactInformation(TestCase):
+    """Setup for edit contact info tests"""
+
+    def setUp(self):
+        self.temp = User(name="Test", username="test_user", password="PASSWORD", email="test@uwm.edu",
+                         phone_number=1234567890, address="123 1st street", type="I")
+        self.temp.save()
+        self.temp2 = User(name="Test2", username="test_user2", password="PASSWORD2", email="test@uwm.edu",
+                          phone_number=1234567890, address="123 1st Street", type="TA")
+        self.temp2.save()
+        self.temp3 = User(name="Test3", username="test_user3", password="PASSWORD3", email="test3@uwm.edu",
+                          phone_number=1234567890, address="123 1st Street", type="S")
+        self.temp3.save()
+        self.client = Client()
+
+    """Teardown for edit contact info tests"""
+
+    def tearDown(self):
+        self.temp.delete()
+        self.temp2.delete()
+        self.temp3.delete()
+
+    """Testing if a supervisor can edit their own contact info"""
+
+    def test_edit_contact_supervisor(self):
+        session = self.client.session
+        session['username'] = 'test_user3'
+        session.save()
+
+        new_list = [{'name': 'New-Test', 'username': 'test_user3', 'password': 'PASSWORD3',
+                     'email': 'test3@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', "type": "TA",
+                     'skills': ''}]
+
+        response = self.client.post('placeholder',
+                                    {'name': 'New-Test', 'password': 'PASSWORD3',
+                                     'email': 'test3@uwm.edu', 'phone_number': "1234567890",
+                                     'address': '123 1st Street', "type": "TA", 'skills': '', "status": "edit_contact"},
+                                    follow=True)
+
+        self.assertEqual(new_list, functions.User_func.get(self, query="username", identity="test_user3"))
+
+    """Testing if a supervisor can edit their own contact info"""
+
+    def test_edit_contact_instructor(self):
+        session = self.client.session
+        session['username'] = 'test_user2'
+        session.save()
+
+        new_list = [{'name': 'New-Test', 'username': 'test_user2', 'password': 'PASSWORD2',
+                     'email': 'test2@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', "type": "TA",
+                     'skills': ''}]
+
+        response = self.client.post('placeholder',
+                                    {'name': 'New-Test', 'password': 'PASSWORD2',
+                                     'email': 'test2@uwm.edu', 'phone_number': "1234567890",
+                                     'address': '123 1st Street', "type": "TA", 'skills': '', "status": "edit_contact"},
+                                    follow=True)
+
+        self.assertEqual(new_list, functions.User_func.get(self, query="username", identity="test_user2"))
+
+    """Testing if a TA can edit their own contact info including their skills information"""
+
+    def test_edit_contact_TA(self):
+        session = self.client.session
+        session['username'] = 'test_user'
+        session.save()
+
+        new_list = [{'name': 'New-Test', 'username': 'test_user', 'password': 'PASSWORD',
+                     'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', "type": "TA",
+                     'skills': 'HTML/CSS'}]
+
+        response = self.client.post('placeholder',
+                                    {'name': 'New-Test', 'password': 'PASSWORD',
+                                     'email': 'test@uwm.edu', 'phone_number': "1234567890",
+                                     'address': '123 1st Street', "type": "TA", 'skills': 'HTML/CSS',
+                                     "status": "edit_contact"},
+                                    follow=True)
+
+        self.assertEqual(new_list, functions.User_func.get(self, query="username", identity="test_user"))
+
+
 """
 PBI: As a supervisor I would like to assign users to courses so that the proper faculty and registered students are enrolled
 """
 
 
 class SupervisorAssignUserToCourseTest(TestCase):
-    def __init__(self):
-        self.client = Client()
+    """Setup for SupervisorAssignUsertoCourse acceptance test"""
+
+    def setUp(self):
+        self.temp = User(name="Test", username="test_user", password="PASSWORD", email="test@uwm.edu",
+                         phone_number=1234567890, address="123 1st street", type="I")
+        self.temp.save()
+        self.temp3 = User(name="Test3", username="test_user3", password="PASSWORD3", email="test3@uwm.edu",
+                          phone_number=1234567894, address="222 1st street", type="TA")
+        self.temp_course = Course(course_id="CS303", course_name="Test Course", course_term="F")
+        self.test_courseSection = CourseSection(section_id=123, section_number=303, course=self.temp_course,
+                                                Time="MW 9:30AM", Location="EMS", credits=3, instructor=self.temp3)
+        self.test_lab_section = LabSection(section_id=222, section_number=302,
+                                           course_section=self.test_courseSection,
+                                           course=self.temp_course, Time="MW 9:30AM", Location="EMS",
+                                           Type="L", ta=self.temp3)
+        self.temp3.save()
+        self.temp_course.save()
+        self.test_courseSection.save()
+        self.test_lab_section.save()
+        session = self.client.session
+        session['username'] = 'test_user'
+        session.save()
+
+    """Teardown for SupervisorAssignUsertoCourse acceptance test"""
+
+    def tearDown(self):
+        self.temp3.delete()
+        self.temp_course.delete()
+        self.test_courseSection.delete()
+        self.test_lab_section.delete()
+
+    """Test adding an instructor"""
+
+    def test_AssignUserToCourse1(self):
+        response = self.client.post("/placeholder", {"username": "test_user", "course": "CS303"}, follow=True)
+
+        self.assertEqual(True, (self.temp in self.temp_course.assignments.all()),
+                         msg="Instructor should be in the manytomany of CS303")
+
+    """Test adding a TA"""
+
+    def test_AssignUserToCourse2(self):
+        response = self.client.post("/placeholder", {"username": "test_user3", "course": "CS303"}, follow=True)
+
+        self.assertEqual(True, (self.temp3 in self.temp_course.assignments.all()),
+                         msg="TA should be in the manytomany of CS303")
+
+
+class InstructorAssignUserToSection(TestCase):
+    """"""
