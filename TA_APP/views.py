@@ -7,46 +7,44 @@ import TA_APP.functions as functions
 
 class Login(View):
     def get(self, request):
-        """Add test supervisor"""
-        """test = User(name="Test", username="test_user5", password="PASSWORD5", email="test@uwm.edu",
-                    phone_number=1234567890, address="123 1st street",type="S")
-        test.save()"""
-        return render(request, 'login.html',{})
+        return render(request, 'login.html', {})
 
     def post(self, request):
-
-        """Grab form fields"""
         username = request.POST['username']
         password = request.POST['password']
-        """check identity"""
-        verify = functions.Login.authenticate(self,str(username),str(password))
-
-        """If user is valid move to home page"""
+        verify = functions.Login.authenticate(self, str(username), str(password))
         if verify:
             request.session['username'] = username
             return redirect('/homepage/')
         else:
             return render(request, "login.html", {"message": "Username or password is incorrect"})
 
-class HomePage(View):
 
+class HomePage(View):
     def get(self, request):
-        print(request.session['username'])
-        if not request.session['username'] == "":
-            return render(request, 'homepage.html',{})
+        username = request.session.get('username')
+        if not username:
+            return redirect('/')
+
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return redirect('/')
+
+        # Redirect based on the user's role
+        if user.type == 'S':  # Supervisor (or Administrator)
+            return render(request, 'homepage.html', {})
+        elif user.type == 'I':  # Instructor
+            return redirect('instructor_dashboard')
+        elif user.type == 'T':  # TA
+            return redirect('ta_dashboard')
         else:
             return redirect('/')
 
-    def post(self,request):
-        """logout(request)"""
-
-        """try:
-            del request.session["username"]
-        except KeyError:
-            pass"""
-        """request.session.clear()"""
+    def post(self, request):
         request.session["username"] = ""
         return redirect('/')
+
 
 class AccountManagement(View):
     def get(self, request):
@@ -113,17 +111,51 @@ class ViewUsers(View):
     def get(self, request):
         return render(request, 'viewusers.html')
 
-
-class EditContact(View):
-
+class InstructorDashboard(View):
     def get(self, request):
-        pass
-
-
-    def post(self, request):
-        pass
-
-class EditCourses(View):
+        if not request.session.get('username') == "":
+            return render(request, 'instructor_dashboard.html', {})
+        else:
+            return redirect('/')
 
     def post(self, request):
-        pass
+        request.session["username"] = ""
+        return redirect('/')
+
+def instructor_edit_contact(request):
+    return render(request, 'instructor_edit_contact.html')
+
+def instructor_section_management(request):
+    return render(request, 'instructor_section_management.html')
+
+def instructor_view_courses(request):
+    return render(request, 'instructor_view_courses.html')
+
+def instructor_view_users(request):
+    return render(request, 'instructor_view_users.html')
+
+def instructor_notifications(request):
+    return render(request, 'instructor_notifications.html')
+
+class TADashboard(View):
+    def get(self, request):
+        if not request.session.get('username') == "":
+            return render(request, 'ta_dashboard.html', {})
+        else:
+            return redirect('/')
+
+    def post(self, request):
+        request.session["username"] = ""
+        return redirect('/')
+
+def ta_edit_contact(request):
+    return render(request, 'ta_edit_contact.html')
+
+def ta_my_sections(request):
+    return render(request, 'ta_my_sections.html')
+
+def ta_view_courses(request):
+    return render(request, 'ta_view_courses.html')
+
+def ta_view_users(request):
+    return render(request, 'ta_view_users.html')
