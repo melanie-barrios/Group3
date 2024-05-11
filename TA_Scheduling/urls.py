@@ -26,8 +26,8 @@ from TA_APP.views import (
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',Login.as_view()),
-    path('homepage/',HomePage.as_view()),
+    path('', Login.as_view(), name='login'),
+    path('homepage/', HomePage.as_view(), name='homepage'),
     path('account-management/', AccountManagement.as_view(), name='accountmanagement'),
     path('course-management/', CourseManagement.as_view(), name='coursemanagement'),
     path('view-courses/', ViewCourses.as_view(), name='viewcourses'),
