@@ -146,6 +146,7 @@ class CourseManagement(View):
             return render(request, 'coursemanagement.html', {'message': 'No Course Function Selected'})
 
 
+
 class ViewCourses(View):
     def get(self, request):
         if request.session.get('username'):
@@ -162,6 +163,7 @@ class ViewCourses(View):
         return redirect('/')
 
 
+
 class ViewUsers(View):
     def get(self, request):
         if request.session.get('username'):
@@ -173,6 +175,22 @@ class ViewUsers(View):
     def post(self, request):
         logout(request)
         return redirect('/')
+
+
+class AssignUsers(View):
+    def get(self, request):
+        return render(request, 'assignusers.html')
+
+
+class EditContactInfo(View):
+    def get(self, request):
+        return render(request, 'editcontactinfo.html')
+
+
+class Notifications(View):
+    def get(self, request):
+        return render(request, 'notifications.html')
+
 
 class InstructorDashboard(View):
     def get(self, request):
