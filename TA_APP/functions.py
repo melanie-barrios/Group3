@@ -693,7 +693,7 @@ class LabSection_func(Change, Getting):
                 result = {
                     'section_id': lab_section.section_id,
                     'section_number': lab_section.section_number,
-                    'course_section': lab_section.course_section.section_number,
+                    'course_section': lab_section.course_section.section_id,
                     'course': lab_section.course.course_id,
                     'Time': lab_section.Time,
                     'Location': lab_section.Location,
@@ -733,7 +733,7 @@ class LabSection_func(Change, Getting):
             result = {
                 'section_id': lab_section.section_id,
                 'section_number': lab_section.section_number,
-                'course_section': lab_section.course_section.section_number,
+                'course_section': lab_section.course_section.section_id,
                 'course': lab_section.course.course_id,
                 'Time': lab_section.Time,
                 'Location': lab_section.Location,

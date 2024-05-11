@@ -149,9 +149,9 @@ class CourseManagement(View):
 class ViewCourses(View):
     def get(self, request):
         if request.session.get('username'):
-            courses = Course.objects.all()
-            course_sections = CourseSection.objects.all()
-            lab_sections = LabSection.objects.all()
+            courses = functions.Course_func.get_all(self)
+            course_sections = functions.CourseSection_func.get_all(self)
+            lab_sections = functions.LabSection_func.get_all(self)
             return render(request, 'viewcourses.html',
                           {'courses': courses, 'course_sections': course_sections, 'lab_sections': lab_sections})
         else:

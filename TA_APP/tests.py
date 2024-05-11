@@ -517,7 +517,7 @@ class LabSectionTests(TestCase):
         self.test_lab_section2.delete()
 
     def test_get_labSection_info(self):
-        test_dic = {"section_id": 222, "section_number": 301, "course_section": self.test_courseSection.section_number,
+        test_dic = {"section_id": 222, "section_number": 301, "course_section": self.test_courseSection.section_id,
                     "course": self.temp_course.course_id, "Time": "MW 9:30AM", "Location": "EMS",
                     "Type": "L", "ta": self.temp3.name}
         test_list = [test_dic]
@@ -527,15 +527,15 @@ class LabSectionTests(TestCase):
         self.assertEqual([], functions.LabSection_func.get(self, query='section_id', identity='999'))
 
     def test_getAll_labSection_info(self):
-        test_dic = {"section_id": 222, "section_number": 301, "course_section": self.test_courseSection.section_number,
+        test_dic = {"section_id": 222, "section_number": 301, "course_section": self.test_courseSection.section_id,
                     "course": self.temp_course.course_id, "Time": "MW 9:30AM", "Location": "EMS",
                     "Type": "L", "ta": self.temp3.name}
         test_dic1 = {'section_id': 11111, 'section_number': 801,
-                     'course_section': self.test_courseSection.section_number,
+                     'course_section': self.test_courseSection.section_id,
                      'course': self.temp_course.course_id, 'Time': 'MW 9:30AM', 'Location': 'EMS',
                      'Type': 'L', 'ta': self.temp3.name}
         test_dic2 = {'section_id': 11112, 'section_number': 802,
-                     'course_section': self.test_courseSection.section_number,
+                     'course_section': self.test_courseSection.section_id,
                      'course': self.temp_course.course_id, 'Time': 'MW 9:30AM', 'Location': 'EMS',
                      'Type': 'L', 'ta': self.temp3.name}
         expected_result = [test_dic, test_dic1, test_dic2]
@@ -572,7 +572,7 @@ class LabSectionTests(TestCase):
     def test_edit_labSection(self):
         update_info = {"section_id": 222, "section_number": 401}
         updated_info = {"section_id": 222, "section_number": 401,
-                        "course_section": self.test_courseSection.section_number,
+                        "course_section": self.test_courseSection.section_id,
                         "course": self.temp_course.course_id, "Time": "MW 9:30AM", "Location": "EMS",
                         "Type": "L", "ta": self.temp3.name}
         updated_info_list = [updated_info]
