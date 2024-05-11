@@ -38,16 +38,16 @@ urlpatterns = [
 
     # Instructor Dashboard URL
     path('instructor/dashboard/', InstructorDashboard.as_view(), name='instructor_dashboard'),
-    path('instructor/edit_contact/', instructor_edit_contact, name='instructor_edit_contact'),
-    path('instructor/section_management/', instructor_section_management, name='instructor_section_management'),
-    path('instructor/view_courses/', instructor_view_courses, name='instructor_view_courses'),
-    path('instructor/view_users/', instructor_view_users, name='instructor_view_users'),
-    path('instructor/notifications/', instructor_notifications, name='instructor_notifications'),
+    path('instructor/edit_contact/', instructor_edit_contact.as_view(), name='instructor_edit_contact'),
+    path('instructor/section_management/', instructor_section_management.as_view(), name='instructor_section_management'),
+    path('instructor/view_courses/', instructor_view_courses.as_view(), name='instructor_view_courses'),
+    path('instructor/view_users/', instructor_view_users.as_view(), name='instructor_view_users'),
+    path('instructor/notifications/', instructor_notifications.as_view(), name='instructor_notifications'),
 
     # TA Dashboard URL
     path('ta/dashboard/', TADashboard.as_view(), name='ta_dashboard'),
-    path('ta/edit_contact/', ta_edit_contact, name='ta_edit_contact'),
-    path('ta/my_sections/', ta_my_sections, name='ta_my_sections'),
-    path('ta/view_courses/', ta_view_courses, name='ta_view_courses'),
-    path('ta/view_users/', ta_view_users, name='ta_view_users'),
+    path('ta/edit_contact/', ta_edit_contact.as_view(), name='ta_edit_contact'),
+    path('ta/my_sections/', ta_my_sections.as_view(), name='ta_my_sections'),
+    path('ta/view_courses/', ta_view_courses.as_view(), name='ta_view_courses'),
+    path('ta/view_users/', ta_view_users.as_view(), name='ta_view_users'),
 ]

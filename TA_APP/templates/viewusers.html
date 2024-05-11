@@ -48,20 +48,20 @@
             <thead>
                 <tr>
                     <th>User ID</th>
-                    <th>Username</th>
+                    <th>Name</th>
                     <th>Email</th>
                     <th>Role ID</th>
-                    <th>Is Active</th>
+                    <th>Phone Number</th>
                 </tr>
             </thead>
             <tbody>
                 {% for user in users %}
                 <tr>
-                    <td>{{ user.user_id }}</td>
-                    <td>{{ user.username }}</td>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.name }}</td>
                     <td>{{ user.email }}</td>
-                    <td>{{ user.role_id }}</td>
-                    <td>{{ user.is_active }}</td>
+                    <td>{{ user.type }}</td>
+                    <td>{{ user.phone_number }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
