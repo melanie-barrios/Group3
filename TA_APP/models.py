@@ -47,12 +47,12 @@ class LabSection(models.Model):
     """
     Represents a lab section in the system.
     """
-    type = {"L": "Lab", "D": "Discussion", "G": "Grader"}
+    Type = {"L": "Lab", "D": "Discussion", "G": "Grader"}
     section_id = models.IntegerField(primary_key=True)
     section_number = models.IntegerField()
     course_section = models.ForeignKey(CourseSection, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     Time = models.TextField()
     Location = models.TextField()
-    Type = models.CharField(max_length=10, choices=type, default="Lab")
+    Type = models.CharField(max_length=10, choices=Type, default="Lab")
     ta = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="/static/accountmanagementStyle.css">
+    <link rel="stylesheet" type="text/css" href="/static/coursemanagementStyle.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
@@ -13,8 +13,8 @@
 
 <header>
     <div class="logout-container">
-        <form action="/" method="post">
-            {% csrf_token %}
+        <form action="" method="post">
+            <input type="hidden" name="csrfmiddlewaretoken" value="N7ZjttdlM13bSqFOXjPTOWnarwVqdLUkx8nqqQ9t7dvP0s05L7EtFeCWziJxGyTT">
             <input type="submit" name="logout-container" value="Log out" />
         </form>
     </div>
@@ -31,16 +31,18 @@
     <ul class="menu-bar">
         <ul class="menu-bar">
             <li><a href="{% url 'accountmanagement' %}"><span class="material-symbols-outlined">manage_accounts</span>Account Management</a></li>
-            <li><a href="#"><span class="material-symbols-outlined">folder_managed</span>Course Management</a></li>
-            <li><a href="#"><span class="material-symbols-outlined">person_search</span>View Users</a></li>
-            <li><a href="#"><span class="material-symbols-outlined">feature_search</span>View Courses</a></li>
-            <li><a href="#"><span class="material-symbols-outlined">notifications</span>Send Notifications</a></li>
-            <li><a href="#"><span class="material-symbols-outlined">edit_note</span> Edit Contact Information</a></li>
+            <li><a href="{% url 'coursemanagement' %}"><span class="material-symbols-outlined">folder_managed</span>Course Management</a></li>
+            <li><a href="{% url 'viewusers' %}"><span class="material-symbols-outlined">person_search</span>View Users</a></li>
+            <li><a href="{% url 'viewcourses' %}"><span class="material-symbols-outlined">feature_search</span>View Courses</a></li>
+            <li><a href="{% url 'assignusers' %}"><span class="material-symbols-outlined">switch_account</span>Assign User to Course</a></li>
+            <li><a href="{% url 'notifications' %}"><span class="material-symbols-outlined">notifications</span>Send Notifications</a></li>
+            <li><a href="{% url 'editcontactinfo' %}"><span class="material-symbols-outlined">edit_note</span> Edit Contact Information</a></li>
         </ul>
     </ul>
 </div>
 
-<div class="form-container">
+  <div class="container">
+<div class="form-container-group">
         <h2>Create Course</h2>
 <form action="/course-management/" method="post">
     <table class="form-table">
@@ -58,15 +60,16 @@
         </tr>
         <tr>
             <td colspan="2" class="centered">
-                <button type="submit" name="createcourse" value="true">Create Course</button>
-                {% csrf_token %}
+                <button type="submit" name="createcourse" value="true">Submit</button>
+                <input type="hidden" name="csrfmiddlewaretoken" value="N7ZjttdlM13bSqFOXjPTOWnarwVqdLUkx8nqqQ9t7dvP0s05L7EtFeCWziJxGyTT">
             </td>
         </tr>
     </table>
     </form>
+    {{ course_message }}
 </div>
 
-<div class="form-container2">
+<div class="form-container-group">
     <form action="/course-management/" method="post">
         <table class="form-table">
             <h2>Create Course Section</h2>
@@ -101,17 +104,18 @@
             <tr>
                 <td colspan="2" class="centered">
                     <button type="submit" name="createcoursesection" value="true">Submit</button>
-                          {% csrf_token %}
+                          <input type="hidden" name="csrfmiddlewaretoken" value="N7ZjttdlM13bSqFOXjPTOWnarwVqdLUkx8nqqQ9t7dvP0s05L7EtFeCWziJxGyTT">
                 </td>
             </tr>
         </table>
     </form>
+    {{ course_section_message }}
 </div>
 
-<div class="form-container2">
-    <form action="#" method="post">
+<div class="form-container-group">
+    <form action="/course-management/" method="post">
         <table class="form-table">
-            <h2>Create Course Section</h2>
+            <h2>Create Lab Section</h2>
             <tr>
                 <td><label>Section ID:</label></td>
                 <td><input type="text" name="sectionid"></td>
@@ -133,6 +137,10 @@
                 <td><input type="text" name="location"></td>
             </tr>
             <tr>
+                <td><label>Time:</label></td>
+                <td><input type="text" name="time"></td>
+            </tr>
+            <tr>
                 <td><label>TA:</label></td>
                 <td><input type="text" name="ta"></td>
             </tr>
@@ -145,12 +153,143 @@
         </tr>
             <tr>
                 <td colspan="2" class="centered">
-                    <button type="submit">Submit</button>
-                          {% csrf_token %}
+                    <button type="submit" name="createlabsection" value="true">Submit</button>
+                          <input type="hidden" name="csrfmiddlewaretoken" value="N7ZjttdlM13bSqFOXjPTOWnarwVqdLUkx8nqqQ9t7dvP0s05L7EtFeCWziJxGyTT">
                 </td>
             </tr>
         </table>
     </form>
+    {{ lab_message }}
+</div>
+</div>
+
+<div class="container">
+    <div class="form-container-group">
+        <h2>Edit Course</h2>
+        <form action="/course-management/" method="post">
+            <table class="form-table">
+            <tr>
+                <td><label>Course ID:</label></td>
+                <td>
+                    <select name="courseid">
+                        <option value="courseid">Course ID</option>
+                    </select>
+                </td>
+            </tr>
+        <tr>
+                <tr>
+                    <td><label>Name:</label></td>
+                    <td><input type="text" name="name"></td>
+                </tr>
+                <tr>
+                    <td><label>Term:</label></td>
+                    <td><input type="text" name="term"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="centered">
+                        <button type="submit" name="createcourse" value="true">Submit</button>
+                        <input type="hidden" name="csrfmiddlewaretoken" value="N7ZjttdlM13bSqFOXjPTOWnarwVqdLUkx8nqqQ9t7dvP0s05L7EtFeCWziJxGyTT">
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <div class="form-container-group">
+        <h2>Edit Course Section</h2>
+        <form action="/course-management/" method="post">
+            <table class="form-table">
+            <tr>
+                <td><label>SectionID:</label></td>
+                <td>
+                    <select name="sectionid">
+                        <option value="sectionid">SectionID</option>
+                    </select>
+                </td>
+            </tr>
+        <tr>
+
+             <tr>
+                <td><label>Course ID:</label></td>
+                <td>
+                    <select name="courseid">
+                        <option value="courseid">CourseID</option>
+                    </select>
+                </td>
+            </tr>
+        <tr>
+                <tr>
+                    <td><label>Time:</label></td>
+                    <td><input type="text" name="time"></td>
+                </tr>
+                <tr>
+                    <td><label>Location:</label></td>
+                    <td><input type="text" name="location"></td>
+                </tr>
+                <tr>
+                    <td><label>Credits:</label></td>
+                    <td><input type="number" name="credits"></td>
+                </tr>
+                <tr>
+                    <td><label>Instructor:</label></td>
+                    <td><input type="text" name="instructor"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="centered">
+                        <button type="submit" name="createcoursesection" value="true">Submit</button>
+                        <input type="hidden" name="csrfmiddlewaretoken" value="N7ZjttdlM13bSqFOXjPTOWnarwVqdLUkx8nqqQ9t7dvP0s05L7EtFeCWziJxGyTT">
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <div class="form-container-group">
+        <h2>Edit Lab Section</h2>
+        <form action="/course-management/" method="post">
+            <table class="form-table">
+                  <tr>
+                <td><label>Section Number:</label></td>
+                <td>
+                    <select name="sectionnumber">
+                        <option value="sectionid">Section Number</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label>SectionID:</label></td>
+                <td>
+                    <select name="sectionid">
+                        <option value="sectionid">Select SectionID</option>
+                    </select>
+                </td>
+            </tr>
+        <tr>
+
+                <tr>
+                    <td><label>Location:</label></td>
+                    <td><input type="text" name="location"></td>
+                </tr>
+                <tr>
+                    <td><label>TA:</label></td>
+                    <td><input type="text" name="ta"></td>
+                </tr>
+                <tr>
+                    <td><label>Type:</label></td>A
+                    <td>
+                        <input type="checkbox" name="role" value="Discussion">Discussion
+                        <input type="checkbox" name="role" value="Lab">Lab
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="centered">
+                        <button type="submit" name="createlabsection" value="true">Submit</button>
+                        <input type="hidden" name="csrfmiddlewaretoken" value="N7ZjttdlM13bSqFOXjPTOWnarwVqdLUkx8nqqQ9t7dvP0s05L7EtFeCWziJxGyTT">
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
 </div>
 
 <footer>

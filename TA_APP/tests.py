@@ -39,12 +39,12 @@ class LoginTest(TestCase):
 
     """Test an invalid password"""
     def test_login_4(self):
-        self.assertEqual("False", functions.Login.authenticate(self, username="test_user", password="WORD"),
+        self.assertEqual("Invalid password", functions.Login.authenticate(self, username="test_user", password="WORD"),
                          msg="Wrong password should return false")
 
     """Test an invalid username"""
     def test_login_5(self):
-        self.assertEqual("False", functions.Login.authenticate(self, username="test_user5", password="WORD"),
+        self.assertEqual("No such user", functions.Login.authenticate(self, username="test_user5", password="WORD"),
                          msg="Wrong user should return false")
 
 """Testing the User_func class"""
@@ -447,9 +447,9 @@ class CourseSectionTests(TestCase):
 
     """Test for creating a course section"""
     def test_create_Course_Section(self):
-        info = {"section_id": 345, "section_number": 300, "course": self.temp_course, "Time": "MW 5:30PM",
-                "Location": "EMS", "credits": 3, "instructor": self.temp}
-        self.assertTrue(self, functions.CourseSection_func.Create(self, info))
+        info = {"section_id": 345, "section_number": 300, "course": self.temp_course.course_id, "Time": "MW 5:30PM",
+                "Location": "EMS", "credits": 3, "instructor": self.temp.name}
+        self.assertTrue(functions.CourseSection_func.Create(self, info))
 
     """Test for failing to create a course section"""
     def test_create_Course_Section_fail(self):
@@ -549,7 +549,7 @@ class LabSectionTests(TestCase):
 
     """test for getting a lab section"""
     def test_get_labSection_info(self):
-        test_dic = {"section_id": 222, "section_number": 301, "course_section": self.test_courseSection.section_number,
+        test_dic = {"section_id": 222, "section_number": 301, "course_section": self.test_courseSection.section_id,
                     "course": self.temp_course.course_id, "Time": "MW 9:30AM", "Location": "EMS",
                     "Type": "L", "ta": self.temp3.name}
         test_list = [test_dic]
@@ -561,15 +561,15 @@ class LabSectionTests(TestCase):
 
     """test for getting all lab sections"""
     def test_getAll_labSection_info(self):
-        test_dic = {"section_id": 222, "section_number": 301, "course_section": self.test_courseSection.section_number,
+        test_dic = {"section_id": 222, "section_number": 301, "course_section": self.test_courseSection.section_id,
                     "course": self.temp_course.course_id, "Time": "MW 9:30AM", "Location": "EMS",
                     "Type": "L", "ta": self.temp3.name}
         test_dic1 = {'section_id': 11111, 'section_number': 801,
-                     'course_section': self.test_courseSection.section_number,
+                     'course_section': self.test_courseSection.section_id,
                      'course': self.temp_course.course_id, 'Time': 'MW 9:30AM', 'Location': 'EMS',
                      'Type': 'L', 'ta': self.temp3.name}
         test_dic2 = {'section_id': 11112, 'section_number': 802,
-                     'course_section': self.test_courseSection.section_number,
+                     'course_section': self.test_courseSection.section_id,
                      'course': self.temp_course.course_id, 'Time': 'MW 9:30AM', 'Location': 'EMS',
                      'Type': 'L', 'ta': self.temp3.name}
         expected_result = [test_dic, test_dic1, test_dic2]
@@ -577,8 +577,8 @@ class LabSectionTests(TestCase):
 
     """test for creating a lab section"""
     def test_create_labSection(self):
-        info = {"section_id": 987, "section_number": 302, "course_section": self.test_courseSection,
-                "course": self.temp_course, "Time": "MW 9:30AM", "Location": "EMS", "Type": "L", "ta": self.temp3}
+        info = {"section_id": 987, "section_number": 302, "course_section": self.test_courseSection.section_id,
+                "course": self.temp_course.course_id, "Time": "MW 9:30AM", "Location": "EMS", "Type": "L", "ta": self.temp3.name}
         self.assertTrue(functions.LabSection_func.Create(self, info))
 
     """test for failing to create a lab section"""
@@ -612,7 +612,7 @@ class LabSectionTests(TestCase):
     def test_edit_labSection(self):
         update_info = {"section_id": 222, "section_number": 401}
         updated_info = {"section_id": 222, "section_number": 401,
-                        "course_section": self.test_courseSection.section_number,
+                        "course_section": self.test_courseSection.section_id,
                         "course": self.temp_course.course_id, "Time": "MW 9:30AM", "Location": "EMS",
                         "Type": "L", "ta": self.temp3.name}
         updated_info_list = [updated_info]
