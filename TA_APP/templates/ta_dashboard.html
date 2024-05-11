@@ -7,12 +7,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
-
-    <title>TA Scheduler Homepage</title>
+    <title>TA Dashboard</title>
 </head>
 <header>
     <div class="logout-container">
-        <form action="/homepage/" method="post">
+        <form action="/ta/dashboard/" method="post">
             {% csrf_token %}
             <input type="submit" name="logout-container" value="Log out" />
         </form>
@@ -27,15 +26,13 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            Supervisor Dashboard
+            TA Dashboard
         </div>
         <ul class="menu-bar">
-            <li><a href="{% url 'accountmanagement' %}"><span class="material-symbols-outlined">manage_accounts</span>Account Management</a></li>
-            <li><a href="{% url 'coursemanagement' %}"><span class="material-symbols-outlined">folder_managed</span>Course Management</a></li>
-            <li><a href="{% url 'viewusers' %}"><span class="material-symbols-outlined">person_search</span>View Users</a></li>
-            <li><a href="{% url 'viewcourses' %}"><span class="material-symbols-outlined">feature_search</span>View Courses</a></li>
-            <li><a href="#"><span class="material-symbols-outlined">notifications</span>Send Notifications</a></li>
-            <li><a href="#"><span class="material-symbols-outlined">edit_note</span>Edit Contact Information</a></li>
+            <li><a href="{% url 'ta_edit_contact' %}"><span class="material-symbols-outlined">edit_note</span>Edit Contact Information</a></li>
+            <li><a href="{% url 'ta_my_sections' %}"><span class="material-symbols-outlined">folder_managed</span>My Sections</a></li>
+            <li><a href="{% url 'ta_view_courses' %}"><span class="material-symbols-outlined">folder_open</span>View Courses</a></li>
+            <li><a href="{% url 'ta_view_users' %}"><span class="material-symbols-outlined">person_search</span>View Users</a></li>
         </ul>
     </div>
     <footer>
