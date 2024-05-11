@@ -45,18 +45,25 @@ class Login:
     In: username and password are strings representing user credentials.
     """
 
-    def authenticate(self, username: str, password: str) -> bool:
+    def authenticate(self, username: str, password: str) -> str:
         """Check username"""
         try:
             temp_user = User.objects.get(username=username)
         except ObjectDoesNotExist:
-            return False
+            return "No such user"
 
         """Check is password matches username"""
         if temp_user.password == password:
-            return True
+            if temp_user.type == "I":
+                return "I"
+            elif temp_user.type == "S":
+                return "S"
+            elif temp_user.type == "TA":
+                return "TA"
+            else:
+                return "Invalid user type"
         else:
-            return False
+            return "Invalid password"
 
 
 class User_func(Change, Getting):
@@ -425,7 +432,6 @@ class CourseSection_func(Change, Getting):
         # Check if all required fields are present
         required_fields = ['section_id', 'course', 'section_number', 'Time', 'Location', 'credits', 'instructor']
         if not all(field in info for field in required_fields):
-
             return False
 
         # Check if course section with the given section ID already exists
@@ -435,8 +441,9 @@ class CourseSection_func(Change, Getting):
 
         # Create and save the new course section
         course_section = CourseSection(section_id=info['section_id'], section_number=info['section_number'],
-                                       course=Course.objects.get(course_id=info['course']), Time=info['Time'], Location=info['Location'],
-                                       credits=info['credits'], instructor=User.objects.get(name=info['instructor']))
+                                       course=Course.objects.get(course_id=info['course']), Time=info['Time'],
+                                       Location=info['Location'], credits=info['credits'],
+                                       instructor=User.objects.get(name=info['instructor']))
         print(course_section)
         course_section.save()
 
@@ -590,16 +597,19 @@ class LabSection_func(Change, Getting):
         # Check if all required fields are present
         required_fields = ['section_id', 'course', 'section_number', 'Time', 'Location', 'Type', 'ta', 'course_section']
         if not all(field in info for field in required_fields):
+            print("first if")
             return False
 
         # Check if lab section with the given section ID already exists
         if LabSection.objects.filter(section_id=info['section_id']).exists():
+            print("second if")
             return False
 
         # Create and save the new lab section
         lab_section = LabSection(section_id=info['section_id'], section_number=info['section_number'],
-                                 course_section=info['course_section'], course=info['course'], Time=info['Time'],
-                                 Location=info['Location'], Type=info['Type'], ta=info['ta'])
+                                 course_section=CourseSection.objects.get(section_id=info['course_section']),
+                                 course=Course.objects.get(course_id=info["course"]), Time=info['Time'],
+                                 Location=info['Location'], Type=info['Type'], ta=User.objects.get(name=info["ta"]))
         lab_section.save()
         return True
 
@@ -683,7 +693,7 @@ class LabSection_func(Change, Getting):
                 result = {
                     'section_id': lab_section.section_id,
                     'section_number': lab_section.section_number,
-                    'course_section': lab_section.course_section.section_number,
+                    'course_section': lab_section.course_section.section_id,
                     'course': lab_section.course.course_id,
                     'Time': lab_section.Time,
                     'Location': lab_section.Location,
@@ -723,7 +733,7 @@ class LabSection_func(Change, Getting):
             result = {
                 'section_id': lab_section.section_id,
                 'section_number': lab_section.section_number,
-                'course_section': lab_section.course_section.section_number,
+                'course_section': lab_section.course_section.section_id,
                 'course': lab_section.course.course_id,
                 'Time': lab_section.Time,
                 'Location': lab_section.Location,

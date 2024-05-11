@@ -104,14 +104,19 @@
             font-family: 'Oswald', sans-serif;
             text-align: center;
             padding: 20px;
-
-
+            display: flex;
+            align-items: center;
+            flex-direction: column;
         }
 
         .form-table td {
             padding: 10px;
             white-space: pre-line;
             text-align: center;
+        }
+
+        .form-table th {
+            padding-right: 30px;
         }
 
         .centered {

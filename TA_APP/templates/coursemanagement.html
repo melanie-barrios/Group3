@@ -15,7 +15,7 @@
     <div class="logout-container">
         <form action="" method="post">
             {% csrf_token %}
-            <input type="submit" name="logout-container" value="Log out" />
+            <input type="submit" name="logout" value="Log out" />
         </form>
     </div>
     <div class="logo-3">
@@ -32,8 +32,8 @@
         <ul class="menu-bar">
             <li><a href="{% url 'accountmanagement' %}"><span class="material-symbols-outlined">manage_accounts</span>Account Management</a></li>
             <li><a href="#"><span class="material-symbols-outlined">folder_managed</span>Course Management</a></li>
-            <li><a href="#"><span class="material-symbols-outlined">person_search</span>View Users</a></li>
-            <li><a href="#"><span class="material-symbols-outlined">feature_search</span>View Courses</a></li>
+            <li><a href="{% url 'viewusers' %}"><span class="material-symbols-outlined">person_search</span>View Users</a></li>
+            <li><a href="{% url 'viewcourses' %}"><span class="material-symbols-outlined">feature_search</span>View Courses</a></li>
             <li><a href="#"><span class="material-symbols-outlined">notifications</span>Send Notifications</a></li>
             <li><a href="#"><span class="material-symbols-outlined">edit_note</span> Edit Contact Information</a></li>
         </ul>
@@ -64,6 +64,7 @@
         </tr>
     </table>
     </form>
+    {{ course_message }}
 </div>
 
 <div class="form-container2">
@@ -106,6 +107,7 @@
             </tr>
         </table>
     </form>
+    {{ course_section_message }}
 </div>
 
 <div class="form-container2">
@@ -133,6 +135,10 @@
                 <td><input type="text" name="location"></td>
             </tr>
             <tr>
+                <td><label>Time:</label></td>
+                <td><input type="text" name="time"></td>
+            </tr>
+            <tr>
                 <td><label>TA:</label></td>
                 <td><input type="text" name="ta"></td>
             </tr>
@@ -145,12 +151,13 @@
         </tr>
             <tr>
                 <td colspan="2" class="centered">
-                    <button type="submit">Submit</button>
+                    <button type="submit" name="createlabsection" value="true">Submit</button>
                           {% csrf_token %}
                 </td>
             </tr>
         </table>
     </form>
+    {{ lab_message }}
 </div>
 
 <footer>
