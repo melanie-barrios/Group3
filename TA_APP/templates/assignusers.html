@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="/static/viewusersStyle.css">
+    <link rel="stylesheet" type="text/css" href="/static/assignusersStyle.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
@@ -41,32 +41,50 @@
     </ul>
 </div>
 
-<div class="content">
-    <div class="form-container">
-        <h1>Users</h1>
+<div class="form-container">
+    <h2>Assign User to Course</h2>
+    <form action="/assign-users/" method="post">
         <table class="form-table">
-            <thead>
-                <tr>
-                    <th>User ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role ID</th>
-                    <th>Phone Number</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for user in users %}
-                <tr>
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.name }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.type }}</td>
-                    <td>{{ user.phone_number }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
+            <tr>
+                <td><label>Username:</label></td>
+                <td>
+                    <select name="username">
+                        <option value="">Select Username</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label>Course ID:</label></td>
+                <td>
+                    <select name="courseid">
+                        <option value="">Select Course ID</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label>Section ID:</label></td>
+                <td>
+                    <select name="sectionid">
+                        <option value="">Select Section ID</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label>Section Number:</label></td>
+                <td>
+                    <select name="sectionnumber">
+                        <option value="">Select Section Number</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="centered">
+                    <button type="submit" name="assignuser" value="true">Submit</button>
+                    {% csrf_token %}
+                </td>
+            </tr>
         </table>
-    </div>
+    </form>
 </div>
 
 <footer>
