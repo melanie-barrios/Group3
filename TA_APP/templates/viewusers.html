@@ -15,7 +15,7 @@
     <div class="logout-container">
         <form action="" method="post">
             {% csrf_token %}
-            <input type="submit" name="logout-container" value="Log out" />
+            <input type="submit" name="logout" value="Log out" />
         </form>
     </div>
     <div class="logo-3">
@@ -50,8 +50,10 @@
                     <th>User ID</th>
                     <th>Name</th>
                     <th>Email</th>
+                    <th>Address</th>
                     <th>Role ID</th>
                     <th>Phone Number</th>
+                    <th>Skills</th>
                 </tr>
             </thead>
             <tbody>
@@ -60,8 +62,10 @@
                     <td>{{ user.id }}</td>
                     <td>{{ user.name }}</td>
                     <td>{{ user.email }}</td>
+                    <td>{{ user.address }}</td>
                     <td>{{ user.type }}</td>
                     <td>{{ user.phone_number }}</td>
+                    <td>{{ user.skills }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
