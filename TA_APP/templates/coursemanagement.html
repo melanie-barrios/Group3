@@ -117,6 +117,7 @@
         {% csrf_token %}
         <table class="form-table">
             <h2>Create Lab Section</h2>
+
             <tr>
                 <td><label>Section ID:</label></td>
                 <td><input type="text" name="sectionid"></td>
@@ -167,13 +168,16 @@
     <div class="form-container-group">
         <h2>Edit Course</h2>
         <form action="/course-management/" method="post">
-            {% csrf_token %}
+         {% csrf_token %}
+
             <table class="form-table">
             <tr>
                 <td><label>Course ID:</label></td>
                 <td>
                     <select name="courseid">
-                        <option value="courseid">Course ID</option>
+                        {% for i in courses %}
+                            <option value={{ i.course_id }}>{{ i.course_id }}</option>
+                        {% endfor %}
                     </select>
                 </td>
             </tr>
@@ -198,13 +202,17 @@
     <div class="form-container-group">
         <h2>Edit Course Section</h2>
         <form action="/course-management/" method="post">
-            {% csrf_token %}
+
+         {% csrf_token %}
+
             <table class="form-table">
             <tr>
                 <td><label>SectionID:</label></td>
                 <td>
                     <select name="sectionid">
-                        <option value="sectionid">SectionID</option>
+                        {% for i in course_sections %}
+                            <option value={{ i.section_id }}>{{ i.section_id }}</option>
+                        {% endfor %}
                     </select>
                 </td>
             </tr>
@@ -214,7 +222,9 @@
                 <td><label>Course ID:</label></td>
                 <td>
                     <select name="courseid">
-                        <option value="courseid">CourseID</option>
+                        {% for i in course_sections %}
+                            <option value={{ i.course }}>{{ i.course }}</option>
+                        {% endfor %}
                     </select>
                 </td>
             </tr>
@@ -247,13 +257,16 @@
     <div class="form-container-group">
         <h2>Edit Lab Section</h2>
         <form action="/course-management/" method="post">
-            {% csrf_token %}
+                {% csrf_token %}
+
             <table class="form-table">
                   <tr>
                 <td><label>Section Number:</label></td>
                 <td>
                     <select name="sectionnumber">
-                        <option value="sectionid">Section Number</option>
+                        {% for i in lab_sections %}
+                            <option value={{ i.section_number }}>{{ i.section_number }}</option>
+                        {% endfor %}
                     </select>
                 </td>
             </tr>
@@ -261,7 +274,9 @@
                 <td><label>SectionID:</label></td>
                 <td>
                     <select name="sectionid">
-                        <option value="sectionid">Select SectionID</option>
+                        {% for i in lab_sections %}
+                            <option value={{ i.section_id }}>{{ i.section_id }}</option>
+                        {% endfor %}
                     </select>
                 </td>
             </tr>
@@ -285,6 +300,7 @@
                 <tr>
                     <td colspan="2" class="centered">
                         <button type="submit" name="createlabsection" value="true">Submit</button>
+
                     </td>
                 </tr>
             </table>

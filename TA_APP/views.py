@@ -97,7 +97,7 @@ class CourseManagement(View):
     def get(self, request):
         # Displays the course management page if user is a supervisor.
         if request.session.get('username') and User.objects.get(username=request.session.get('username')).type == 'S':
-            return render(request, 'coursemanagement.html')
+            return render(request, 'coursemanagement.html', {"courses": functions.Course_func.get_all(self), "course_sections": functions.CourseSection_func.get_all(self), "lab_sections": functions.LabSection_func.get_all(self)})
         else:
             # Logs out if user is not authorized.
             logout(request)
@@ -247,8 +247,47 @@ class AssignUsers(View):
 
 class EditContactInfo(View):
     def get(self, request):
-        # Displays the edit contact information page.
-        return render(request, 'editcontactinfo.html')
+
+
+        user = functions.User_func.get(self, "username", request.session.get('username'))
+
+        print(user)
+
+        return render(request, 'editcontactinfo.html', {'oldemail': user[0]['email'], 'oldphone':user[0]['phone_number'], 'oldaddress':user[0]['address']})
+
+    def post(self, request):
+
+
+
+        try:
+
+            data = {
+                'username': request.session.get('username'),
+                'email': request.POST.get('email'),
+                'phone_number': request.POST.get('phone'),
+                'address': request.POST.get('address')
+            }
+
+
+
+            status = functions.User_func.Edit(self, data)
+
+
+
+            if status is False:
+                raise Exception("Error while editing contact info")
+
+            user = functions.User_func.get(self,"username", request.session.get('username'))
+
+             # Displays the edit contact information page.
+
+            return render(request, 'editcontactinfo.html', {'message': "You have successfully edited your contact information", 'oldemail': user[0]['email'], 'oldphone':user[0]['phone_number'], 'oldaddress':user[0]['address']})
+        except Exception as e:
+          
+           # Displays the edit contact information page.
+            return render(request, 'editcontactinfo.html', {'message': e})
+
+
 
     def post(self, request):
         # Handles logout.

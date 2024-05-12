@@ -553,15 +553,15 @@ class EditContactInformation(TestCase):
         session['username'] = 'test_user3'
         session.save()
 
-        new_list = [{'name': 'New-Test', 'username': 'test_user3', 'password': 'PASSWORD3',
-                     'email': 'test3@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', "type": "TA",
-                     'skills': ''}]
+        new_list = [{'name': 'Test3', 'username': 'test_user3', 'password': 'PASSWORD3',
+                     'email': 'test3@uwm.edu', 'phone_number': 4567892122, 'address': '123 1st Street', "type": "S",'skills': ''}]
 
-        response = self.client.post('placeholder',
-                                    {'name': 'New-Test', 'password': 'PASSWORD3',
-                                     'email': 'test3@uwm.edu', 'phone_number': "1234567890",
-                                     'address': '123 1st Street', "type": "TA", 'skills': '', "status": "edit_contact"},
+        response = self.client.post('/editcontactinfo/',
+                                    {
+                                     'email': 'test3@uwm.edu', 'phone': "4567892122",
+                                     'address': '123 1st Street', "status": "edit_contact"},
                                     follow=True)
+
 
         self.assertEqual(new_list, functions.User_func.get(self, query="username", identity="test_user3"))
 
@@ -569,40 +569,42 @@ class EditContactInformation(TestCase):
 
     def test_edit_contact_instructor(self):
         session = self.client.session
-        session['username'] = 'test_user2'
+        session['username'] = 'test_user'
         session.save()
 
-        new_list = [{'name': 'New-Test', 'username': 'test_user2', 'password': 'PASSWORD2',
-                     'email': 'test2@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', "type": "TA",
+        new_list = [{'name': 'Test', 'username': 'test_user', 'password': 'PASSWORD',
+                     'email': 'test6@uwm.edu', 'phone_number': 4327537522, 'address': '123 3rd Street', "type": "I",
                      'skills': ''}]
 
-        response = self.client.post('placeholder',
-                                    {'name': 'New-Test', 'password': 'PASSWORD2',
-                                     'email': 'test2@uwm.edu', 'phone_number': "1234567890",
-                                     'address': '123 1st Street', "type": "TA", 'skills': '', "status": "edit_contact"},
+        response = self.client.post('/editcontactinfo/',
+                                    {'email': 'test6@uwm.edu', 'phone': "4327537522",
+                                     'address': '123 3rd Street'},
                                     follow=True)
 
-        self.assertEqual(new_list, functions.User_func.get(self, query="username", identity="test_user2"))
+        print(functions.User_func.get(self, query="username", identity="test_user"))
+
+        self.assertEqual(new_list, functions.User_func.get(self, query="username", identity="test_user"))
 
     """Testing if a TA can edit their own contact info including their skills information"""
 
     def test_edit_contact_TA(self):
         session = self.client.session
-        session['username'] = 'test_user'
+        session['username'] = 'test_user2'
         session.save()
 
-        new_list = [{'name': 'New-Test', 'username': 'test_user', 'password': 'PASSWORD',
-                     'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', "type": "TA",
-                     'skills': 'HTML/CSS'}]
+        new_list = [{'name': 'Test2', 'username': 'test_user2', 'password': 'PASSWORD2',
+                     'email': 'test5@uwm.edu', 'phone_number': 3123543444, 'address': '123 1st Street', "type": "TA",
+                     'skills': ''}]
 
-        response = self.client.post('placeholder',
-                                    {'name': 'New-Test', 'password': 'PASSWORD',
-                                     'email': 'test@uwm.edu', 'phone_number': "1234567890",
-                                     'address': '123 1st Street', "type": "TA", 'skills': 'HTML/CSS',
-                                     "status": "edit_contact"},
+        response = self.client.post('/editcontactinfo/',
+                                    {
+                                     'email': 'test5@uwm.edu', 'phone': "3123543444",
+                                     'address': '123 1st Street'},
                                     follow=True)
 
-        self.assertEqual(new_list, functions.User_func.get(self, query="username", identity="test_user"))
+
+
+        self.assertEqual(new_list, functions.User_func.get(self, query="username", identity="test_user2"))
 
 
 """
