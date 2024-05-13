@@ -351,6 +351,7 @@ class Course_func(Change, Getting):
     In: query string field to search based off of, identity fields value to search for
     Out: List of dictionaries containing the given query
     """
+
     def get(self, query: str, identity: str) -> list:
         """Create empty lists"""
         return_list = []
@@ -396,6 +397,7 @@ class Course_func(Change, Getting):
     In: None
     Out: List of dictionaries containing all Courses.
     """
+
     def get_all(self) -> list:
         """Get all courses in table"""
         course_list = Course.objects.all()
@@ -424,6 +426,7 @@ class CourseSection_func(Change, Getting):
     In: info is a dictionary containing CourseSection information.
     Out: Boolean to determine if operation was accomplished or not.
     """
+
     def Create(self, info: dict) -> bool:
         # Check if input is empty
         if not info:
@@ -744,3 +747,20 @@ class LabSection_func(Change, Getting):
 
         # Return the list of dictionaries containing information about all lab sections
         return results
+
+
+"""Notification class for sending notifications"""
+
+
+class Notify():
+    """
+    email. Sends an email based on the given txt file
+
+    Preconditions: string Txt file name contains valid information for sending an email.
+    Postconditions: Sends an email to a recipient. Returns a bool if it works well.
+    Side Effects: None.
+    In: filename: str for file name contains information
+    Out: bool if the operations fails or not
+    """
+    def email(self,filename:str) -> bool:
+        """"""
