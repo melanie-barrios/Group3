@@ -1,29 +1,3 @@
-        .container {
-            display: flex;
-            justify-content: space-between;
-            border: 2px solid #ccc;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-                      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            background-color: #f9f9f9;
-        }
-
-        .form-container-3 {
-            width: 30%;
-        }
-
-.form-container2 {
-    margin: 20px auto;
-    border-collapse: collapse;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: #f9f9f9;
-    font-family: 'Oswald', sans-serif;
-    text-align: center;
-    padding: 20px;
-}
         body {
             font-family: 'Oswald', sans-serif;
             margin: 0;
@@ -33,8 +7,8 @@
             flex-direction: column;
             align-items: center;
             background-color: #e4e9f7;
-            justify-content: center;
-            align-items: center;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
         }
 
         header {
@@ -45,11 +19,11 @@
             font-weight: bold;
             width: 100%;
             text-align: center;
-            position: relative;
             margin: 0;
             box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.08);
         }
-        header .logout-container input[type="submit"] {
+
+        .logout-container input[type="submit"] {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
@@ -60,28 +34,88 @@
             display: inline-block;
             padding: 10px 20px;
             border-radius: 20px;
-            background-color: #e74c3c;
+            background-color: #e74c3c; /* Ensure this color is correct and not being overridden */
             font-size: 20px;
             font-family: 'Oswald', sans-serif;
+        }
 
-        }
-        .form-container-group {
-            margin: 20px auto;
-            border-collapse: collapse;
-            border-radius: 10px;
-            overflow: hidden;
-            background-color: #f9f9f9;
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 250px;
+            padding: 0; /* Remove padding or adjust as needed */
+            background: var(--sidebar-color);
+            transition: var(--tran-05);
+            z-index: 100;
             font-family: 'Oswald', sans-serif;
+            font-weight: 300;
+        }
+
+        .sidebar-header {
+            color: #fff;
+            background-color: #34495e;
+            padding: 54px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 24px;
+            font-weight: bold;
             text-align: center;
+        }
+
+        .sidebar ul li {
+            padding: 5px 30px; /* Reduced vertical padding from 10px to 5px */
+        }
+
+        .sidebar ul li a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar ul li a .material-symbols-outlined {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #34495e;
+            color: #fff;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 300;
+        }
+
+        .form-container,
+        .form-container2 {
+            width: 50%;
+            box-sizing: border-box;
+            float: left;
             padding: 20px;
         }
+
+        .form-container2 {
+            margin-left: 20px;
+        }
+
+        .form-table {
+            width: 100%;
+        }
+
         .form-table td {
-            padding: 20px;
+            padding: 10px;
         }
+
 
         .form-table td input[type="text"],
         .form-table td input[type="email"],
-        .form-table td input[type="number"] {
+        .form-table td input[type="tel"] {
             width: 100%;
             padding: 8px;
             border: 1px solid #ccc;
@@ -112,17 +146,106 @@
         button:hover {
             background-color: #2c3e50;
         }
+        body {
+            font-family: 'Oswald', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* Center vertically */
+            background-color: #e4e9f7;
+        }
+
         header {
             background-color: #34495e;
-            font-family: 'Oswald', sans-serif;
             color: #fff;
             padding: 20px 0;
             font-size: 24px;
             font-weight: bold;
             width: 100%;
             text-align: center;
-            position: relative;
-            box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.08), 0 2px 4px 0 rgba(0, 0, 0, 0.12);
+            position: fixed; /* Fixed position to stick to the top */
+            top: 0; /* Place it at the top */
+            z-index: 999; /* Ensure it's above other content */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12); /* Adjust box shadow */
+        }
+        header .logout-container input[type="submit"] {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 20px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 300;
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 20px;
+            background-color: #e74c3c; /* Ensure this color is correct and not being overridden */
+            font-size: 20px;
+            font-family: 'Oswald', sans-serif;
+        }
+
+        .form-container {
+            margin: 20px auto; /* Center horizontally */
+            /*width: 50%;*/
+            border-collapse: collapse;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: #f9f9f9;
+            font-family: 'Oswald', sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .form-container2 {
+            margin: 20px auto; /* Center horizontally */
+
+            border-collapse: collapse;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: #f9f9f9;
+            font-family: 'Oswald', sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .form-table td {
+            padding: 10px;
+        }
+
+        .form-table td input[type="text"],
+        .form-table td input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-table td input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        .centered {
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-family: 'Oswald', sans-serif;
+            background-color: #34495e;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 50%;
+            margin: 20px auto;
+            display: block;
+        }
+
+        button:hover {
+            background-color: #2c3e50;
         }
 
         .login-container a:hover {
@@ -304,7 +427,6 @@
             font-family: 'Oswald', sans-serif;
             font-weight: 300;
         }
-
 
         select {
             width: 100%;
