@@ -467,17 +467,13 @@ class CourseSection_func(Change, Getting):
     def Edit(self, info: dict) -> bool:
         try:
             # Attempt to retrieve the course section from the database
+            print("here - 1")
             course_section = CourseSection.objects.get(section_id=info['section_id'])
+            print("here - 2")
             # Update the course section attributes with the provided data
             for key, value in info.items():
-                if key == 'instructor':
-                    # If the key is 'instructor', retrieve the user object from the database
-                    instructor = User.objects.get(username=value)
-                    # Set the instructor attribute of the course section to the retrieved user object
-                    setattr(course_section, key, instructor)
-                else:
-                    # Set the attribute of the course section to the provided value
-                    setattr(course_section, key, value)
+                # Set the attribute of the course section to the provided value
+                setattr(course_section, key, value)
             # Save the updated course section
             course_section.save()
             return True
@@ -657,14 +653,8 @@ class LabSection_func(Change, Getting):
 
             # Iterate over each key-value pair in the info dictionary
             for key, value in info.items():
-                # Check if the key is 'ta'
-                if key == 'ta':
-                    # If key is 'ta', retrieve the User object using the provided username and set it as the value
-                    ta = User.objects.get(username=value)
-                    setattr(lab_section, key, ta)
-                else:
-                    # For other keys, set the corresponding attribute of lab_section to the provided value
-                    setattr(lab_section, key, value)
+                # For other keys, set the corresponding attribute of lab_section to the provided value
+                setattr(lab_section, key, value)
 
             # Save the updated lab section
             lab_section.save()

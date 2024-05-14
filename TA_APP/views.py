@@ -12,36 +12,45 @@ class Login(View):
 
     def post(self, request):
         # Handles login form submission.
-        username = request.POST['username']
-        password = request.POST['password']
-        # check identity
-        verify = functions.Login.authenticate(self, str(username), str(password))
+        if request.POST.get('login') == 'true':
+            username = request.POST.get('username')
+            password = request.POST.get('password')
 
-        # Redirects to the appropriate dashboard based on user type.
-        if verify == 'S':  # Supervisor (or Administrator)
-            request.session['username'] = username
-            return render(request, 'homepage.html', {"status": "Signed In"})
-        elif verify == 'I':  # Instructor
-            request.session['username'] = username
-            return redirect('instructor_dashboard')
-        elif verify == 'T':  # TA
-            request.session['username'] = username
-            return redirect('ta_dashboard')
+            if not (username and password):
+                return render(request, "login.html", {"message": "Please provide username and password"})
+            # check identity
+            verify = functions.Login.authenticate(self, str(username), str(password))
+
+            # Redirects to the appropriate dashboard based on user type.
+            if verify == 'S':  # Supervisor (or Administrator)
+                request.session['username'] = username
+                return render(request, 'homepage.html', {"status": "Signed In"})
+            elif verify == 'I':  # Instructor
+                request.session['username'] = username
+                return render(request, 'instructor_dashboard.html', {"status": "Signed In"})
+            elif verify == 'T':  # TA
+                request.session['username'] = username
+                return render(request, 'ta_dashboard.html', {"status": "Signed In"})
+            else:
+                # Redirects back to login page if authentication fails.
+                return render(request, "login.html", {"message": "Username or password is incorrect"})
         else:
-            # Redirects back to login page if authentication fails.
-            return render(request, "login.html", {"message": "Username or password is incorrect"})
+            return render(request, "login.html", {"message": ""})
 
 
 class HomePage(View):
     def get(self, request):
         # Redirects to login if session is not active.
-        if not request.session.get('username'):
+        if request.session.get('username'):
+            return render(request, 'homepage.html', {})
+        else:
             return redirect('/')
 
     def post(self, request):
         # Handles logout.
-        logout(request)
-        return redirect('/')
+        if request.POST.get('logout') == 'Log out':
+            request.session.pop('username', None)
+            return redirect('/')
 
 
 class AccountManagement(View):
@@ -51,20 +60,17 @@ class AccountManagement(View):
             return render(request, 'accountmanagement.html')
         else:
             # Logs out if user is not authorized.
-            logout(request)
+            request.session.pop('username', None)
             return redirect('/')
 
     def post(self, request):
         # Handles account management form submissions.
-        print(request.POST)
         if request.POST.get('status') == "delete":
             try:
-
                 # Deletes user account.
                 identity = request.POST.get('delusername')
 
                 status = functions.User_func.Delete(self, identity)
-                print(status)
                 if status is False:
                     raise Exception("Deletion Failed")
 
@@ -72,13 +78,10 @@ class AccountManagement(View):
             except Exception as e:
                 # Renders account management page with error message.
                 return render(request, 'accountmanagement.html',
-                              {'message': 'Account Deletion Failed', 'error': str(e)})
+                              {'delete_message': 'Account Deletion Failed', 'error': str(e)})
         elif request.POST.get('status') == "create":
             try:
                 # Creates new user account.
-
-
-
                 status = functions.User_func.Create(self, {"username": request.POST.get('username') or False,
                                                            "password": request.POST.get('password') or False,
                                                            "email": request.POST.get('email') or False,
@@ -86,18 +89,17 @@ class AccountManagement(View):
                                                            "phone_number": request.POST.get('phone') or False,
                                                            "address": request.POST.get('address') or False,
                                                            "type": request.POST.get('role') or False,
-                                                           "skills": '' })
+                                                           "skills": ''})
                 if status is False:
                     raise Exception("Account not created")
                 return render(request, 'accountmanagement.html', {'message': 'Account Created Successfully'})
             except Exception as e:
                 # Renders account management page with error message.
-
                 return render(request, 'accountmanagement.html',
                               {'message': "Duplicate username or missing form field"})
         elif request.POST.get('logout') == "Log out":
             # Logs out user.
-            logout(request)
+            request.session.pop('username', None)
             return redirect('/')
         else:
             # Renders account management page with error message.
@@ -108,10 +110,13 @@ class CourseManagement(View):
     def get(self, request):
         # Displays the course management page if user is a supervisor.
         if request.session.get('username') and User.objects.get(username=request.session.get('username')).type == 'S':
-            return render(request, 'coursemanagement.html', {"courses": functions.Course_func.get_all(self), "course_sections": functions.CourseSection_func.get_all(self), "lab_sections": functions.LabSection_func.get_all(self)})
+            return render(request, 'coursemanagement.html', {"courses": functions.Course_func.get_all(self),
+                                                             "course_sections": functions.CourseSection_func.get_all(
+                                                                 self),
+                                                             "lab_sections": functions.LabSection_func.get_all(self)})
         else:
             # Logs out if user is not authorized.
-            logout(request)
+            request.session.pop('username', None)
             return redirect('/')
 
     def post(self, request):
@@ -124,7 +129,7 @@ class CourseManagement(View):
                                                              "course_term": request.POST.get('term') or False})
                 if status is False:
                     raise Exception("Course not created")
-                return render(request, 'coursemanagement.html', {'course_message': 'Course Created Successfully'})
+                return render(request, 'coursemanagement.html', {'create_course': 'Course Created Successfully'})
             except Exception as e:
                 # Renders course management page with error message.
                 return render(request, 'coursemanagement.html',
@@ -165,9 +170,78 @@ class CourseManagement(View):
                 # Renders course management page with error message.
                 return render(request, 'coursemanagement.html',
                               {'lab_message': 'Lab Section Creation Failed', 'error': str(e)})
+        elif request.POST.get('status') == "delete":
+            try:
+                # Deletes user account.
+                identity = request.POST.get('delcourse')
+
+                status = functions.Course_func.Delete(self, identity)
+                if status is False:
+                    raise Exception("Deletion Failed")
+
+                return render(request, 'coursemanagement.html', {'delete_message': 'Course Deleted Successfully'})
+            except Exception as e:
+                # Renders account management page with error message.
+                return render(request, 'coursemanagement.html',
+                              {'delete_message': 'Course Deletion Failed', 'error': str(e)})
+        elif request.POST.get('editcourse') == "true":
+            try:
+                info = {'course_id': request.POST.get('courseid'), 'course_name': request.POST.get('name'),
+                        'course_term': request.POST.get('term')}
+                status = functions.Course_func.Edit(self, info)
+                if status is False:
+                    raise Exception("Deletion Failed")
+
+                return render(request, 'coursemanagement.html', {'edit_course_message': 'Course Editing Successful'})
+            except Exception as e:
+                return render(request, 'coursemanagement.html',
+                              {'edit_course_message': 'Course Editing Failed', 'error': str(e)})
+        elif request.POST.get('editcoursesection') == "true":
+            try:
+                instructor = ''
+                section_id = request.POST.get('sectionid')
+                section = CourseSection.objects.get(section_id=section_id)
+                if request.POST.get('instructor'):
+                    instructor = User.objects.get(name=request.POST.get('instructor'))
+                info = {'section_id': request.POST.get('sectionid'),
+                        'Time': request.POST.get('time') or section.Time,
+                        'Location': request.POST.get('location') or section.Location,
+                        'credits': request.POST.get('credits') or section.credits,
+                        'instructor': instructor or section.instructor}
+                status = functions.CourseSection_func.Edit(self, info)
+                if status is False:
+                    raise Exception("Editing Failed")
+
+                return render(request, 'coursemanagement.html',
+                              {'edit_course_section_message': 'Course Section Editing Successful'})
+            except Exception as e:
+                return render(request, 'coursemanagement.html',
+                              {'edit_course_section_message': 'Course Section Editing Failed', 'error': str(e)})
+        elif request.POST.get('editlabsection') == "true":
+            try:
+                ta = ''
+                section_id = request.POST.get('sectionid')
+                section = LabSection.objects.get(section_id=section_id)
+                if request.POST.get('ta'):
+                    ta = User.objects.get(name=request.POST.get('ta'))
+                info = {'section_id': request.POST.get('sectionid'),
+                        'Time': request.POST.get('time') or section.Time,
+                        'Location': request.POST.get('location') or section.Location,
+                        'section_number': request.POST.get('sectionnumber') or section.section_number,
+                        'ta': ta or section.ta,
+                        'Type': request.POST.get('role') or section.Type}
+                status = functions.LabSection_func.Edit(self, info)
+                if status is False:
+                    raise Exception("Editing Failed")
+
+                return render(request, 'coursemanagement.html',
+                              {'edit_lab_section_message': 'Lab Section Editing Successful'})
+            except Exception as e:
+                return render(request, 'coursemanagement.html',
+                              {'edit_lab_section_message': 'Lab Section Editing Failed', 'error': str(e)})
         elif request.POST.get('logout') == "Log out":
             # Logs out user.
-            logout(request)
+            request.session.pop('username', None)
             return redirect('/')
         else:
             # Renders course management page with error message.
@@ -190,7 +264,7 @@ class ViewCourses(View):
 
     def post(self, request):
         # Handles logout.
-        logout(request)
+        request.session.pop('username', None)
         return redirect('/')
 
 
@@ -207,25 +281,28 @@ class ViewUsers(View):
 
     def post(self, request):
         # Logs out user.
-        logout(request)
+        request.session.pop('username', None)
         return redirect('/')
 
 
 class AssignUsers(View):
     def get(self, request):
-        # Displays the assign users page and populates select lists.
-        names = User.objects.values_list('name', flat=True)
-        courses = Course.objects.all()
-        section_ids = CourseSection.objects.values_list('section_id', flat=True)
-        section_numbers = CourseSection.objects.values_list('section_number', flat=True)
+        if request.session.get('username'):
+            # Displays the assign users page and populates select lists.
+            names = User.objects.values_list('name', flat=True)
+            courses = Course.objects.all()
+            section_ids = CourseSection.objects.values_list('section_id', flat=True)
+            section_numbers = CourseSection.objects.values_list('section_number', flat=True)
 
-        context = {
-            'names': names,
-            'courses': courses,
-            'section_ids': section_ids,
-            'section_numbers': section_numbers,
-        }
-        return render(request, 'assignusers.html', context)
+            context = {
+                'names': names,
+                'courses': courses,
+                'section_ids': section_ids,
+                'section_numbers': section_numbers,
+            }
+            return render(request, 'assignusers.html', context)
+        else:
+            return redirect('/')
 
     def post(self, request):
         # Handles assigning users to courses.
@@ -252,7 +329,7 @@ class AssignUsers(View):
                 # Handles if user or course doesn't exist
                 return render(request, 'assignusers.html', {'message': 'User or Course not found.'})
         elif request.POST.get('logout') == "Log out":
-            logout(request)
+            request.session.pop('username', None)
             return redirect('/')
 
 
@@ -261,7 +338,9 @@ class EditContactInfo(View):
 
         user = functions.User_func.get(self, "username", request.session.get('username'))
 
-        return render(request, 'editcontactinfo.html', {'oldemail': user[0]['email'], 'oldphone':user[0]['phone_number'], 'oldaddress':user[0]['address']})
+        return render(request, 'editcontactinfo.html',
+                      {'oldemail': user[0]['email'], 'oldphone': user[0]['phone_number'],
+                       'oldaddress': user[0]['address']})
 
     def post(self, request):
         try:
@@ -272,27 +351,24 @@ class EditContactInfo(View):
                 'phone_number': request.POST.get('phone'),
                 'address': request.POST.get('address')
             }
-            print(data)
-
 
             status = functions.User_func.Edit(self, data)
-
-
 
             if status is False:
                 raise Exception("Error while editing contact info")
 
-            user = functions.User_func.get(self,"username", request.session.get('username'))
+            user = functions.User_func.get(self, "username", request.session.get('username'))
 
-             # Displays the edit contact information page.
+            # Displays the edit contact information page.
 
-            return render(request, 'editcontactinfo.html', {'message': "You have successfully edited your contact information", 'oldemail': user[0]['email'], 'oldphone':user[0]['phone_number'], 'oldaddress':user[0]['address']})
+            return render(request, 'editcontactinfo.html',
+                          {'message': "You have successfully edited your contact information",
+                           'oldemail': user[0]['email'], 'oldphone': user[0]['phone_number'],
+                           'oldaddress': user[0]['address']})
         except Exception as e:
-          
-           # Displays the edit contact information page.
+
+            # Displays the edit contact information page.
             return render(request, 'editcontactinfo.html', {'message': e})
-
-
 
 
 class Notifications(View):
@@ -303,7 +379,7 @@ class Notifications(View):
     def post(self, request):
         # Handles logout.
         if request.POST.get('logout') == "Log out":
-            logout(request)
+            request.session.pop('username', None)
             return redirect('/')
 
 
@@ -318,7 +394,7 @@ class InstructorDashboard(View):
     def post(self, request):
         # Handles logout.
         if request.POST.get('logout') == "Log out":
-            logout(request)
+            request.session.pop('username', None)
             return redirect('/')
 
 
@@ -333,7 +409,7 @@ class instructor_edit_contact(View):
     def post(self, request):
         # Handles logout.
         if request.POST.get('logout') == "Log out":
-            logout(request)
+            request.session.pop('username', None)
             return redirect('/')
 
 
@@ -348,7 +424,7 @@ class instructor_section_management(View):
     def post(self, request):
         # Handles logout.
         if request.POST.get('logout') == "Log out":
-            logout(request)
+            request.session.pop('username', None)
             return redirect('/')
 
 
@@ -367,7 +443,7 @@ class instructor_view_courses(View):
     def post(self, request):
         # Handles logout.
         if request.POST.get('logout') == "Log out":
-            logout(request)
+            request.session.pop('username', None)
             return redirect('/')
 
 
@@ -383,7 +459,7 @@ class instructor_view_users(View):
     def post(self, request):
         # Handles logout.
         if request.POST.get('logout') == "Log out":
-            logout(request)
+            request.session.pop('username', None)
             return redirect('/')
 
 
@@ -398,7 +474,7 @@ class instructor_notifications(View):
     def post(self, request):
         # Handles logout.
         if request.POST.get('logout') == "Log out":
-            logout(request)
+            request.session.pop('username', None)
             return redirect('/')
 
 
@@ -413,7 +489,7 @@ class TADashboard(View):
     def post(self, request):
         # Handles logout.
         if request.POST.get('logout') == "Log out":
-            logout(request)
+            request.session.pop('username', None)
             return redirect('/')
 
 
@@ -428,7 +504,7 @@ class ta_edit_contact(View):
     def post(self, request):
         # Handles logout.
         if request.POST.get('logout') == "Log out":
-            logout(request)
+            request.session.pop('username', None)
             return redirect('/')
 
 
@@ -446,7 +522,7 @@ class ta_my_sections(View):
     def post(self, request):
         # Handles logout.
         if request.POST.get('logout') == "Log out":
-            logout(request)
+            request.session.pop('username', None)
             return redirect('/')
 
 
@@ -465,7 +541,7 @@ class ta_view_courses(View):
     def post(self, request):
         # Handles logout.
         if request.POST.get('logout') == "Log out":
-            logout(request)
+            request.session.pop('username', None)
             return redirect('/')
 
 
@@ -481,5 +557,5 @@ class ta_view_users(View):
     def post(self, request):
         # Handles logout.
         if request.POST.get('logout') == "Log out":
-            logout(request)
+            request.session.pop('username', None)
             return redirect('/')
