@@ -128,7 +128,7 @@ class CourseManagement(View):
             except Exception as e:
                 # Renders course management page with error message.
                 return render(request, 'coursemanagement.html',
-                              {'message': 'Course Creation Failed', 'error': str(e)})
+                              {'create_course': 'Course Creation Failed', 'error': str(e)})
         elif request.POST.get('createcoursesection') == "true":
             try:
                 # Creates new course section.
@@ -142,11 +142,11 @@ class CourseManagement(View):
                 if status is False:
                     raise Exception("Course Section not created")
                 return render(request, 'coursemanagement.html',
-                              {'message': 'Course Section Created Successfully'})
+                              {'create_course_section_message': 'Course Section Created Successfully'})
             except Exception as e:
                 # Renders course management page with error message.
                 return render(request, 'coursemanagement.html',
-                              {'message': 'Course Section Creation Failed', 'error': str(e)})
+                              {'create_course_section_message': 'Course Section Creation Failed', 'error': str(e)})
         elif request.POST.get('createlabsection') == "true":
             try:
                 # Creates new lab section.
@@ -160,11 +160,11 @@ class CourseManagement(View):
                                                                  "ta": request.POST.get('ta')})
                 if status is False:
                     raise Exception("Lab Section not created")
-                return render(request, 'coursemanagement.html', {'message': 'Lab Section Created Successfully'})
+                return render(request, 'coursemanagement.html', {'lab_message': 'Lab Section Created Successfully'})
             except Exception as e:
                 # Renders course management page with error message.
                 return render(request, 'coursemanagement.html',
-                              {'message': 'Lab Section Creation Failed', 'error': str(e)})
+                              {'lab_message': 'Lab Section Creation Failed', 'error': str(e)})
         elif request.POST.get('logout') == "Log out":
             # Logs out user.
             logout(request)

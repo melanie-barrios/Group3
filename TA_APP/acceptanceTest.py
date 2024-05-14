@@ -73,7 +73,7 @@ class SupervisorCreateAccountTest(TestCase):
                                 {'name': 'Test4', 'username': 'test_user4', 'password': 'PASSWORD4',
                                  'email': 'test@uwm.edu', 'phone': "1234567890", 'address': '123 1st Street',
                                  "role": "TA", 'skills': '', 'status': 'create'}, follow=True)
-        print(resp.context['message'])
+
         self.assertEqual(resp.context['message'], "Account Created Successfully",
                          msg="Message for successful account creation failed")
 
@@ -153,7 +153,7 @@ class SupervisorCreateCourseTest(TestCase):
     def test_invalidCoursecreation(self):
         response = self.client.post('/course-management/', {"course_name": "", "createcourse": "true"})
 
-        self.assertEqual(response.context['message'], "Course Creation Failed")
+        self.assertEqual(response.context['create_course'], "Course Creation Failed")
 
 """
 PBI: As a supervisor I would like to delete courses so that I can remove the courses that are no longer taught
@@ -214,7 +214,7 @@ class SupervisorCreateCourseSectionTest(TestCase):
                                 {"sectionid": "456", "sectionnumber": "201", "course": "CS101",
                                  "time": "MW 9:30AM", "location": "EMS", "credits": "3", "instructor":self.instructor.name,
                                  "createcoursesection": "true"}, follow=True)
-        self.assertEqual(resp.context['message'], "Course Section Created Successfully",
+        self.assertEqual(resp.context['create_course_section_message'], "Course Section Created Successfully",
                          msg="Message for successful course section creation failed")
 
     """Testing the valid creation of a course section"""
@@ -232,7 +232,7 @@ class SupervisorCreateCourseSectionTest(TestCase):
                                 {"section_id": "456", "section_number": '', "course": "CS101",
                                  "Time": "MW 9:30AM", "Location": "EMS", "credits": "3",
                                  "createcoursesection": "true"}, follow=True)
-        self.assertEqual(resp.context['message'], "Course Section Creation Failed",
+        self.assertEqual(resp.context['create_course_section_message'], "Course Section Creation Failed",
                          msg="Message for unsuccessful course section creation failed")
 
     """Testing the invalid creation of a course section"""
@@ -241,7 +241,7 @@ class SupervisorCreateCourseSectionTest(TestCase):
                                 {"section_id": "456", "section_number": "202", "course": "CS101",
                                  "Time": "MW 9:30AM", "Location": "EMS", "credits": "3",
                                   "createcoursesection": "true"}, follow=True)
-        self.assertEqual(resp.context['message'], "Course Section Creation Failed",
+        self.assertEqual(resp.context['create_course_section_message'], "Course Section Creation Failed",
                          msg="Message for unsuccessful course section creation failed")
 
 """
@@ -328,7 +328,7 @@ class SupervisorCreateLabSectionTest(TestCase):
                                  "coursesection": "123",
                                  "course": "CS303", "time": "MW 9:30AM", "location": "EMS",
                                  "role": "L", "ta":"Test3", "createlabsection": "true"}, follow=True)
-        self.assertEqual(resp.context['message'], "Lab Section Created Successfully",
+        self.assertEqual(resp.context['lab_message'], "Lab Section Created Successfully",
                          msg="Message for successful course section creation failed")
 
     """test valid lab section creation"""
@@ -348,7 +348,7 @@ class SupervisorCreateLabSectionTest(TestCase):
                                  "coursesection": '',
                                  "course": "CS303", "time": "MW 9:30AM", "location": "EMS",
                                  "role": "L", "ta":"Test3",  "createlabsection": "true"}, follow=True)
-        self.assertEqual(resp.context['message'], "Lab Section Creation Failed",
+        self.assertEqual(resp.context['lab_message'], "Lab Section Creation Failed",
                          msg="Message for unsuccessful course section creation failed because of duplicate")
 
     """Test the invalid creation of a lab section"""
@@ -358,7 +358,7 @@ class SupervisorCreateLabSectionTest(TestCase):
                                  "coursesection": "303",
                                  "course": "CS303", "time": "MW 9:30AM", "location": "EMS",
                                  "role": "L", "ta":"Test3", "createlabsection": "true"}, follow=True)
-        self.assertEqual(resp.context['message'], "Lab Section Creation Failed",
+        self.assertEqual(resp.context['lab_message'], "Lab Section Creation Failed",
                          msg="Message for unsuccessful course section creation failed")
 
 """
