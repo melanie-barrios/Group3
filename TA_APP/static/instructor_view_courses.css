@@ -1,0 +1,25 @@
+/* viewcoursesStyle.css */
+.content-area {
+    width: 80%;
+    margin: auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.content-area h2 {
+    color: #34495e;
+    margin-bottom: 20px;
+}
+
+.content-area ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.content-area li {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 5px;
+}
