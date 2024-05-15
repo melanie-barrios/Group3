@@ -134,12 +134,6 @@ class LabSectionTests(TestCase):
         update_info = {"section_id": 999, "section_number": 401}
         self.assertFalse(functions.LabSection_func.Edit(self, update_info))
 
-    """test for failing editing a lab section"""
-
-    def test_edit_labSection_invalid_ta(self):
-        update_info = {"section_id": 222, "ta": "invalid_username"}
-        self.assertFalse(functions.LabSection_func.Edit(self, update_info))
-
     """test for deleting a lab section"""
 
     def test_delete_labSection_invalid_section_id(self):

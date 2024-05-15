@@ -13,7 +13,7 @@ class LoginTest(TestCase):
                          phone_number=1234567890, address="123 1st street", type="I")
         self.temp.save()
         self.temp2 = User(name="Test2", username="test_user2", password="PASSWORD2", email="test@uwm.edu",
-                          phone_number=1234567890, address="123 1st Street", type="TA")
+                          phone_number=1234567890, address="123 1st Street", type="T")
         self.temp2.save()
         self.temp3 = User(name="Test3", username="test_user3", password="PASSWORD3", email="test3@uwm.edu",
                           phone_number=1234567890, address="123 1st Street", type="S")
@@ -35,7 +35,7 @@ class LoginTest(TestCase):
     """Test a valid TA logging in"""
 
     def test_login_2(self):
-        self.assertEqual("TA", functions.Login.authenticate(self, username="test_user2", password="PASSWORD2"),
+        self.assertEqual("T", functions.Login.authenticate(self, username="test_user2", password="PASSWORD2"),
                          msg="User exists should return true")
 
     """Test an valid Supervisor logging in"""
