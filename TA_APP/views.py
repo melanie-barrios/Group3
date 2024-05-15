@@ -41,7 +41,7 @@ class Login(View):
 class HomePage(View):
     def get(self, request):
         # Redirects to login if session is not active.
-        if request.session.get('username'):
+        if request.session.get('username') and User.objects.get(username=request.session.get('username')).type == 'S':
             return render(request, 'homepage.html', {})
         else:
             return redirect('/')
@@ -251,7 +251,7 @@ class CourseManagement(View):
 class ViewCourses(View):
     def get(self, request):
         # Displays the view courses page.
-        if request.session.get('username'):
+        if request.session.get('username') and User.objects.get(username=request.session.get('username')).type == 'S':
             # Populating tables with the database
             courses = functions.Course_func.get_all(self)
             course_sections = functions.CourseSection_func.get_all(self)
@@ -271,7 +271,7 @@ class ViewCourses(View):
 class ViewUsers(View):
     def get(self, request):
         # Displays the view users page.
-        if request.session.get('username'):
+        if request.session.get('username') and User.objects.get(username=request.session.get('username')).type == 'S':
             # Populating the table with database
             users = functions.User_func.get_all(self)
             return render(request, 'viewusers.html', {'users': users})
@@ -287,18 +287,16 @@ class ViewUsers(View):
 
 class AssignUsers(View):
     def get(self, request):
-        if request.session.get('username'):
+        if request.session.get('username') and User.objects.get(username=request.session.get('username')).type == 'S':
             # Displays the assign users page and populates select lists.
             names = User.objects.values_list('name', flat=True)
             courses = Course.objects.all()
             section_ids = CourseSection.objects.values_list('section_id', flat=True)
-            section_numbers = CourseSection.objects.values_list('section_number', flat=True)
 
             context = {
                 'names': names,
                 'courses': courses,
                 'section_ids': section_ids,
-                'section_numbers': section_numbers,
             }
             return render(request, 'assignusers.html', context)
         else:
@@ -311,17 +309,17 @@ class AssignUsers(View):
             name = request.POST.get('names')
             course_id = request.POST.get('courseid')
             section_id = request.POST.get('sectionid')
-            section_number = request.POST.get('sectionnumber')
-
             try:
                 # Retrieves user, course, and section from the database.
                 user = User.objects.get(name=name)
-                course = Course.objects.get(course_id=course_id)
-                section = course.coursesection_set.get(section_id=section_id, section_number=section_number)
-
-                # Assign user to the course section
-                section.instructor = user
-                section.save()
+                if course_id != '':
+                    course = Course.objects.get(course_id=course_id)
+                    course.assignments.add(user)
+                    course.save()
+                if section_id != '':
+                    section = CourseSection.objects.get(section_id=section_id)
+                    section.instructor = user
+                    section.save()
 
                 # Rendering a success message
                 return render(request, 'assignusers.html', {'message': 'User assigned Successfully'})
@@ -335,40 +333,50 @@ class AssignUsers(View):
 
 class EditContactInfo(View):
     def get(self, request):
-
-        user = functions.User_func.get(self, "username", request.session.get('username'))
-
-        return render(request, 'editcontactinfo.html',
-                      {'oldemail': user[0]['email'], 'oldphone': user[0]['phone_number'],
-                       'oldaddress': user[0]['address']})
-
-    def post(self, request):
-        try:
-
-            data = {
-                'username': request.session.get('username'),
-                'email': request.POST.get('email'),
-                'phone_number': request.POST.get('phone'),
-                'address': request.POST.get('address')
-            }
-
-            status = functions.User_func.Edit(self, data)
-
-            if status is False:
-                raise Exception("Error while editing contact info")
-
+        if request.session.get('username') and User.objects.get(username=request.session.get('username')).type == 'S':
             user = functions.User_func.get(self, "username", request.session.get('username'))
 
-            # Displays the edit contact information page.
 
-            return render(request, 'editcontactinfo.html',
-                          {'message': "You have successfully edited your contact information",
-                           'oldemail': user[0]['email'], 'oldphone': user[0]['phone_number'],
-                           'oldaddress': user[0]['address']})
-        except Exception as e:
+            context = {
+                'oldemail': user[0]['email'],
+                'oldphone': user[0]['phone_number'],
+                'oldaddress': user[0]['address']
+            }
 
-            # Displays the edit contact information page.
-            return render(request, 'editcontactinfo.html', {'message': e})
+            return render(request, 'editcontactinfo.html', context)
+        else:
+            return redirect('/')
+
+    def post(self, request):
+        if request.POST.get('update_supervisor'):
+            try:
+                data = {
+                    'username': request.session.get('username'),
+                    'email': request.POST.get('email'),
+                    'phone_number': request.POST.get('phone'),
+                    'address': request.POST.get('address')
+                }
+
+                status = functions.User_func.Edit(self, data)
+
+                if status is False:
+                    raise Exception("Error while editing contact info")
+
+                user = functions.User_func.get(self, "username", request.session.get('username'))
+
+                # Displays the edit contact information page.
+
+                return render(request, 'editcontactinfo.html',
+                              {'message': "You have successfully edited your contact information",
+                               'oldemail': user[0]['email'], 'oldphone': user[0]['phone_number'],
+                               'oldaddress': user[0]['address']})
+            except Exception as e:
+
+                # Displays the edit contact information page.
+                return render(request, 'editcontactinfo.html', {'message': e})
+        elif request.POST.get('logout') == "Log out":
+            request.session.pop('username', None)
+            return redirect('/')
 
 
 class Notifications(View):
@@ -402,13 +410,45 @@ class instructor_edit_contact(View):
     def get(self, request):
         # Displays the instructor edit contact page.
         if request.session.get('username'):
-            return render(request, 'instructor_edit_contact.html', {})
+            user = functions.User_func.get(self, "username", request.session.get('username'))
+            context = {
+                'oldemail': user[0]['email'],
+                'oldphone': user[0]['phone_number'],
+                'oldaddress': user[0]['address']
+            }
+            return render(request, 'instructor_edit_contact.html', context)
         else:
             return redirect('/')
 
     def post(self, request):
         # Handles logout.
-        if request.POST.get('logout') == "Log out":
+        if request.POST.get('update_instructor') == 'true':
+            try:
+                data = {
+                    'username': request.session.get('username'),
+                    'email': request.POST.get('email'),
+                    'phone_number': request.POST.get('phone'),
+                    'address': request.POST.get('address')
+                }
+
+                status = functions.User_func.Edit(self, data)
+
+                if status is False:
+                    raise Exception("Error while editing contact info")
+
+                user = functions.User_func.get(self, "username", request.session.get('username'))
+
+                # Displays the edit contact information page.
+
+                return render(request, 'instructor_edit_contact.html',
+                              {'message': "You have successfully edited your contact information",
+                               'oldemail': user[0]['email'], 'oldphone': user[0]['phone_number'],
+                               'oldaddress': user[0]['address']})
+            except Exception as e:
+
+                # Displays the edit contact information page.
+                return render(request, 'instructor_edit_contact.html', {'message': e})
+        elif request.POST.get('logout') == "Log out":
             request.session.pop('username', None)
             return redirect('/')
 
@@ -417,13 +457,54 @@ class instructor_section_management(View):
     def get(self, request):
         # Displays the instructor section management page.
         if request.session.get('username'):
-            return render(request, 'instructor_section_management.html', {})
+            user = functions.User_func.get(self, query='username', identity=request.session.get('username'))
+            names = User.objects.filter(type='T')
+            courses = functions.Course_func.get_all(self)
+            section_ids_course = CourseSection.objects.all()
+            section_ids = LabSection.objects.all()
+
+            context = {
+                'names': names,
+                'courses': courses,
+                'section_ids': section_ids,
+                'course_section_ids': section_ids_course
+            }
+
+            return render(request, 'instructor_section_management.html', context)
         else:
             return redirect('/')
 
     def post(self, request):
+        if request.POST.get('assigncoursesection') == "true":
+            name = request.session.get('username')
+            course_id = request.POST.get('courseid')
+            section_id = request.POST.get('coursesectionid')
+            try:
+                user = User.objects.get(username=name)
+                section = CourseSection.objects.get(section_id=section_id)
+                section.instructor = user
+                section.save()
+
+                return render(request, 'instructor_section_management.html', {'assign_course_section': 'User assigned Successfully'})
+            except Exception as e:
+                # Handles if user or course doesn't exist
+                return render(request, 'instructor_section_management.html', {'assign_course_section': 'User or Course not found.'})
+        elif request.POST.get('assignlabsection') == 'true':
+            name = request.POST.get('names')
+            course_id = request.POST.get('lab_courseid')
+            section_id = request.POST.get('sectionid')
+            try:
+                user = User.objects.get(name=name)
+                section = LabSection.objects.get(section_id=section_id, course_id=course_id)
+                section.ta = user
+                section.save()
+
+                return render(request, 'instructor_section_management.html', {'assign_lab_section': 'User assigned Successfully'})
+            except Exception as e:
+                # Handles if user or course doesn't exist
+                return render(request, 'instructor_section_management.html', {'assign_lab_section': 'User or Lab section not found'})
         # Handles logout.
-        if request.POST.get('logout') == "Log out":
+        elif request.POST.get('logout') == "Log out":
             request.session.pop('username', None)
             return redirect('/')
 
@@ -497,13 +578,46 @@ class ta_edit_contact(View):
     def get(self, request):
         # Displays the TA edit contact page.
         if request.session.get('username'):
-            return render(request, 'ta_edit_contact.html', {})
+            user = functions.User_func.get(self, "username", request.session.get('username'))
+            context = {
+                'oldemail': user[0]['email'],
+                'oldphone': user[0]['phone_number'],
+                'oldaddress': user[0]['address'],
+                'oldskills': user[0]['skills']
+            }
+            return render(request, 'ta_edit_contact.html', context)
         else:
             return redirect('/')
 
     def post(self, request):
-        # Handles logout.
-        if request.POST.get('logout') == "Log out":
+        if request.POST.get('ta_update') == 'true':
+            try:
+                data = {
+                    'username': request.session.get('username'),
+                    'email': request.POST.get('email'),
+                    'phone_number': request.POST.get('phone'),
+                    'address': request.POST.get('address'),
+                    'skills': request.POST.get('skills')
+                }
+
+                status = functions.User_func.Edit(self, data)
+
+                if status is False:
+                    raise Exception("Error while editing contact info")
+
+                user = functions.User_func.get(self, "username", request.session.get('username'))
+
+                # Displays the edit contact information page.
+                print(user[0]['skills'])
+                return render(request, 'ta_edit_contact.html',
+                              {'message': "You have successfully edited your contact information",
+                               'oldemail': user[0]['email'], 'oldphone': user[0]['phone_number'],
+                               'oldaddress': user[0]['address'], 'oldskills': user[0]['skills']})
+            except Exception as e:
+
+                # Displays the edit contact information page.
+                return render(request, 'ta_edit_contact.html', {'message': e})
+        elif request.POST.get('logout') == "Log out":
             request.session.pop('username', None)
             return redirect('/')
 

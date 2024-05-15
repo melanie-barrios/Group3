@@ -439,7 +439,7 @@ class CourseSection_func(Change, Getting):
             return False
 
         # Check if all required fields are present
-        required_fields = ['section_id', 'course', 'section_number', 'Time', 'Location', 'credits', 'instructor']
+        required_fields = ['section_id', 'course', 'section_number', 'Time', 'Location', 'credits']
         if not all(field in info for field in required_fields):
             return False
 
@@ -449,10 +449,15 @@ class CourseSection_func(Change, Getting):
             return False
 
         # Create and save the new course section
-        course_section = CourseSection(section_id=info['section_id'], section_number=info['section_number'],
-                                       course=Course.objects.get(course_id=info['course']), Time=info['Time'],
-                                       Location=info['Location'], credits=info['credits'],
-                                       instructor=User.objects.get(name=info['instructor']))
+        if 'instructor' in info:
+            course_section = CourseSection(section_id=info['section_id'], section_number=info['section_number'],
+                                           course=Course.objects.get(course_id=info['course']), Time=info['Time'],
+                                           Location=info['Location'], credits=info['credits'],
+                                           instructor=User.objects.get(name=info['instructor']))
+        else:
+            course_section = CourseSection(section_id=info['section_id'], section_number=info['section_number'],
+                                           course=Course.objects.get(course_id=info['course']), Time=info['Time'],
+                                           Location=info['Location'], credits=info['credits'])
         course_section.save()
 
         return True
@@ -470,9 +475,7 @@ class CourseSection_func(Change, Getting):
     def Edit(self, info: dict) -> bool:
         try:
             # Attempt to retrieve the course section from the database
-            print("here - 1")
             course_section = CourseSection.objects.get(section_id=info['section_id'])
-            print("here - 2")
             # Update the course section attributes with the provided data
             for key, value in info.items():
                 # Set the attribute of the course section to the provided value
@@ -565,6 +568,29 @@ class CourseSection_func(Change, Getting):
             except ObjectDoesNotExist:
                 # If the course section with the provided section_id does not exist in the database,return an empty list
                 return []
+        elif query == 'course':
+            try:
+                # Attempt to retrieve the course section from the database using its section_id
+                course_sections = CourseSection.objects.all()
+
+                # Construct a dictionary containing the course section information
+                for course_section in course_sections:
+                    if course_section.course == identity:
+                        result = {
+                            'section_id': course_section.section_id,
+                            'section_number': course_section.section_number,
+                            'course': course_section.course.course_id,
+                            'Time': course_section.Time,
+                            'Location': course_section.Location,
+                            'credits': course_section.credits,
+                            'instructor': course_section.instructor.name
+                        }
+                        results.append(result)
+                # Return a list containing the constructed dictionary
+                return results
+            except ObjectDoesNotExist:
+                # If the course section with the provided section_id does not exist in the database,return an empty list
+                return []
         else:
             # If the query is not for section_id, return an empty list
             return []
@@ -623,7 +649,7 @@ class LabSection_func(Change, Getting):
             return False
 
         # Check if all required fields are present
-        required_fields = ['section_id', 'course', 'section_number', 'Time', 'Location', 'Type', 'ta', 'course_section']
+        required_fields = ['section_id', 'course', 'section_number', 'Time', 'Location', 'Type', 'course_section']
         if not all(field in info for field in required_fields):
             return False
 
