@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
-    <title>TA - View Users</title>
+    <title>Instructor - View Users</title>
 </head>
 <body>
 
@@ -45,7 +45,6 @@
         <table class="form-table">
             <thead>
                 <tr>
-                    <th>User ID</th>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Role ID</th>
@@ -55,7 +54,6 @@
             <tbody>
                 {% for user in users %}
                 <tr>
-                    <td>{{ user.id }}</td>
                     <td>{{ user.name }}</td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.type }}</td>
