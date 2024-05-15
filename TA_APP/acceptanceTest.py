@@ -795,6 +795,50 @@ class InstructorAssignUserToSection(TestCase):
                          msg="TA should be assigned to lab section now")
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 """
 PBI: As an Instructor, Supervisor I want to send notifications, so that I can easily inform staff of any updates.
 """
