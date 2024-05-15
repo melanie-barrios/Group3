@@ -2,18 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="/static/homepageStyle.css">
+    <link rel="stylesheet" type="text/css" href="/static/instructor_dashboardStyle.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
-    <title>Instructor Dashboard</title>
+    <title>Welcome Instructor</title>
 </head>
+<body>
 <header>
     <div class="logout-container">
         <form action="/instructor/dashboard/" method="post">
             {% csrf_token %}
-            <input type="submit" name="logout-container" value="Log out" />
+            <input type="submit" name="logout" value="Log out" />
         </form>
     </div>
     <div class="logo-3">
@@ -23,11 +24,13 @@
         </a>
     </div>
 </header>
-<body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            Instructor Dashboard
-        </div>
+<div class="container">
+        <h1>Welcome Instructor!</h1>
+</div>
+
+
+<div class="sidebar">
+    <div class="sidebar-header"></div>
         <ul class="menu-bar">
             <li><a href="{% url 'instructor_edit_contact' %}"><span class="material-symbols-outlined">edit_note</span>Edit Contact Information</a></li>
             <li><a href="{% url 'instructor_section_management' %}"><span class="material-symbols-outlined">folder_managed</span>Section Management</a></li>
@@ -35,9 +38,9 @@
             <li><a href="{% url 'instructor_view_users' %}"><span class="material-symbols-outlined">person_search</span>View Users</a></li>
             <li><a href="{% url 'instructor_notifications' %}"><span class="material-symbols-outlined">notifications</span>Send Notifications</a></li>
         </ul>
-    </div>
-    <footer>
-        &copy 2024 Digital Dream Team, CS361. All rights reserved.
-    </footer>
+</div>
+<footer>
+    &copy 2024 Digital Dream Team, CS361. All rights reserved.
+</footer>
 </body>
 </html>

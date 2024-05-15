@@ -16,7 +16,7 @@
         <div class="logout-container">
             <form action="" method="post">
                 {% csrf_token %}
-                <input type="submit" name="logout-container" value="Log out" />
+                <input type="submit" name="logout" value="Log out" />
             </form>
         </div>
         <div class="logo-3">
@@ -30,9 +30,9 @@
 <body>
      <div class="sidebar">
     <div class="sidebar-header">
-
-
     </div>
+
+
     <ul class="menu-bar">
         <ul class="menu-bar">
             <li><a href="{% url 'accountmanagement' %}"><span class="material-symbols-outlined">manage_accounts</span>Account Management</a></li>
@@ -45,6 +45,11 @@
         </ul>
     </ul>
      </div>
+
+  <div class="container">
+        <h1>Welcome Supervisor!</h1>
+</div>
+
     <footer>
         &copy 2024 Digital Dream Team, CS361. All rights reserved.
     </footer>

@@ -14,7 +14,8 @@ class LoginTest(TestCase):
     """The setpUp for LoginTests"""
 
     def setUp(self):
-        self.user = User(username="newestuser", password="newestuser2")
+        self.user = User(name="Test", username="test_user", password="PASSWORD", email="test@uwm.edu",
+                         phone_number=1234567890, address="123 1st street", type="S")
         self.user.save()
         self.client = Client()
 
@@ -26,19 +27,20 @@ class LoginTest(TestCase):
     """Testing the valid login information"""
 
     def test_validLogin(self):
-        response = self.client.post("/", {"username": "newestuser", "password": "newestuser2"})
+        response = self.client.post("/", {"username": "test_user", "password": "PASSWORD"})
         ##routes to homepage if valid
-        self.assertEqual(response.url, "/homepage/")
+
+        self.assertEqual(response.context['status'], "Signed In")
 
     """Testing the login with invalid username and password"""
 
     def test_invalidLogin(self):
-        response = self.client.post("/", {"username": "test_user60", "password": "PASSWORD60"})
+        response = self.client.post("/", {"username": "test_user42", "password": "PASSWORD123"})
 
-        content = response.content.decode('utf-8')
+
 
         ##if html contains message that username or password is incorrect creds are invalid
-        self.assertIn("Username or password is incorrect", content, "Login credentials are invalid")
+        self.assertEqual(response.context['message'], 'Username or password is incorrect')
 
 
 """
@@ -62,18 +64,24 @@ class SupervisorCreateAccountTest(TestCase):
 
     def tearDown(self):
         self.temp.delete()
-        user = User.objects.get(username="test_user4")
-        if not (user is None):
-            user.delete()
+        try:
+            user = User.objects.get(username="test_user4")
+            if user is not None:
+                user.delete()
+        except Exception as e:
+            print(e)
+
+
 
     """Testing the valid creation of an account"""
 
     def test_ValidCreateAccount1(self):
         resp = self.client.post('/account-management/',
                                 {'name': 'Test4', 'username': 'test_user4', 'password': 'PASSWORD4',
-                                 'email': 'test@uwm.edu', 'phone_number': "1234567890", 'address': '123 1st Street',
-                                 "type": "TA", 'skills': '', 'status': 'create'}, follow=True)
-        self.assertEqual(resp.context['message'], "Account created successfully",
+                                 'email': 'test@uwm.edu', 'phone': "1234567890", 'address': '123 1st Street',
+                                 "role": "TA", 'skills': '', 'status': 'create'}, follow=True)
+
+        self.assertEqual(resp.context['message'], "Account Created Successfully",
                          msg="Message for successful account creation failed")
 
     """Testing the valid creation of an account"""
@@ -81,8 +89,8 @@ class SupervisorCreateAccountTest(TestCase):
     def test_ValidCreateAccount2(self):
         resp = self.client.post('/account-management/',
                                 {'name': 'Test4', 'username': 'test_user4', 'password': 'PASSWORD4',
-                                 'email': 'test@uwm.edu', 'phone_number': "1234567890", 'address': '123 1st Street',
-                                 "type": "TA", 'skills': '', 'status': 'create'}, follow=True)
+                                 'email': 'test@uwm.edu', 'phone': "1234567890", 'address': '123 1st Street',
+                                 "role": "TA", 'skills': '', 'status': 'create'}, follow=True)
         self.assertEqual("test_user4", User.objects.get(username="test_user4").username,
                          msg="Account should be present in the database.")
 
@@ -90,9 +98,10 @@ class SupervisorCreateAccountTest(TestCase):
 
     def test_InvalidCreateAccount1(self):
         resp = self.client.post('/account-management/',
-                                {'name': 'Test4', 'username': 'test_user', 'password': 'PASSWORD4',
-                                 'email': 'test@uwm.edu', 'phone_number': "1234567890", 'address': '123 1st Street',
-                                 "type": "TA", 'skills': '', 'status': 'create'}, follow=True)
+                                {'name': 'Test', 'username': 'test_user', 'password': 'PASSWORD4',
+                                 'email': 'test@uwm.edu', 'phone': "1234567890", 'address': '123 1st Street',
+                                 "role": "TA", 'skills': '', 'status': 'create'}, follow=True)
+
         self.assertEqual(resp.context['message'], "Duplicate username or missing form field",
                          msg="Message for duplicate account creation failed")
 
@@ -100,9 +109,10 @@ class SupervisorCreateAccountTest(TestCase):
 
     def test_InvalidCreateAccount2(self):
         resp = self.client.post('/account-management/',
-                                {'name': 'Test4', 'username': '', 'password': 'PASSWORD4',
-                                 'email': 'test@uwm.edu', 'phone_number': "1234567890", 'address': '123 1st Street',
-                                 "type": "TA", 'skills': '', 'status': 'create'}, follow=True)
+                                {'name': 'Test', 'password': 'test_user',
+                                 'email': 'test@uwm.edu', 'phone': "1234567890", 'address': '123 1st Street',
+                                 "role": "TA", 'skills': '', 'status': 'create'}, follow=True)
+
         self.assertEqual(resp.context['message'], "Duplicate username or missing form field",
                          msg="Message for missing field account creation failed")
 
@@ -123,18 +133,18 @@ class SupervisorDeleteAccountTest(TestCase):
     """Test deleting an account"""
 
     def test_deleteaccount(self):
-        response = self.client.post('/homepage/',
-                                    {"username": "newestuser", "password": "newestuser2", "status": "delete"})
+        response = self.client.post('/account-management/',
+                                    {"delusername": "newestuser", "password": "newestuser2", "status": "delete"})
 
         with self.assertRaises(ObjectDoesNotExist):
-            User.objects.get(username="newestuser")
+                User.objects.get(username="newestuser")
 
     """Test deleting an invalid account"""
 
     def test_invaliddeletion(self):
-        response = self.client.post('/homepage/', {"username": "newestuser10", "password": "42", "status": "delete"})
+        response = self.client.post('/account-management/', {"delusername": "newestuser10", "password": "42", "status": "delete"})
 
-        self.assertEqual(response.content, "User does not exist to be deleted")
+        self.assertEqual(response.context['message'], "Account Deletion Failed")
 
 
 """
@@ -146,9 +156,9 @@ class SupervisorCreateCourseTest(TestCase):
     def setUp(self):
         self.client = Client()
 
-    def createCourse(self):
-        response = self.client.post('/homepage/',
-                                    {"course_name": "Chemistry 101", "course_term": "F", "status": "create_course"})
+    def test_createCourse(self):
+        response = self.client.post('/course-management/',
+                                    {"courseid": "1", "name": "Chemistry 101", "term": "F", "createcourse": "true"})
 
         course = Course.objects.get(course_name="Chemistry 101")
 
@@ -156,10 +166,10 @@ class SupervisorCreateCourseTest(TestCase):
 
         course.delete()
 
-    def invalidCoursecreation(self):
-        response = self.client.post('/homepage/', {"course_name": "", "status": "create_course"})
+    def test_invalidCoursecreation(self):
+        response = self.client.post('/course-management/', {"course_name": "", "createcourse": "true"})
 
-        self.assertEqual(response.content, "Missing fields for course creation")
+        self.assertEqual(response.context['create_course'], "Course Creation Failed")
 
 
 """
@@ -177,15 +187,14 @@ class SupervisorDeleteCourseTest(TestCase):
 
     """The testing of a valid course deletion"""
 
-    def validCourseDeletion(self):
+    def test_validCourseDeletion(self):
         response = self.client.post('/homepage/', {"course_name": "Chemistry 101", "status": "delete_course"})
 
         with self.assertRaises(ObjectDoesNotExist):
             Course.objects.get(course_name="newestuser")
 
     """Testing of invalid course deletion"""
-
-    def invalidCourseDeletion(self):
+    def test_invalidCourseDeletion(self):
         response = self.client.post('/homepage/', {"course_name": "SuperFunClass 101", "status": "delete_course"})
 
         self.assertEqual(response.content, "Course does not exist to be deleted")
@@ -203,7 +212,10 @@ class SupervisorCreateCourseSectionTest(TestCase):
     def setUp(self):
         self.temp = User(name="Test", username="test_user", password="PASSWORD", email="test@uwm.edu",
                          phone_number=1234567890, address="123 1st street", type="S")
+        self.instructor = User(name="Test2", username="test_user2", password="PASSWORD", email="test2@uwm.edu",
+                         phone_number=1234567890, address="123 1st street", type="I")
         self.temp.save()
+        self.instructor.save()
         self.temp_course = Course(course_id="CS101", course_name="Test Course", course_term="F")
         self.temp_course.save()
         self.test_courseSection = CourseSection(section_id=4560, section_number=202, course=self.temp_course,
@@ -218,6 +230,7 @@ class SupervisorCreateCourseSectionTest(TestCase):
 
     def tearDown(self):
         self.temp.delete()
+        self.instructor.delete()
         self.temp_course.delete()
         self.test_courseSection.delete()
 
@@ -225,19 +238,19 @@ class SupervisorCreateCourseSectionTest(TestCase):
 
     def test_ValidCreateCourseSection1(self):
         resp = self.client.post('/course-management/',
-                                {"section_id": "456", "section_number": "201", "course": "CS101",
-                                 "Time": "MW 9:30AM", "Location": "EMS", "credits": "3",
-                                 "status": "create_courseSection"}, follow=True)
-        self.assertEqual(resp.context['message'], "Course Section created successfully",
+                                {"sectionid": "456", "sectionnumber": "201", "course": "CS101",
+                                 "time": "MW 9:30AM", "location": "EMS", "credits": "3", "instructor":self.instructor.name,
+                                 "createcoursesection": "true"}, follow=True)
+        self.assertEqual(resp.context['create_course_section_message'], "Course Section Created Successfully",
                          msg="Message for successful course section creation failed")
 
     """Testing the valid creation of a course section"""
 
     def test_ValidCreateCourseSection2(self):
         resp = self.client.post('/course-management/',
-                                {"section_id": "456", "section_number": "201", "course": "CS101",
-                                 "Time": "MW 9:30AM", "Location": "EMS", "credits": "3",
-                                 "status": "create_courseSection"}, follow=True)
+                                {"sectionid": "456", "sectionnumber": "201", "course": "CS101",
+                                 "time": "MW 9:30AM", "location": "EMS", "credits": "3", "instructor":self.instructor.name,
+                                 "createcoursesection": "true"}, follow=True)
         self.assertEqual(201, CourseSection.objects.get(section_number=201).section_number,
                          msg="Message for successful course section creation failed")
 
@@ -247,8 +260,8 @@ class SupervisorCreateCourseSectionTest(TestCase):
         resp = self.client.post('/course-management/',
                                 {"section_id": "456", "section_number": '', "course": "CS101",
                                  "Time": "MW 9:30AM", "Location": "EMS", "credits": "3",
-                                 "status": "create_courseSection"}, follow=True)
-        self.assertEqual(resp.context['message'], "Course section missing a field or is a duplicate",
+                                 "createcoursesection": "true"}, follow=True)
+        self.assertEqual(resp.context['create_course_section_message'], "Course Section Creation Failed",
                          msg="Message for unsuccessful course section creation failed")
 
     """Testing the invalid creation of a course section"""
@@ -257,8 +270,8 @@ class SupervisorCreateCourseSectionTest(TestCase):
         resp = self.client.post('/course-management/',
                                 {"section_id": "456", "section_number": "202", "course": "CS101",
                                  "Time": "MW 9:30AM", "Location": "EMS", "credits": "3",
-                                 "status": "create_courseSection"}, follow=True)
-        self.assertEqual(resp.context['message'], "Course section missing a field or is a duplicate",
+                                  "createcoursesection": "true"}, follow=True)
+        self.assertEqual(resp.context['create_course_section_message'], "Course Section Creation Failed",
                          msg="Message for unsuccessful course section creation failed")
 
 
@@ -355,21 +368,21 @@ class SupervisorCreateLabSectionTest(TestCase):
 
     def test_ValidCreateLabSection1(self):
         resp = self.client.post('/course-management/',
-                                {"section_id": "222", "section_number": "301",
-                                 "course_section": "303",
-                                 "course": "CS303", "Time": "MW 9:30AM", "Location": "EMS",
-                                 "Type": "L", "status": "create_LabSection"}, follow=True)
-        self.assertEqual(resp.context['message'], "Lab Section created successfully",
+                                {"sectionid": "223", "sectionnumber": "301",
+                                 "coursesection": "123",
+                                 "course": "CS303", "time": "MW 9:30AM", "location": "EMS",
+                                 "role": "L", "ta":"Test3", "createlabsection": "true"}, follow=True)
+        self.assertEqual(resp.context['lab_message'], "Lab Section Created Successfully",
                          msg="Message for successful course section creation failed")
 
     """test valid lab section creation"""
 
     def test_ValidCreateLabSection2(self):
         resp = self.client.post('/course-management/',
-                                {"section_id": "222", "section_number": "301",
-                                 "course_section": "303",
-                                 "course": "CS303", "Time": "MW 9:30AM", "Location": "EMS",
-                                 "Type": "L", "status": "create_LabSection"}, follow=True)
+                                {"sectionid": "223", "sectionnumber": "301",
+                                 "coursesection": "123",
+                                 "course": "CS303", "time": "MW 9:30AM", "location": "EMS",
+                                 "role": "L","ta":"Test3",  "createlabsection": "true"}, follow=True)
         self.assertEqual(301, LabSection.objects.get(section_number=301).section_number,
                          msg="Message for successful course section creation failed")
 
@@ -377,22 +390,22 @@ class SupervisorCreateLabSectionTest(TestCase):
 
     def test_InvalidCreateLabSection1(self):
         resp = self.client.post('/course-management/',
-                                {"section_id": "222", "section_number": "301",
-                                 "course_section": '',
-                                 "course": "CS303", "Time": "MW 9:30AM", "Location": "EMS",
-                                 "Type": "L", "status": "create_LabSection"}, follow=True)
-        self.assertEqual(resp.context['message'], "Lab section missing a field or is a duplicate",
-                         msg="Message for unsuccessful course section creation failed")
+                                {"sectionid": "223", "sectionnumber": "301",
+                                 "coursesection": '',
+                                 "course": "CS303", "time": "MW 9:30AM", "location": "EMS",
+                                 "role": "L", "ta":"Test3",  "createlabsection": "true"}, follow=True)
+        self.assertEqual(resp.context['lab_message'], "Lab Section Creation Failed",
+                         msg="Message for unsuccessful course section creation failed because of duplicate")
 
     """Test the invalid creation of a lab section"""
 
     def test_InvalidCreateLabSection2(self):
         resp = self.client.post('/course-management/',
-                                {"section_id": "222", "section_number": "302",
-                                 "course_section": "303",
-                                 "course": "CS303", "Time": "MW 9:30AM", "Location": "EMS",
-                                 "Type": "L", "status": "create_LabSection"}, follow=True)
-        self.assertEqual(resp.context['message'], "Course section missing a field or is a duplicate",
+                                {"sectionid": "222", "sectionnumber": "302",
+                                 "coursesection": "303",
+                                 "course": "CS303", "time": "MW 9:30AM", "location": "EMS",
+                                 "role": "L", "ta":"Test3", "createlabsection": "true"}, follow=True)
+        self.assertEqual(resp.context['lab_message'], "Lab Section Creation Failed",
                          msg="Message for unsuccessful course section creation failed")
 
 
@@ -536,8 +549,8 @@ class ViewCourses(TestCase):
         # Check that we get a response
         self.assertEqual(response.status_code, 200)
 
-        response_list = [response.content['Courses'], response.content['CourseSections'],
-                         response.content['LabSections']]
+        response_list = [response.context['courses'], response.context['course_sections'],
+                         response.context['lab_sections']]
         test_list = [functions.Course_func.get_all(self), functions.CourseSection_func.get_all(self),
                      functions.LabSection_func.get_all(self)]
 
@@ -584,11 +597,13 @@ class ViewUsers(TestCase):
 
         response = self.client.get('/view-users/')
 
+
+
         # Check that we get a response
         self.assertEqual(response.status_code, 200)
 
         # check the context for the lists for courses
-        self.assertEqual(functions.User_func.get_all(), response.content['Users'],
+        self.assertEqual(functions.User_func.get_all(self), response.context['users'],
                          msg="View Courses should have all the information when get request is given")
 
 
@@ -626,15 +641,15 @@ class EditContactInformation(TestCase):
         session['username'] = 'test_user3'
         session.save()
 
-        new_list = [{'name': 'New-Test', 'username': 'test_user3', 'password': 'PASSWORD3',
-                     'email': 'test3@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', "type": "TA",
-                     'skills': ''}]
+        new_list = [{'name': 'Test3', 'username': 'test_user3', 'password': 'PASSWORD3',
+                     'email': 'test3@uwm.edu', 'phone_number': 4567892122, 'address': '123 1st Street', "type": "S",'skills': ''}]
 
-        response = self.client.post('placeholder',
-                                    {'name': 'New-Test', 'password': 'PASSWORD3',
-                                     'email': 'test3@uwm.edu', 'phone_number': "1234567890",
-                                     'address': '123 1st Street', "type": "TA", 'skills': '', "status": "edit_contact"},
+        response = self.client.post('/editcontactinfo/',
+                                    {
+                                     'email': 'test3@uwm.edu', 'phone': "4567892122",
+                                     'address': '123 1st Street', "status": "edit_contact"},
                                     follow=True)
+
 
         self.assertEqual(new_list, functions.User_func.get(self, query="username", identity="test_user3"))
 
@@ -642,40 +657,42 @@ class EditContactInformation(TestCase):
 
     def test_edit_contact_instructor(self):
         session = self.client.session
-        session['username'] = 'test_user2'
+        session['username'] = 'test_user'
         session.save()
 
-        new_list = [{'name': 'New-Test', 'username': 'test_user2', 'password': 'PASSWORD2',
-                     'email': 'test2@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', "type": "TA",
+        new_list = [{'name': 'Test', 'username': 'test_user', 'password': 'PASSWORD',
+                     'email': 'test6@uwm.edu', 'phone_number': 4327537522, 'address': '123 3rd Street', "type": "I",
                      'skills': ''}]
 
-        response = self.client.post('placeholder',
-                                    {'name': 'New-Test', 'password': 'PASSWORD2',
-                                     'email': 'test2@uwm.edu', 'phone_number': "1234567890",
-                                     'address': '123 1st Street', "type": "TA", 'skills': '', "status": "edit_contact"},
+        response = self.client.post('/editcontactinfo/',
+                                    {'email': 'test6@uwm.edu', 'phone': "4327537522",
+                                     'address': '123 3rd Street'},
                                     follow=True)
 
-        self.assertEqual(new_list, functions.User_func.get(self, query="username", identity="test_user2"))
+        print(functions.User_func.get(self, query="username", identity="test_user"))
+
+        self.assertEqual(new_list, functions.User_func.get(self, query="username", identity="test_user"))
 
     """Testing if a TA can edit their own contact info including their skills information"""
 
     def test_edit_contact_TA(self):
         session = self.client.session
-        session['username'] = 'test_user'
+        session['username'] = 'test_user2'
         session.save()
 
-        new_list = [{'name': 'New-Test', 'username': 'test_user', 'password': 'PASSWORD',
-                     'email': 'test@uwm.edu', 'phone_number': 1234567890, 'address': '123 1st Street', "type": "TA",
-                     'skills': 'HTML/CSS'}]
+        new_list = [{'name': 'Test2', 'username': 'test_user2', 'password': 'PASSWORD2',
+                     'email': 'test5@uwm.edu', 'phone_number': 3123543444, 'address': '123 1st Street', "type": "TA",
+                     'skills': ''}]
 
-        response = self.client.post('placeholder',
-                                    {'name': 'New-Test', 'password': 'PASSWORD',
-                                     'email': 'test@uwm.edu', 'phone_number': "1234567890",
-                                     'address': '123 1st Street', "type": "TA", 'skills': 'HTML/CSS',
-                                     "status": "edit_contact"},
+        response = self.client.post('/editcontactinfo/',
+                                    {
+                                     'email': 'test5@uwm.edu', 'phone': "3123543444",
+                                     'address': '123 1st Street'},
                                     follow=True)
 
-        self.assertEqual(new_list, functions.User_func.get(self, query="username", identity="test_user"))
+
+
+        self.assertEqual(new_list, functions.User_func.get(self, query="username", identity="test_user2"))
 
 
 """

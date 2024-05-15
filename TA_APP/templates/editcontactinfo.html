@@ -16,7 +16,7 @@
         <div class="logout-container">
             <form action="" method="post">
                 {% csrf_token %}
-                <input type="submit" name="logout-container" value="Log out" />
+                <input type="submit" name="logout" value="Log out" />
             </form>
         </div>
         <div class="logo-3">
@@ -53,24 +53,25 @@
 
     <table class="form-table">
 
-            <tr>
-                <td><label>Username:</label></td>
-                <td>
-                    <select name="username">
-                        <option value="">Select Username</option>
-                    </select>
-                </td>
-            </tr>
         <tr>
-            <td><label>Email:</label></td>
+            <td><label>Old Email: {{ oldemail }}</label></td>
+        </tr>
+        <tr>
+            <td><label>New Email:</label></td>
             <td><input type="email" name="email"/></td>
         </tr>
         <tr>
-            <td><label>Phone:</label></td>
+            <td><label>Old Phone: {{ oldphone }}</label></td>
+        </tr>
+        <tr>
+            <td><label>New Phone:</label></td>
             <td><input type="tel" name="phone"/></td>
         </tr>
         <tr>
-            <td><label>Address:</label></td>
+            <td><label>Old Address: {{ oldaddress }}</label></td>
+        </tr>
+        <tr>
+            <td><label>New Address:</label></td>
             <td><input type="text" name="address"/></td>
         </tr>
 
@@ -81,6 +82,7 @@
             </td>
         </tr>
     </table>
+        {{ message }}
         </form>
 </div>
 

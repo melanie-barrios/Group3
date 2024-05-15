@@ -58,8 +58,8 @@ class Login:
                 return "I"
             elif temp_user.type == "S":
                 return "S"
-            elif temp_user.type == "TA":
-                return "TA"
+            elif temp_user.type == "T":
+                return "T"
             else:
                 return "Invalid user type"
         else:
@@ -86,6 +86,10 @@ class User_func(Change, Getting):
         if not ('username' in info and 'password' in info and 'name' in info
                 and 'email' in info and 'phone_number' in info and 'address' in info and 'type' in info):
             return False
+
+        if False in info.values():
+            return False
+
 
         """Check for duplicates"""
         if User.objects.filter(username=info['username']).exists():
@@ -278,6 +282,9 @@ class Course_func(Change, Getting):
         if not ('course_id' in info and 'course_name' in info and 'course_term' in info):
             return False
 
+        if False in info.values():
+            return False
+
         """Check for duplicates"""
         if Course.objects.filter(course_id=info['course_id']).exists():
             return False
@@ -412,7 +419,6 @@ class Course_func(Change, Getting):
             """add to list"""
             return_list.append(temp_dic)
         """return the list of courses"""
-        print(return_list)
         return return_list
 
 
@@ -447,7 +453,6 @@ class CourseSection_func(Change, Getting):
                                        course=Course.objects.get(course_id=info['course']), Time=info['Time'],
                                        Location=info['Location'], credits=info['credits'],
                                        instructor=User.objects.get(name=info['instructor']))
-        print(course_section)
         course_section.save()
 
         return True
@@ -518,6 +523,7 @@ class CourseSection_func(Change, Getting):
     """
 
     def get(self, query: str, identity: str) -> list:
+        results = []
         # Check if the query is for section_id
         if query == 'section_id':
             try:
@@ -537,6 +543,29 @@ class CourseSection_func(Change, Getting):
 
                 # Return a list containing the constructed dictionary
                 return [result]
+            except ObjectDoesNotExist:
+                # If the course section with the provided section_id does not exist in the database,return an empty list
+                return []
+        elif query == 'instructor':
+            try:
+                # Attempt to retrieve the course section from the database using its section_id
+                course_sections = CourseSection.objects.all()
+
+                # Construct a dictionary containing the course section information
+                for course_section in course_sections:
+                    if course_section.instructor.id == identity:
+                        result = {
+                            'section_id': course_section.section_id,
+                            'section_number': course_section.section_number,
+                            'course': course_section.course.course_id,
+                            'Time': course_section.Time,
+                            'Location': course_section.Location,
+                            'credits': course_section.credits,
+                            'instructor': course_section.instructor.name
+                        }
+                        results.append(result)
+                # Return a list containing the constructed dictionary
+                return results
             except ObjectDoesNotExist:
                 # If the course section with the provided section_id does not exist in the database,return an empty list
                 return []
@@ -600,12 +629,10 @@ class LabSection_func(Change, Getting):
         # Check if all required fields are present
         required_fields = ['section_id', 'course', 'section_number', 'Time', 'Location', 'Type', 'ta', 'course_section']
         if not all(field in info for field in required_fields):
-            print("first if")
             return False
 
         # Check if lab section with the given section ID already exists
         if LabSection.objects.filter(section_id=info['section_id']).exists():
-            print("second if")
             return False
 
         # Create and save the new lab section
@@ -686,6 +713,7 @@ class LabSection_func(Change, Getting):
     """
 
     def get(self, query: str, identity: str) -> list:
+        results = []
         # Check if the query is for section_id
         if query == 'section_id':
             try:
@@ -709,9 +737,32 @@ class LabSection_func(Change, Getting):
             except ObjectDoesNotExist:
                 # If the lab section with the provided section_id does not exist in the database, return an empty list
                 return []
+        elif query == 'ta':
+            try:
+                # Attempt to retrieve the lab section from the database using its ta
+                lab_section = LabSection.objects.all()
+                # Convert the LabSection instance to a dictionary
+                for lab in lab_section:
+                    if lab.ta.id == identity:
+                        result = {
+                            'section_id': lab.section_id,
+                            'section_number': lab.section_number,
+                            'course_section': lab.course_section.section_id,
+                            'course': lab.course.course_id,
+                            'Time': lab.Time,
+                            'Location': lab.Location,
+                            'Type': lab.Type,
+                            'ta': lab.ta.name
+                        }
+                        results.append(result)
+                # Return a list containing the constructed dictionary
+                return results
+            except ObjectDoesNotExist:
+                # If the lab section with the provided section_id does not exist in the database, return an empty list
+                return []
         else:
-            # If the query is not for section_id, return an empty list
             return []
+
 
     """
     get_all - Retrieves all LabSections from the database.
